@@ -2,4 +2,8 @@
 <resources>
     <dimen name="custom_min_width">56dp</dimen>
     <dimen name="custom_max_width">488dp</dimen>
+    <dimen name="floating_btn_size">50dp</dimen>
+    <dimen name="margin_side">15dp</dimen>
+    <dimen name="margin_vertical">10dp</dimen>
+
 </resources>

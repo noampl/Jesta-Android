@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/nav_map">
+
+    <fragment
+        android:id="@+id/nav_map"
+        android:name="com.example.jesta.view.fragments.MapFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/nav_contact"
+        android:name="com.example.jesta.view.fragments.utilities.ContactFragment"
+        android:label="@string/make_contact"
+        tools:layout="@layout/fragment_contact" >
+    </fragment>
+    <fragment
+        android:id="@+id/nav_help"
+        android:name="com.example.jesta.view.fragments.utilities.helpFragment"
+        android:label="@string/help"
+        tools:layout="@layout/fragment_help" />
+    <fragment
+        android:id="@+id/nav_request_jestas"
+        android:name="com.example.jesta.view.fragments.jestas.RequestedJestasFragment"
+        android:label="@string/requested_jestas"
+        tools:layout="@layout/fragment_requested_jestas" />
+    <fragment
+        android:id="@+id/nav_jesta_settings"
+        android:name="com.example.jesta.view.fragments.JestionerSettingsFragment"
+        android:label="@string/jesta_settings"
+        tools:layout="@layout/fragment_jestioner_settings" />
+    <fragment
+        android:id="@+id/nav_notification"
+        android:name="com.example.jesta.view.fragments.NotificationFragment"
+        android:label="@string/notification"
+        tools:layout="@layout/fragment_notification" />
+    <fragment
+        android:id="@+id/nav_privacy"
+        android:name="com.example.jesta.view.fragments.utilities.PrivacyPolicyFragment"
+        android:label="@string/privacy_policy"
+        tools:layout="@layout/fragment_privacy_policy" />
+    <fragment
+        android:id="@+id/nav_terms"
+        android:name="com.example.jesta.view.fragments.utilities.TermOfUseFragment"
+        android:label="@string/term_of_use"
+        tools:layout="@layout/fragment_term_of_use" />
+    <fragment
+        android:id="@+id/nav_podium"
+        android:name="com.example.jesta.view.fragments.PodiomFragment"
+        android:label="@string/podium"
+        tools:layout="@layout/fragment_podiom" />
+    <fragment
+        android:id="@+id/nav_done_jestas"
+        android:name="com.example.jesta.view.fragments.jestas.DoneJestasFragment"
+        android:label="@string/done_jestas"
+        tools:layout="@layout/fragment_done_jestas" />
+    <fragment
+        android:id="@+id/nav_todo_jestas"
+        android:name="com.example.jesta.view.fragments.jestas.TodoJestaFragment"
+        android:label="@string/todo_jestas"
+        tools:layout="@layout/fragment_todo_jesta" />
+    <fragment
+        android:id="@+id/nav_waiting_jestas"
+        android:name="com.example.jesta.view.fragments.jestas.WaitingJestasFragment"
+        android:label="@string/waiting_jestas"
+        tools:layout="@layout/fragment_waiting_jestas" />
+    <fragment
+        android:id="@+id/nav_about"
+        android:name="com.example.jesta.view.fragments.utilities.AboutFragment"
+        android:label="@string/about"
+        tools:layout="@layout/fragment_about" />
+</navigation>

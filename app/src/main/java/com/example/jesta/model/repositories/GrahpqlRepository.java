@@ -128,6 +128,8 @@ public class GrahpqlRepository {
             // Check if the server return good answer
              if (!response.hasErrors() && response.data != null){
                  ShardPreferencesHelper.writeToken(response.data.connectUser.token);
+                 ShardPreferencesHelper.writeEmail(email);
+                 ShardPreferencesHelper.writePassword(password);
                  _token = response.data.connectUser.token;
                  _isLoggedIn.postValue(true);
              }

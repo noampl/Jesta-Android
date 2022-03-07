@@ -1,2 +1,10 @@
 # Jesta
-Jesta Android in an app for the Colman of managmnet final project
+Jesta Android in an app for the Colman of management final project
+
+
+# Connect to local server
+after sets all jesta-server instruction change the SERVER_URL in GraphqlRepository to your url
+
+# Maps
+Add this to your local.properties
+MAPS_API_KEY="APIKEY" // (replace with the api key)
