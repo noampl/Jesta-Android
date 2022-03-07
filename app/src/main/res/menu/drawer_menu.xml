@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/home_group"
+        >
+        <item
+            android:id="@+id/nav_map"
+            android:title="@string/home"
+            android:icon="@drawable/ic_baseline_home_24"
+            />
+        <item
+            android:id="@+id/nav_requested_jestas"
+            android:title="@string/requested_jestas"
+            android:icon="@drawable/ic_outline_requested_jesta"
+            />
+    </group>
+
+    <group
+        android:id="@+id/jesta_group"
+        >
+        <item
+            android:id="@+id/nav_todo_jestas"
+            android:title="@string/todo_jestas"
+            android:icon="@drawable/ic_baseline_todo_jesta"
+            />
+        <item
+            android:id="@+id/nav_waiting_jestas"
+            android:title="@string/waiting_jestas"
+            android:icon="@drawable/ic_baseline_waiting_jesta"
+
+            />
+        <item
+            android:id="@+id/nav_done_jestas"
+            android:title="@string/done_jestas"
+            android:icon="@drawable/ic_baseline_done_jestas"
+
+            />
+        <item
+            android:id="@+id/nav_jesta_settings"
+            android:title="@string/jesta_settings"
+            android:icon="@drawable/ic_baseline_jesta_settings"
+            />
+    </group>
+
+    <group
+        android:id="@+id/contact_group"
+        >
+        <item
+            android:id="@+id/nav_help"
+            android:title="@string/help"
+            android:icon="@drawable/ic_baseline_help_outline_24"
+            />
+        <item
+            android:id="@+id/nav_contact"
+            android:title="@string/make_contact"
+            android:icon="@drawable/ic_baseline_contact_phone_24"
+            />
+        <item
+            android:id="@+id/nav_about"
+            android:title="@string/about"
+            android:icon="@drawable/ic_outline_info_24"
+            />
+        <item
+            android:id="@+id/nav_terms"
+            android:title="@string/term_of_use"
+            android:icon="@drawable/ic_outline_article_24"
+            />
+        <item
+            android:id="@+id/nav_privacy"
+            android:title="@string/privacy_policy"
+            android:icon="@drawable/ic_outline_shield_24"
+            />
+    </group>
+
+</menu>

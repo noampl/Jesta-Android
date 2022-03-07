@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.MyApplication;
 import com.example.jesta.R;
 import com.example.jesta.viewmodel.LoginRegisterViewModel;
 
@@ -15,6 +16,12 @@ import com.example.jesta.viewmodel.LoginRegisterViewModel;
  * This activity uses as an intro to the app, display intro screen and tries to connect the server
  */
 public class introActivity extends AppCompatActivity {
+
+    // region Members
+
+    private final AppCompatActivity activity = this;
+
+    // endregion
 
     // region LifeCycle
 
@@ -29,15 +36,15 @@ public class introActivity extends AppCompatActivity {
             public void onChanged(Boolean isLoggedIn) {
                 Intent intent = null;
                 if (isLoggedIn)
-                    intent = new Intent(getApplicationContext(),MainActivity.class);
+                    intent = new Intent(activity,MainActivity.class);
                 else{
-                    intent = new Intent(getApplicationContext(),LoginRegisterActivity.class);
+                    intent = new Intent(activity,LoginRegisterActivity.class);
                 }
                 startActivity(intent);
                 finish();
             }
         });
-        viewModel.initLogin(getApplicationContext());
+        viewModel.initLogin(MyApplication.getAppContext());
     }
 
     // endregion

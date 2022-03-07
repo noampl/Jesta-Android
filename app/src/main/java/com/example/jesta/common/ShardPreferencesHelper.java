@@ -9,6 +9,7 @@ import androidx.security.crypto.MasterKeys;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Map;
 
 
 public class ShardPreferencesHelper {
@@ -48,15 +49,15 @@ public class ShardPreferencesHelper {
     // region Read
 
     public static String readToken(){
-        return _sharedPreferences.getString(Consts.TOKEN,Consts.INVALID_STRING);
+        return readItem(Consts.TOKEN);
     }
 
     public static String readEmail(){
-        return _sharedPreferences.getString(Consts.EMAIL,Consts.INVALID_STRING);
+        return readItem(Consts.EMAIL);
     }
 
     public static String readPassword(){
-        return _sharedPreferences.getString(Consts.PASSWORD,Consts.INVALID_STRING);
+        return readItem(Consts.PASSWORD);
     }
 
     // endregion
@@ -66,10 +67,16 @@ public class ShardPreferencesHelper {
 
     private static void writeItem(String key, String data){
             SharedPreferences.Editor editor = _sharedPreferences.edit();
-            editor.clear();
             editor.putString(key,data);
             editor.apply();
     }
+
+    private static String readItem(String key){
+        Map<String, String > map = (Map<String, String>) _sharedPreferences.getAll();
+        return map.getOrDefault(key, Consts.INVALID_STRING);
+    }
+
+
 
     // endregion
 }

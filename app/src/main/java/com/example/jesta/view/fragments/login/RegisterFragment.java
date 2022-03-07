@@ -1,4 +1,4 @@
-package com.example.jesta.view.fragments;
+package com.example.jesta.view.fragments.login;
 
 import android.app.Activity;
 import android.content.Intent;

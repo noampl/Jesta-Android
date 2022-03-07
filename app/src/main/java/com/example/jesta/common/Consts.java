@@ -17,4 +17,13 @@ public class Consts {
 
     // endregion
 
+    // region Google Maps
+
+    public static final int CLOSE_ZOOM = 15;
+    public static final int CITY_ZOOM = 10;
+    public static final int COUNTRY_ZOOM = 7;
+
+    // endregion
+
+
 }

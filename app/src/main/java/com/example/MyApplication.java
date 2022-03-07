@@ -1,4 +1,4 @@
-package com.example.jesta;
+package com.example;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -10,10 +10,10 @@ public class MyApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
-      context = getApplicationContext();
+        context = getApplicationContext();
     }
 
     public static Context getAppContext() {
-        return MyApplication.context;
+        return context;
     }
 }
