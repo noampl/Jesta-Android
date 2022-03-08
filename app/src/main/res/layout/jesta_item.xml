@@ -90,13 +90,12 @@
             />
 
 
-        <View
+        <com.google.android.material.divider.MaterialDivider
             android:id="@+id/bottom_dvider"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vertical"
             app:layout_constraintTop_toBottomOf="@id/location_icon"
-            android:background="@color/gray400_divider"
             />
 
 

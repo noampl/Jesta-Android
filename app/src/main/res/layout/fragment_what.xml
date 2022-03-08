@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragments.jestas.addition.WhatFragment">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.jesta.viewmodel.CreateJestaViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_side"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/require_jesta"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/spinner_card"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginEnd="@dimen/margin_side"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/title">
+
+            <Spinner
+                android:id="@+id/category_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gray100"
+                />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/description_card"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="@dimen/margin_vertical"
+            app:cardBackgroundColor="@color/gray100"
+            app:layout_constraintEnd_toEndOf="@id/spinner_card"
+            app:layout_constraintStart_toStartOf="@id/spinner_card"
+            app:layout_constraintTop_toBottomOf="@id/spinner_card">
+
+            <EditText
+                android:id="@+id/description_edit_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:hint="@string/short_description"
+                android:paddingStart="5dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/how_many_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/how_many_men"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/description_card" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_people_amount"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginEnd="@dimen/margin_side"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/how_many_title"
+            app:layout_constraintTop_toBottomOf="@id/how_many_title">
+
+            <Spinner
+                android:id="@+id/people_amount_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gray100"
+                />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/pictures_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/pictuers"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/card_people_amount" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_picture_1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginEnd="@dimen/margin_side"
+            app:layout_constraintEnd_toStartOf="@+id/card_picture_2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pictures_title"
+            android:src="@drawable/ic_baseline_add_24"
+            >
+
+            <ImageView
+                android:id="@+id/first_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_baseline_add_24"
+                android:background="@color/gray100"
+                android:contentDescription="@string/image_upload"
+                />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_picture_2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginEnd="@dimen/margin_side"
+            app:layout_constraintEnd_toStartOf="@+id/card_picture_3"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/card_picture_1"
+            app:layout_constraintTop_toBottomOf="@id/pictures_title"
+            >
+            <ImageView
+                android:id="@+id/second_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gray300"
+                android:contentDescription="@string/image_upload"
+                android:clickable="false"
+                />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_picture_3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginEnd="@dimen/margin_side"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/card_picture_2"
+            app:layout_constraintTop_toBottomOf="@id/pictures_title"
+            >
+            <ImageView
+                android:id="@+id/third_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gray300"
+                android:contentDescription="@string/image_upload"
+                android:clickable="false"
+                />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toEndOf="@id/card_picture_3"
+            app:layout_constraintTop_toBottomOf="@id/card_picture_1"
+            android:layout_marginTop="@dimen/margin_vertical"
+            app:icon="@drawable/ic_baseline_west_24"
+            app:iconGravity="end"
+            android:text="@string/cont"
+            android:onClick="@{()->viewModel.navigateToTab(1)}"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

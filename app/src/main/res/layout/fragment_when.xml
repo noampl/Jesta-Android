@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.fragments.jestas.addition.WhenFragment">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.jesta.viewmodel.CreateJestaViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_side"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/when_need_to_be_done"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/start_day"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:text="@string/starting_day"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/gray100"
+            app:icon="@drawable/ic_baseline_calendar_month_24"
+            app:iconGravity="end"
+            app:iconTint="@color/black"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/start_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            app:layout_constraintEnd_toEndOf="@id/start_day"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/start_day"
+            app:backgroundTint="@color/gray100"
+            android:text="@string/start_time"
+            android:textColor="@color/black"
+            app:iconTint="@color/black"
+            app:icon="@drawable/ic_baseline_access_time_24"
+            app:iconGravity="end"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/end_day"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:layout_marginStart="@dimen/margin_side"
+            android:text="@string/end_date"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/gray100"
+            app:icon="@drawable/ic_baseline_calendar_month_24"
+            app:iconGravity="end"
+            app:iconTint="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@id/start_day"
+            app:layout_constraintBottom_toBottomOf="@id/start_day"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/end_time"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/end_time"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/gray100"
+            app:icon="@drawable/ic_baseline_access_time_24"
+            app:iconGravity="end"
+            app:iconTint="@color/black"
+            app:layout_constraintEnd_toEndOf="@id/end_day"
+            app:layout_constraintStart_toStartOf="@+id/end_day"
+            app:layout_constraintTop_toTopOf="@id/start_time"
+            app:layout_constraintBottom_toBottomOf="@id/start_time"
+            />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/repeat_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:buttonTint="#000000"
+            app:layout_constraintStart_toStartOf="@id/start_time"
+
+            app:layout_constraintTop_toBottomOf="@id/start_time" />
+
+        <TextView
+            android:id="@+id/repeat_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/repeat_checkbox"
+            app:layout_constraintTop_toTopOf="@id/repeat_checkbox"
+            app:layout_constraintBottom_toBottomOf="@id/repeat_checkbox"
+            android:text="@string/repeat_jesta"
+            />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:onClick="@{()->viewModel.navigateToTab(2)}"
+            android:text="@string/cont"
+            app:icon="@drawable/ic_baseline_west_24"
+            app:iconGravity="end"
+            app:layout_constraintEnd_toEndOf="@id/end_time"
+            app:layout_constraintTop_toBottomOf="@id/repeat_checkbox" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_marginStart="2dp"
+            android:onClick="@{()->viewModel.navigateToTab(0)}"
+            app:layout_constraintBottom_toBottomOf="@id/next"
+            app:layout_constraintStart_toEndOf="@+id/back_arrow"
+            app:layout_constraintTop_toTopOf="@id/next" />
+
+        <ImageView
+            android:id="@+id/back_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_baseline_east_24"
+            android:backgroundTint="@color/black"
+            android:layout_marginStart="2dp"
+            app:layout_constraintBottom_toBottomOf="@+id/next"
+            app:layout_constraintStart_toStartOf="@id/repeat_checkbox"
+            android:onClick="@{()->viewModel.navigateToTab(0)}"
+            app:layout_constraintTop_toTopOf="@+id/next" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

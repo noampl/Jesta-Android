@@ -6,9 +6,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +28,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.List;
 
 public class MapFragment extends Fragment {
 
@@ -81,6 +88,7 @@ public class MapFragment extends Fragment {
 
     private void init(){
         initObservers();
+        initListeners();
     }
 
     private void initObservers(){
@@ -89,5 +97,10 @@ public class MapFragment extends Fragment {
                 _mapViewModel.moveCamera(ltlg,10);
             }
         });
+    }
+
+    private void initListeners(){
+        _binding.plusBtn.setOnClickListener((v)->
+                Navigation.findNavController(requireActivity(), R.id.main_container).navigate(R.id.action_nav_map_to_addJestaFragment));
     }
 }

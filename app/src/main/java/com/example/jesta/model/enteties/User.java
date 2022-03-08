@@ -1,5 +1,7 @@
 package com.example.jesta.model.enteties;
 
+import android.location.Address;
+
 public class User {
 
     // region Members

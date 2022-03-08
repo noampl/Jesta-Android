@@ -11,6 +11,9 @@ import android.view.View;
 import com.example.MyApplication;
 import com.example.jesta.R;
 import com.example.jesta.viewmodel.LoginRegisterViewModel;
+import com.google.android.libraries.places.api.Places;
+
+import java.util.Locale;
 
 /**
  * This activity uses as an intro to the app, display intro screen and tries to connect the server
@@ -44,7 +47,12 @@ public class introActivity extends AppCompatActivity {
                 finish();
             }
         });
+        // init Google places instance with an hebrew language code
+        if (!Places.isInitialized()) {
+            Places.initialize(MyApplication.getAppContext(), getString(R.string.google_maps_key), Locale.forLanguageTag("he"));
+        }
         viewModel.initLogin(MyApplication.getAppContext());
+
     }
 
     // endregion
