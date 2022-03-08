@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.fragments.jestas.addition.WhereFragment">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.jesta.viewmodel.CreateJestaViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_side"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/where_need_to_be_done"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/autoComplete_src_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginEnd="@dimen/margin_side"
+            app:cardBackgroundColor="@color/gray100"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/title">
+
+            <fragment
+                android:id="@+id/autoComplete_fragment_src"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/autoComplete_dst_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginEnd="@dimen/margin_side"
+            app:cardBackgroundColor="@color/gray100"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/autoComplete_src_card"
+            app:layout_constraintTop_toBottomOf="@id/autoComplete_src_card">
+
+            <fragment
+                android:id="@+id/autoComplete_fragment_dst"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                />
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:onClick="@{()->viewModel.navigateToTab(3)}"
+            android:text="@string/cont"
+            app:icon="@drawable/ic_baseline_west_24"
+            app:iconGravity="end"
+            app:layout_constraintEnd_toEndOf="@id/autoComplete_dst_card"
+            app:layout_constraintTop_toBottomOf="@id/autoComplete_dst_card" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_marginStart="2dp"
+            android:onClick="@{()->viewModel.navigateToTab(1)}"
+            app:layout_constraintBottom_toBottomOf="@id/next"
+            app:layout_constraintStart_toEndOf="@+id/back_arrow"
+            app:layout_constraintTop_toTopOf="@id/next" />
+
+        <ImageView
+            android:id="@+id/back_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_baseline_east_24"
+            android:backgroundTint="@color/black"
+            android:layout_marginStart="2dp"
+            app:layout_constraintBottom_toBottomOf="@+id/next"
+            app:layout_constraintStart_toStartOf="@id/autoComplete_dst_card"
+            android:onClick="@{()->viewModel.navigateToTab(1)}"
+            app:layout_constraintTop_toTopOf="@+id/next" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

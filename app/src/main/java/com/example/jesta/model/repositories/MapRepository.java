@@ -3,6 +3,8 @@ package com.example.jesta.model.repositories;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
@@ -14,6 +16,11 @@ import com.example.jesta.model.services.GpsHelper;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * Repository handling google maps stuff
  */
@@ -24,6 +31,8 @@ public class MapRepository {
     private GoogleMap _googleMap;
     private MutableLiveData<LatLng> _myLocation;
     private final LocationManager _locationManager;
+    private Geocoder _geoCoder;
+    private ExecutorService _executorService;
 
     // endregion
 
@@ -47,6 +56,8 @@ public class MapRepository {
             return ;
         }
         _locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 3, new GpsHelper(_myLocation));
+        _geoCoder = new Geocoder(MyApplication.getAppContext());
+        _executorService = Executors.newFixedThreadPool(2);
     }
 
     // endregion
@@ -65,8 +76,32 @@ public class MapRepository {
         return _myLocation;
     }
 
-
     // endregion
+
+    // region Public Method
+
+    public void getAddressByName(String address) {
+        _executorService.execute(()->{
+            try {
+               List<Address> addressList = _geoCoder.getFromLocationName(address, 10);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // TODO publish addresses
+        });
+    }
+
+    public void getAddressByLocation(long lat, long lng) {
+        _executorService.execute(()->{
+            try {
+                List<Address> addressList = _geoCoder.getFromLocation(lat,lng,10);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // TODO publish addresses
+        });
+    }
+
 
 
 }

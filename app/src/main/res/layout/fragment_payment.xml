@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.fragments.jestas.addition.PaymentFragment">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.jesta.viewmodel.CreateJestaViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_side"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/how_to_pay"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            android:checkedButton="@id/move_it_forward_radio"
+            >
+            <RadioButton
+                android:id="@+id/move_it_forward_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/move_it_forward"
+                android:buttonTint="@color/black"
+                />
+            <RadioButton
+                android:id="@+id/pay_for_it_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pay_for_it"
+                android:buttonTint="@color/black"
+                />
+
+        </RadioGroup>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/amount_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radio_group"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:layout_marginTop="@dimen/margin_vertical"
+            app:cardBackgroundColor="@color/gray100"
+            android:textColor="@color/black"
+            app:iconTint="@color/black"
+            android:visibility="gone"
+            >
+
+        <EditText
+            android:id="@+id/amount_edit_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:hint="@string/amount_ins"
+            android:layout_marginStart="3dp"
+            android:inputType="number"
+            android:background="@null"
+            />
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:onClick="@{()->viewModel.navigateToTab(4)}"
+            android:text="@string/cont"
+            app:icon="@drawable/ic_baseline_west_24"
+            app:iconGravity="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/amount_card" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_marginStart="2dp"
+            android:onClick="@{()->viewModel.navigateToTab(2)}"
+            app:layout_constraintBottom_toBottomOf="@id/next"
+            app:layout_constraintStart_toEndOf="@+id/back_arrow"
+            app:layout_constraintTop_toTopOf="@id/next" />
+
+        <ImageView
+            android:id="@+id/back_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_baseline_east_24"
+            android:backgroundTint="@color/black"
+            android:layout_marginStart="18dp"
+            app:layout_constraintBottom_toBottomOf="@+id/next"
+            app:layout_constraintStart_toStartOf="parent"
+            android:onClick="@{()->viewModel.navigateToTab(2)}"
+            app:layout_constraintTop_toTopOf="@+id/next" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

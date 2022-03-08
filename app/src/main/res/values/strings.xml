@@ -33,6 +33,35 @@
     <string name="rights_reserve">כל הזכויות שמורות @ 2022 ג\'סטה</string>
     <string name="privacy_policy">מדיניות פרטיות</string>
     <string name="today">היום</string>
+    <string name="tab_what">1. מה</string>
+    <string name="tab_when">2. מתי</string>
+    <string name="tab_where">3. איפה</string>
+    <string name="tab_payment">4. גמול</string>
+    <string name="tab_summary">5. סיכום</string>
+    <string name="ask_for_jesta">בקשה לג\'סטה</string>
+    <string name="pictuers">תמונות</string>
+    <string name="how_many_men">כמה אנשים צריך?</string>
+    <string name="short_description">תיאור קצר…</string>
+    <string name="require_jesta">מה הג\'סטה המבוקשת?</string>
+    <string name="cont">המשך</string>
+    <string name="image_upload">העלאת תמונה</string>
+    <string name="when_need_to_be_done">מתי נדרש לבצע זאת?</string>
+    <string name="starting_day">תאריך התחלה</string>
+    <string name="end_date">תאריך סיום</string>
+    <string name="start_time">שעת התחלה</string>
+    <string name="end_time">שעת סיום</string>
+    <string name="repeat_jesta">ג\'סטה מחזורית</string>
+    <string name="back">חזור</string>
+    <string name="where_need_to_be_done">איפה נדרש לבצע זאת?</string>
+    <string name="src_address">כתובת מוצא</string>
+    <string name="dst_address">כתובת יעד</string>
+    <string name="how_to_pay">איך לגמול למי שיבצע זאת?</string>
+    <string name="move_it_forward">אעביר את זה האלה</string>
+    <string name="pay_for_it">אשלם על זה</string>
+    <string name="amount_ins">סכום בשקלים</string>
+    <string name="summary_requested_jesta">לסיכום, הג\'סטה המבוקשת:</string>
+    <string name="nis_sign">₪</string>
+    <string name="finish">סיום</string>
 
 
 </resources>

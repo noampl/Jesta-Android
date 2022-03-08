@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.fragments.jestas.addition.SummaryFragment">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.jesta.viewmodel.CreateJestaViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_side"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="@string/summary_requested_jesta"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/jesta_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginStart="@dimen/margin_side"
+            android:text="הובלת טלויזיה"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/date_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/jesta_name"
+            app:layout_constraintTop_toBottomOf="@id/jesta_name"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:text="היום ב-15:00"
+            android:textSize="15sp"
+            />
+
+        <ImageView
+            android:id="@+id/src_location_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/date_time"
+            app:layout_constraintStart_toStartOf="@id/date_time"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:background="@drawable/ic_baseline_location_orange_24"
+            />
+
+        <ImageView
+            android:id="@+id/location_ic_divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_baseline_more_vert_24"
+            app:layout_constraintEnd_toEndOf="@+id/src_location_icon"
+            app:layout_constraintStart_toStartOf="@id/src_location_icon"
+            app:layout_constraintTop_toBottomOf="@id/src_location_icon" />
+
+        <ImageView
+            android:id="@+id/dst_location_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/location_ic_divider"
+            app:layout_constraintStart_toStartOf="@id/location_ic_divider"
+            android:background="@drawable/ic_baseline_location_orange_24"
+            />
+
+        <TextView
+            android:id="@+id/src_addr_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/src_location_icon"
+            app:layout_constraintTop_toTopOf="@id/src_location_icon"
+            app:layout_constraintBottom_toBottomOf="@id/src_location_icon"
+            android:text="מוצא: הירקון 14, תל אביב"
+            android:layout_marginStart="2dp"
+            />
+
+        <TextView
+            android:id="@+id/dst_addr_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/dst_location_icon"
+            app:layout_constraintTop_toTopOf="@id/dst_location_icon"
+            app:layout_constraintBottom_toBottomOf="@id/dst_location_icon"
+            android:text="יעד: אלנבי 1, תל אביב"
+            android:layout_marginStart="2dp"
+            />
+
+        <ImageView
+            android:id="@+id/amount_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/date_time"
+            android:background="@drawable/ic_baseline_group_24"
+            android:layout_marginEnd="@dimen/margin_side"
+            />
+
+        <TextView
+            android:id="@+id/amount_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/amount_icon"
+            app:layout_constraintTop_toTopOf="@id/amount_icon"
+            app:layout_constraintBottom_toBottomOf="@id/amount_icon"
+            android:text="3"
+            android:layout_marginEnd="2dp"
+            />
+
+        <TextView
+            android:id="@+id/nis_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:text="@string/nis_sign"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/amount_icon"
+            app:layout_constraintTop_toTopOf="@id/src_location_icon" />
+
+        <TextView
+            android:id="@+id/amount_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/nis_sign"
+            app:layout_constraintBottom_toBottomOf="@id/nis_sign"
+            android:layout_marginEnd="2dp"
+            android:text="50"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/finish"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:text="@string/finish"
+            app:icon="@drawable/ic_baseline_check_24"
+            app:iconGravity="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dst_addr_txt" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_marginStart="2dp"
+            android:onClick="@{()->viewModel.navigateToTab(3)}"
+            app:layout_constraintBottom_toBottomOf="@id/finish"
+            app:layout_constraintStart_toEndOf="@+id/back_arrow"
+            app:layout_constraintTop_toTopOf="@id/finish" />
+
+        <ImageView
+            android:id="@+id/back_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_baseline_east_24"
+            android:backgroundTint="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/finish"
+            app:layout_constraintStart_toStartOf="@id/dst_addr_txt"
+            android:onClick="@{()->viewModel.navigateToTab(3)}"
+            app:layout_constraintTop_toTopOf="@+id/finish" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
