@@ -13,13 +13,13 @@ type User {
     _id: String
     firstName: String!
     lastName: String!
-    birthday: DateTime!
+    birthday: DateTime
     email: String!
     dateEmailVerified: String
     hashedPassword: String!
     datePasswordModified: DateTime
     phone: String
-    address: Address!
+    address: Address
     role: String
     imagePath: String
     created_date: String
@@ -28,13 +28,13 @@ type User {
 input UserCreateInput {
     firstName: String!
     lastName: String!
-    birthday: String!
+    birthday: String
     email: String!
     hashedPassword: String!
     phone: String
-    country: String!
-    city: String!
-    street: String!
+    country: String
+    city: String
+    street: String
     imagePath: Upload
 }
 
@@ -57,11 +57,40 @@ type JWT {
 type Query {
     getAllUsers: [User]
     getUser(_id: String, firstName: String, lastName: String, email: String): User
+    getAllCategories: [Category]
 }
 
 type Mutation {
     signUpUser(userParams: UserCreateInput, file: Upload): JWT
+    signUpAdmin(userParams: UserCreateInput, file: Upload): JWT
     deleteUser(_id: String, email: String): String
     updateUser(_id: String, email: String, updatedUser: UserUpdateInput): String
     connectUser(email: String, password: String): JWT
+    createCategory(name: String): Category
+    updateCategory(nameToChange: String, changedName: String): String
+    deleteCategory(name: String): String
+}
+
+type Favor {
+    _id: String!
+    ownerId: String!
+    categoryId: String!
+    numOfPeopleNeeded: Int!
+    sourceAddress: Address
+    destinationAddress: Address
+    description: String
+    imagesPath: [String]
+    paymentAmount: Float
+    paymentMethod: String
+    dateToPublish: DateTime
+    dateToUnpublished: DateTime
+    dateLockedOut: DateTime
+    dateCreated: DateTime
+    dateLastModified: DateTime
+}
+
+type Category {
+    _id: String!
+    name: String
+    dateLastModified: DateTime
 }

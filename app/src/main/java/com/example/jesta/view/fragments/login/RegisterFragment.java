@@ -96,7 +96,7 @@ public class RegisterFragment extends Fragment {
                 Navigation.findNavController(requireActivity(),R.id.login_register_container).popBackStack());
 
         _binding.profileImageButton.setOnClickListener(v->{
-            Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            Intent pickPhoto = new Intent(Intent.ACTION_PICK);
             pickPhoto.setType("image/*");
             pickPhotoResultLauncher.launch(pickPhoto);
         });
@@ -135,11 +135,15 @@ public class RegisterFragment extends Fragment {
             zeroErrorsMsgs(_binding.email);
             return;
         }
-        // TODO fix this part later
+
         String name = _binding.fullNameEditTxt.getText().toString();
         String[] names = name.split(" ");
-        _loginRegisterViewModel.register(names[0],names[1],"01/01/2000", _binding.emailEditTxt.getText().toString(),
-                _binding.passwordEditTxt.getText().toString(),"0526727960","ISR","TLV","STR", _filePath );
+        String lastName ="";
+        for (int i= 1 ; i < names.length; i++) {
+            lastName += lastName + " " + names[i];
+        }
+        _loginRegisterViewModel.register(names[0], lastName,null, _binding.emailEditTxt.getText().toString(),
+                _binding.passwordEditTxt.getText().toString(),null,null,null,null, _filePath );
     }
 
     /**

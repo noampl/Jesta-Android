@@ -39,7 +39,7 @@ public class MapFragment extends Fragment {
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
         public void onMapReady(GoogleMap googleMap) {
             LatLng sydney = _mapViewModel.getMyLocation().getValue();
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,9));
             _mapViewModel.setGoogleMap(googleMap);
             if (ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

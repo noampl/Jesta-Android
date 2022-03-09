@@ -51,7 +51,7 @@ public class introActivity extends AppCompatActivity {
         if (!Places.isInitialized()) {
             Places.initialize(MyApplication.getAppContext(), getString(R.string.google_maps_key), Locale.forLanguageTag("he"));
         }
-        viewModel.initLogin(MyApplication.getAppContext());
+        viewModel.initLogin();
 
     }
 

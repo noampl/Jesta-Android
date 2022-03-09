@@ -119,6 +119,10 @@ public class GrahpqlRepository {
      * @param password The password
      */
     public void login(String email, String password){
+        if (email == null || password == null){
+            _isLoggedIn.setValue(false);
+            return;
+        }
         // First way to preform the task async
         _executorService.execute(()->{
             ApolloCall<LoginMutation.Data> mutationCall = _apolloClient.mutation(new LoginMutation(email,password));
