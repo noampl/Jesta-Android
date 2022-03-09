@@ -36,6 +36,7 @@ public class SummaryFragment extends Fragment {
     private void init(){
         initBinding();
         initListeners();
+        initObservers();
     }
 
     private void initBinding(){
@@ -46,6 +47,15 @@ public class SummaryFragment extends Fragment {
     private void initListeners(){
         _binding.finish.setOnClickListener(view -> {
             // TODO implement addition of jesta
+        });
+    }
+
+    private void initObservers(){
+        _createJestaViewModel.get_startDate().observe(getViewLifecycleOwner(), date -> {
+            _binding.setSrcDate(date);
+        });
+        _createJestaViewModel.get_endDate().observe(getViewLifecycleOwner(), date -> {
+            _binding.setDstDate(date);
         });
     }
 }

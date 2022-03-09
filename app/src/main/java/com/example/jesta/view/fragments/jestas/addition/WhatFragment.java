@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,11 +58,14 @@ public class WhatFragment extends Fragment {
                 R.array.category_array, android.R.layout.simple_spinner_item);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         _binding.categorySpinner.setAdapter(categoryAdapter);
+        _binding.categorySpinner.setSelection(_createJestaViewModel.get_category().getValue());
 
         ArrayAdapter<CharSequence> peopleAdapter = ArrayAdapter.createFromResource(requireContext(),
                 R.array.people_amount, android.R.layout.simple_spinner_item);
         peopleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         _binding.peopleAmountSpinner.setAdapter(peopleAdapter);
+        _binding.peopleAmountSpinner.setSelection(_createJestaViewModel.get_numOfPeople().getValue());
+
     }
 
     private void initBinding(){
@@ -156,6 +160,18 @@ public class WhatFragment extends Fragment {
             Intent data = result.getData();
             Uri uri = data != null ? data.getData() : null;
             Picasso.with(imageView.getContext()).load(uri).fit().into(imageView);
+            if (imageView == _binding.firstImage){
+                _createJestaViewModel.setImage1(uri);
+            }
+            else if (imageView == _binding.secondImage){
+                _createJestaViewModel.setImage2(uri);
+            }
+            else if (imageView == _binding.thirdImage){
+                _createJestaViewModel.setImage3(uri);
+            }
+            else{
+                Log.e("WhatFragment","get activity result for unknown imageview ");
+            }
         }
     }
 

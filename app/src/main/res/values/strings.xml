@@ -62,6 +62,9 @@
     <string name="summary_requested_jesta">לסיכום, הג\'סטה המבוקשת:</string>
     <string name="nis_sign">₪</string>
     <string name="finish">סיום</string>
+    <string name="dest">יעד:</string>
+    <string name="src">מוצא:</string>
+    <string name="tommorow">מחר</string>
 
 
 </resources>

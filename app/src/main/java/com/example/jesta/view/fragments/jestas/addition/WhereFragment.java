@@ -58,6 +58,9 @@ public class WhereFragment extends Fragment {
         AutocompleteSupportFragment autoCompleteSrcAddr = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autoComplete_fragment_src);
         autoCompleteSrcAddr.setHint(getString(R.string.src_address));
+        if (_createJestaViewModel.get_source().getValue() != null){
+            autoCompleteSrcAddr.setText(_createJestaViewModel.get_source().getValue().getAddress());
+        }
         autoCompleteSrcAddr.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS));
         autoCompleteSrcAddr.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -68,6 +71,7 @@ public class WhereFragment extends Fragment {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 System.out.println("peleg - places selected " + place.getName());
+                _createJestaViewModel.set_source(place);
                 // TODO use the places
             }
         });
@@ -75,6 +79,9 @@ public class WhereFragment extends Fragment {
         AutocompleteSupportFragment autoCompleteDstAddr = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autoComplete_fragment_dst);
         autoCompleteDstAddr.setHint(getString(R.string.dst_address));
+        if (_createJestaViewModel.get_destention().getValue() != null){
+            autoCompleteSrcAddr.setText(_createJestaViewModel.get_destention().getValue().getAddress());
+        }
         autoCompleteDstAddr.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS));
         autoCompleteDstAddr.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -85,6 +92,7 @@ public class WhereFragment extends Fragment {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 System.out.println("peleg - places selected " + place.getName());
+                _createJestaViewModel.set_destention(place);
                 // TODO use the places
             }
         });

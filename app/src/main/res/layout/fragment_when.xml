@@ -34,7 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vertical"
             android:layout_marginEnd="@dimen/margin_side"
-            android:text="@string/starting_day"
+            app:setDate="@{viewModel._startDate}"
+            app:defaultDateTitle="@{@string/starting_day}"
             android:textColor="@color/black"
             app:backgroundTint="@color/gray100"
             app:icon="@drawable/ic_baseline_calendar_month_24"
@@ -66,7 +67,8 @@
             android:layout_height="0dp"
             android:layout_marginEnd="@dimen/margin_side"
             android:layout_marginStart="@dimen/margin_side"
-            android:text="@string/end_date"
+            app:setDate="@{viewModel._endDate}"
+            app:defaultDateTitle="@{@string/end_date}"
             android:textColor="@color/black"
             app:backgroundTint="@color/gray100"
             app:icon="@drawable/ic_baseline_calendar_month_24"
@@ -99,8 +101,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vertical"
             android:buttonTint="#000000"
+            android:checked="@{viewModel._isRepeatedly}"
+            android:onCheckedChanged="@{viewModel::onRepeatChecked}"
             app:layout_constraintStart_toStartOf="@id/start_time"
-
             app:layout_constraintTop_toBottomOf="@id/start_time" />
 
         <TextView

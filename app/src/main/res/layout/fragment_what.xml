@@ -44,6 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/gray100"
+                android:selectedItemPosition="@{viewModel._category}"
                 />
 
         </com.google.android.material.card.MaterialCardView>
@@ -63,6 +64,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
+                android:onTextChanged="@{viewModel::OnDescriptionChange}"
+                android:text="@{viewModel._description}"
                 android:hint="@string/short_description"
                 android:paddingStart="5dp" />
         </com.google.android.material.card.MaterialCardView>
@@ -94,6 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/gray100"
+                android:selectedItemPosition="@{viewModel._numOfPeople}"
                 />
 
         </com.google.android.material.card.MaterialCardView>
