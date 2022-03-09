@@ -7,6 +7,8 @@ import android.security.keystore.KeyGenParameterSpec;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
+import com.example.MyApplication;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Map;
@@ -16,7 +18,7 @@ public class ShardPreferencesHelper {
 
     private static SharedPreferences _sharedPreferences;
 
-    public static void init(Context context) throws GeneralSecurityException, IOException {
+    public static void init() throws GeneralSecurityException, IOException {
         KeyGenParameterSpec keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC;
         String mainKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec);
 
@@ -24,11 +26,10 @@ public class ShardPreferencesHelper {
         _sharedPreferences = EncryptedSharedPreferences.create(
                 sharedPrefsFile,
                 mainKeyAlias,
-                context,
+                MyApplication.getAppContext(),
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         );
-
     }
     // region Write
 
@@ -66,12 +67,29 @@ public class ShardPreferencesHelper {
     // region Private Methods
 
     private static void writeItem(String key, String data){
-            SharedPreferences.Editor editor = _sharedPreferences.edit();
-            editor.putString(key,data);
-            editor.apply();
+        if (_sharedPreferences == null){
+            try {
+                init();
+
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        SharedPreferences.Editor editor = _sharedPreferences.edit();
+        editor.putString(key,data);
+        editor.apply();
     }
 
     private static String readItem(String key){
+        if (_sharedPreferences == null){
+            try {
+                init();
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
+                return Consts.INVALID_STRING;
+            }
+        }
         Map<String, String > map = (Map<String, String>) _sharedPreferences.getAll();
         return map.getOrDefault(key, Consts.INVALID_STRING);
     }

@@ -1,7 +1,10 @@
 package com.example.jesta.viewmodel;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,13 +13,17 @@ import com.apollographql.apollo3.ApolloClient;
 import com.apollographql.apollo3.api.DefaultUpload;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Upload;
+import com.example.MyApplication;
 import com.example.jesta.type.UserCreateInput;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.model.repositories.GrahpqlRepository;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.regex.Pattern;
 
@@ -69,15 +76,14 @@ public class LoginRegisterViewModel extends ViewModel {
 
     /**
      * Try to connect to the remote server with the shared preferences saved information
-     * @param context Apllication context to init the shared preferences
      */
-    public void initLogin(Context context){
+    public void initLogin(){
         try {
-            ShardPreferencesHelper.init(context);
+            ShardPreferencesHelper.init();
             GrahpqlRepository.getInstance().login(ShardPreferencesHelper.readEmail(), ShardPreferencesHelper.readPassword());
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
-
+            isLoggedIn.setValue(false);
         }
 
     }
@@ -119,26 +125,43 @@ public class LoginRegisterViewModel extends ViewModel {
      * @param country
      * @param city
      * @param street
-     * @param filePath
+     * @param fileUri
      */
     public void register(String firstName, String lastName, String birthday , String email,
-                         String password, String phone, String country, String city, String street, Uri filePath){
+                         String password, String phone, String country, String city, String street, Uri fileUri){
         Optional<String> optionalPhone = null;
         Optional<Upload> optionalFile = null;
+        Optional<String> optionalBirthday = null;
+        Optional<String> optionalCountry = null;
+        Optional<String> optionalCity = null;
+        Optional<String> optionalStreet = null;
+
 
         if (phone!= null && Pattern.matches(Consts.PHONE_VALIDATOR,phone)){
             optionalPhone = new Optional.Present<>(phone);
         }
-        if (filePath!= null && !filePath.toString().equals(Consts.INVALID_STRING)){
+        if (birthday != null && !birthday.equals("")){
+         optionalBirthday = new Optional.Present<>(birthday);
+        }
+        if (country != null && !country.equals("")){
+            optionalCountry = new Optional.Present<>(country);
+        }
+        if (city != null && !city.equals("")){
+            optionalCity = new Optional.Present<>(city);
+        }
+        if (street != null && !street.equals("")){
+            optionalStreet = new Optional.Present<>(street);
+        }
+        if (fileUri!= null && !fileUri.toString().equals(Consts.INVALID_STRING)){
             DefaultUpload upload = new DefaultUpload.Builder()
-                    .content((filePath.toString()))
+                    .content(convertImagePathToData(fileUri))
                     .build();
             optionalFile = new Optional.Present<Upload>(upload);
         }
          UserCreateInput userCreateInput = new UserCreateInput(
-                firstName, lastName, birthday, email, password,
+                firstName, lastName, optionalBirthday, email, password,
                  optionalPhone
-                , country, city, street, optionalFile);
+                , optionalCountry, optionalCity, optionalStreet, optionalFile);
 
         GrahpqlRepository.getInstance().register(userCreateInput, optionalFile);
     }
@@ -179,6 +202,25 @@ public class LoginRegisterViewModel extends ViewModel {
         if (email == null)
             return false;
         return Pattern.matches(Consts.EMAIL_VALIDATOR, email);
+    }
+
+    // endregion
+
+    // region Private Methods
+
+    private byte[] convertImagePathToData(Uri uri){
+
+        Bitmap bitmap = null;
+        ByteArrayOutputStream bao;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(MyApplication.getAppContext().getContentResolver(), uri);
+            bao = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bao);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return bao.toByteArray();
     }
 
     // endregion
