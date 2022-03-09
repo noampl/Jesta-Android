@@ -5,10 +5,18 @@
     tools:context=".view.fragments.jestas.addition.SummaryFragment">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="viewModel"
             type="com.example.jesta.viewmodel.CreateJestaViewModel" />
 
+        <variable
+            name="srcDate"
+            type="java.util.Date" />
+
+        <variable
+            name="dstDate"
+            type="java.util.Date" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,7 +57,10 @@
             app:layout_constraintStart_toStartOf="@id/jesta_name"
             app:layout_constraintTop_toBottomOf="@id/jesta_name"
             android:layout_marginTop="@dimen/margin_vertical"
-            android:text="היום ב-15:00"
+            srcDate="@{srcDate}"
+            dstDate="@{dstDate}"
+            srcHour="@{viewModel._startTime}"
+            dstHour="@{viewModel._endTime}"
             android:textSize="15sp"
             />
 
@@ -70,7 +81,10 @@
             android:background="@drawable/ic_baseline_more_vert_24"
             app:layout_constraintEnd_toEndOf="@+id/src_location_icon"
             app:layout_constraintStart_toStartOf="@id/src_location_icon"
-            app:layout_constraintTop_toBottomOf="@id/src_location_icon" />
+            app:layout_constraintTop_toBottomOf="@id/src_location_icon"
+            android:visibility="@{viewModel._destention.toString().length() > 0 ? View.VISIBLE : View.GONE}"
+
+            />
 
         <ImageView
             android:id="@+id/dst_location_icon"
@@ -79,6 +93,7 @@
             app:layout_constraintTop_toBottomOf="@id/location_ic_divider"
             app:layout_constraintStart_toStartOf="@id/location_ic_divider"
             android:background="@drawable/ic_baseline_location_orange_24"
+            android:visibility="@{viewModel._destention.toString().length() > 0 ? View.VISIBLE : View.GONE}"
             />
 
         <TextView
@@ -88,7 +103,8 @@
             app:layout_constraintStart_toEndOf="@id/src_location_icon"
             app:layout_constraintTop_toTopOf="@id/src_location_icon"
             app:layout_constraintBottom_toBottomOf="@id/src_location_icon"
-            android:text="מוצא: הירקון 14, תל אביב"
+            setAddress="@{viewModel._source}"
+            addressPrefix="@{@string/src}"
             android:layout_marginStart="2dp"
             />
 
@@ -99,7 +115,8 @@
             app:layout_constraintStart_toEndOf="@id/dst_location_icon"
             app:layout_constraintTop_toTopOf="@id/dst_location_icon"
             app:layout_constraintBottom_toBottomOf="@id/dst_location_icon"
-            android:text="יעד: אלנבי 1, תל אביב"
+            setAddress="@{viewModel._destention}"
+            addressPrefix="@{@string/dest}"
             android:layout_marginStart="2dp"
             />
 
@@ -111,6 +128,7 @@
             app:layout_constraintTop_toTopOf="@id/date_time"
             android:background="@drawable/ic_baseline_group_24"
             android:layout_marginEnd="@dimen/margin_side"
+            android:visibility="@{viewModel._numOfPeople > 0 ? View.VISIBLE : View.INVISIBLE}"
             />
 
         <TextView
@@ -120,7 +138,8 @@
             app:layout_constraintEnd_toStartOf="@id/amount_icon"
             app:layout_constraintTop_toTopOf="@id/amount_icon"
             app:layout_constraintBottom_toBottomOf="@id/amount_icon"
-            android:text="3"
+            android:text="@{String.valueOf(viewModel._numOfPeople)}"
+            android:visibility="@{viewModel._numOfPeople > 0 ? View.VISIBLE : View.INVISIBLE}"
             android:layout_marginEnd="2dp"
             />
 
@@ -132,6 +151,7 @@
             android:text="@string/nis_sign"
             android:textColor="@color/black"
             android:textSize="18sp"
+            android:visibility="@{viewModel._amount > 0 ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/amount_icon"
             app:layout_constraintTop_toTopOf="@id/src_location_icon" />
@@ -143,7 +163,9 @@
             app:layout_constraintEnd_toStartOf="@id/nis_sign"
             app:layout_constraintBottom_toBottomOf="@id/nis_sign"
             android:layout_marginEnd="2dp"
-            android:text="50"
+            android:text="@{String.valueOf(viewModel._amount)}"
+            android:visibility="@{viewModel._amount > 0 ? View.VISIBLE : View.INVISIBLE}"
+
             />
 
         <com.google.android.material.button.MaterialButton
@@ -177,9 +199,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_east_24"
             android:backgroundTint="@color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/finish"
-            app:layout_constraintStart_toStartOf="@id/dst_addr_txt"
             android:onClick="@{()->viewModel.navigateToTab(3)}"
+            app:layout_constraintBottom_toBottomOf="@+id/finish"
+            app:layout_constraintStart_toStartOf="@+id/dst_location_icon"
             app:layout_constraintTop_toTopOf="@+id/finish" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

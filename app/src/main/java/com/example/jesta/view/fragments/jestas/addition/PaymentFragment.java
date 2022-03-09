@@ -51,6 +51,7 @@ public class PaymentFragment extends Fragment {
         _binding.moveItForwardRadio.setOnClickListener(view -> {
             _binding.amountCard.setVisibility(View.GONE);
             _binding.amountEditTxt.setText("");
+            _createJestaViewModel.set_amount(0);
         });
     }
 }

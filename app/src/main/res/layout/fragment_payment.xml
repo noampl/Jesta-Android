@@ -5,6 +5,8 @@
     tools:context=".view.fragments.jestas.addition.PaymentFragment">
 
     <data>
+        <import type="com.example.jesta.common.enums.PaymentMethod"/>
+        <import type="android.view.View"/>
         <variable
             name="viewModel"
             type="com.example.jesta.viewmodel.CreateJestaViewModel" />
@@ -34,7 +36,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/title"
             app:layout_constraintTop_toBottomOf="@id/title"
-            android:checkedButton="@id/move_it_forward_radio"
+            android:checkedButton="@{viewModel._paymentMethod == PaymentMethod.MOVE_IT_FORWARD ? @id/move_it_forward_radio : @id/pay_for_it_radio}"
             >
             <RadioButton
                 android:id="@+id/move_it_forward_radio"
@@ -65,17 +67,20 @@
             app:cardBackgroundColor="@color/gray100"
             android:textColor="@color/black"
             app:iconTint="@color/black"
-            android:visibility="gone"
+            android:visibility="@{viewModel._paymentMethod == PaymentMethod.PAY_FOT_IR ? View.VISIBLE : View.GONE}"
             >
 
         <EditText
             android:id="@+id/amount_edit_txt"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:hint="@string/amount_ins"
+            android:text="@{viewModel._amount > 0 ? String.valueOf(viewModel._amount) : null}"
+            android:onTextChanged="@{viewModel::onAmountChange}"
             android:layout_marginStart="3dp"
             android:inputType="number"
             android:background="@null"
+            android:layout_gravity="bottom"
             />
 
 

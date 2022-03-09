@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentWhenBindingImpl;
@@ -45,6 +46,13 @@ public class WhenFragment extends Fragment {
 
     private void initBinding(){
         _binding.setViewModel(_createJestaViewModel);
+        _binding.setLifecycleOwner(getViewLifecycleOwner());
+        _binding.repeatCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+            }
+        });
     }
 
     private void initListeners(){
@@ -53,7 +61,7 @@ public class WhenFragment extends Fragment {
                 .build();
                 datePicker.addOnPositiveButtonClickListener(selection -> {
                     _binding.startDay.setText(_createJestaViewModel.convertDateSelection(selection));
-                    _createJestaViewModel.setStartDate(selection);
+                    _createJestaViewModel.set_startDate(selection);
                 });
                 datePicker.show(getParentFragmentManager(),getString(R.string.starting_day));
         });
@@ -63,7 +71,7 @@ public class WhenFragment extends Fragment {
                 .build();
             datePicker.addOnPositiveButtonClickListener(selection -> {
                 _binding.endDay.setText(_createJestaViewModel.convertDateSelection(selection));
-                _createJestaViewModel.setEndDate(selection);
+                _createJestaViewModel.set_endDate(selection);
             });
             datePicker.show(getParentFragmentManager(),getString(R.string.starting_day));
         });
@@ -77,6 +85,7 @@ public class WhenFragment extends Fragment {
                                                               .build();
             picker.addOnPositiveButtonClickListener(view -> {
                _binding.startTime.setText(_createJestaViewModel.convertTimeToText(picker.getHour(), picker.getMinute()));
+//               _createJestaViewModel.set_startTime(picker); TODO
             });
             picker.show(getParentFragmentManager(), getString(R.string.start_time));
         });
@@ -89,6 +98,8 @@ public class WhenFragment extends Fragment {
                     .build();
             picker.addOnPositiveButtonClickListener(view -> {
                 _binding.endTime.setText(_createJestaViewModel.convertTimeToText(picker.getHour(), picker.getMinute()));
+                //_createJestaViewModel.set_endTime(picker); TODO
+
             });
             picker.show(getParentFragmentManager(), getString(R.string.end_time));
         });
