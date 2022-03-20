@@ -61,7 +61,7 @@ public class WhereFragment extends Fragment {
         if (_createJestaViewModel.get_source().getValue() != null){
             autoCompleteSrcAddr.setText(_createJestaViewModel.get_source().getValue().getAddress());
         }
-        autoCompleteSrcAddr.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS));
+        autoCompleteSrcAddr.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG));
         autoCompleteSrcAddr.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onError(@NonNull Status status) {
@@ -82,7 +82,7 @@ public class WhereFragment extends Fragment {
         if (_createJestaViewModel.get_destention().getValue() != null){
             autoCompleteSrcAddr.setText(_createJestaViewModel.get_destention().getValue().getAddress());
         }
-        autoCompleteDstAddr.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS));
+        autoCompleteDstAddr.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG));
         autoCompleteDstAddr.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onError(@NonNull Status status) {

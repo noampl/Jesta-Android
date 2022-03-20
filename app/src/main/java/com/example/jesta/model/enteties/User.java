@@ -1,6 +1,7 @@
 package com.example.jesta.model.enteties;
 
-import android.location.Address;
+
+import com.example.jesta.GetUserQuery;
 
 public class User {
 
@@ -9,18 +10,18 @@ public class User {
     private String _id;
     private String _firstName;
     private String _lastName;
-    private long _birthday;
+    private String _birthday;
     private String _email;
     private String _phone;
     private String _role;
     private String _imagePath;
-    private Address _address;
+    private GetUserQuery.Address _address;
 
     // endregion
 
     // region C'tor
 
-    public User(String _id, String _firstName, String _lastName, long _birthday, String _email, String _phone, String _role, String _imagePath, Address _address) {
+    public User(String _id, String _firstName, String _lastName, String _birthday, String _email, String _phone, String _role, String _imagePath, GetUserQuery.Address _address) {
         this._id = _id;
         this._firstName = _firstName;
         this._lastName = _lastName;
@@ -60,11 +61,11 @@ public class User {
         this._lastName = _lastName;
     }
 
-    public long get_birthday() {
+    public String get_birthday() {
         return _birthday;
     }
 
-    public void set_birthday(long _birthday) {
+    public void set_birthday(String _birthday) {
         this._birthday = _birthday;
     }
 
@@ -100,11 +101,11 @@ public class User {
         this._imagePath = _imagePath;
     }
 
-    public Address get_address() {
+    public GetUserQuery.Address get_address() {
         return _address;
     }
 
-    public void set_address(Address _address) {
+    public void set_address(GetUserQuery.Address _address) {
         this._address = _address;
     }
 

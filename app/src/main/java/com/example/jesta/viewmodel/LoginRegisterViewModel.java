@@ -114,28 +114,17 @@ public class LoginRegisterViewModel extends ViewModel {
         return res;
     }
 
-    /**
-     * Register new user
-     * @param firstName
-     * @param lastName
-     * @param birthday
-     * @param email
-     * @param password
-     * @param phone
-     * @param country
-     * @param city
-     * @param street
-     * @param fileUri
-     */
+
     public void register(String firstName, String lastName, String birthday , String email,
-                         String password, String phone, String country, String city, String street, Uri fileUri){
+                         String password, String phone, String country, String city, String street,int houseNumber, Uri fileUri, double lng, double lat){
         Optional<String> optionalPhone = null;
         Optional<Upload> optionalFile = null;
         Optional<String> optionalBirthday = null;
         Optional<String> optionalCountry = null;
         Optional<String> optionalCity = null;
         Optional<String> optionalStreet = null;
-
+        Optional<Integer> optionalHouseNumber = null;
+        Optional<Double> optionalLat = null, optionalLng = null;
 
         if (phone!= null && Pattern.matches(Consts.PHONE_VALIDATOR,phone)){
             optionalPhone = new Optional.Present<>(phone);
@@ -152,6 +141,15 @@ public class LoginRegisterViewModel extends ViewModel {
         if (street != null && !street.equals("")){
             optionalStreet = new Optional.Present<>(street);
         }
+        if (houseNumber > 0){
+            optionalHouseNumber = new Optional.Present<>(houseNumber);
+        }
+        if (lng > 0 ){
+            optionalLng = new Optional.Present<>(lng);
+        }
+        if (lat > 0) {
+            optionalLat = new Optional.Present<>(lat);
+        }
         if (fileUri!= null && !fileUri.toString().equals(Consts.INVALID_STRING)){
             DefaultUpload upload = new DefaultUpload.Builder()
                     .content(convertImagePathToData(fileUri))
@@ -161,7 +159,8 @@ public class LoginRegisterViewModel extends ViewModel {
          UserCreateInput userCreateInput = new UserCreateInput(
                 firstName, lastName, optionalBirthday, email, password,
                  optionalPhone
-                , optionalCountry, optionalCity, optionalStreet, optionalFile);
+                , optionalCountry, optionalCity, optionalStreet, optionalFile, optionalHouseNumber,
+                 optionalLng, optionalLat);
 
         GrahpqlRepository.getInstance().register(userCreateInput, optionalFile);
     }

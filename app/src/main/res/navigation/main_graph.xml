@@ -81,4 +81,39 @@
         android:name="com.example.jesta.view.fragments.jestas.addition.AddJestaFragment"
         android:label="@string/ask_for_jesta"
         tools:layout="@layout/fragment_add_jesta" />
+    <fragment
+        android:id="@+id/nav_profile_settings"
+        android:name="com.example.jesta.view.fragments.utilities.ProfileSettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_profile_settings" >
+        <action
+            android:id="@+id/action_nav_profile_settings_to_oneInputDialogFragment"
+            app:destination="@id/oneInputDialogFragment" />
+        <action
+            android:id="@+id/action_nav_profile_settings_to_changePasswordDialogFragment"
+            app:destination="@id/changePasswordDialogFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/oneInputDialogFragment"
+        android:name="com.example.jesta.view.dialogs.OneInputDialogFragment"
+        android:label="fragment_one_input_dialog"
+        tools:layout="@layout/fragment_one_input_dialog" >
+        <argument
+            android:name="text"
+            app:argType="string" />
+        <argument
+            android:name="hint"
+            app:argType="string" />
+        <argument
+            android:name="filedType"
+            app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </dialog>
+    <dialog
+        android:id="@+id/changePasswordDialogFragment"
+        android:name="com.example.jesta.view.dialogs.ChangePasswordDialogFragment"
+        android:label="fragment_change_password_dialog"
+        tools:layout="@layout/fragment_change_password_dialog" />
 </navigation>

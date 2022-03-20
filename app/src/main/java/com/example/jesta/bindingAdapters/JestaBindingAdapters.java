@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import androidx.databinding.BindingAdapter;
 
+import com.example.jesta.GetUserQuery;
 import com.example.jesta.R;
 import com.example.jesta.common.Consts;
+import com.example.jesta.model.enteties.User;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -37,6 +39,57 @@ public class JestaBindingAdapters {
         }
         else {
             view.setText(view.getContext().getText(resId));
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    @BindingAdapter({"UserFullName"})
+    public static void setUserName(TextView textView, User user){
+        if (user != null && user.get_firstName() != null && user.get_lastName() != null){
+            textView.setText(user.get_firstName() + " " + user.get_lastName());
+        }
+        else{
+            textView.setText(R.string.full_name);
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    @BindingAdapter({"setBirthday"})
+    public static void setBirthday(TextView textView, String birthday){
+        if (birthday != null && !birthday.equals("")){
+            if (birthday.contains("T")){
+                String[] preBirthday =  birthday.split("T");
+                String[] unOrderDate = preBirthday[0].split("-");
+                textView.setText(unOrderDate[1] + "/" +unOrderDate[2] +"/"+unOrderDate[0].substring(2,4)); // TODO make sure this is correct
+            }
+            else{
+                textView.setText(birthday);
+            }
+        }
+        else{
+            textView.setText(R.string.birthday);
+        }
+    }
+
+    @BindingAdapter({"setPhone"})
+    public static void setPhone(TextView textView, String phone){
+        if (phone != null && !phone.equals("") ){
+            textView.setText(phone);
+        }
+        else{
+            textView.setText(R.string.phone);
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    @BindingAdapter("userAddress")
+    public static void setUserAddressTitle(TextView textView, GetUserQuery.Address address){
+        if (address != null){
+            String title = address.street + " " + address.city + ", " + address.country;
+            textView.setText(title);
+        }
+        else{
+            textView.setText(R.string.enter_address);
         }
     }
 
@@ -80,6 +133,8 @@ public class JestaBindingAdapters {
 
     }
 
+    // region Private methods
+
     private static String dateConverter(View view, Date date){
         String res = "";
         if (date.getTime() == MaterialDatePicker.todayInUtcMilliseconds()){
@@ -100,4 +155,5 @@ public class JestaBindingAdapters {
         return sdf.format(new Date(hour));
     }
 
+    // endregion
 }

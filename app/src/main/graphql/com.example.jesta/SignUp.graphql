@@ -1,5 +1,6 @@
 mutation SignUp($userParams: UserCreateInput!, $file: Upload) {
     signUpUser(userParams: $userParams, file: $file) {
         token
+        userId
     }
 }

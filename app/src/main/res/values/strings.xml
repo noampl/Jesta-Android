@@ -65,6 +65,20 @@
     <string name="dest">יעד:</string>
     <string name="src">מוצא:</string>
     <string name="tommorow">מחר</string>
+    <string name="settings">הגדרות</string>
+    <string name="phone">טלפון</string>
+    <string name="address">כתובת</string>
+    <string name="change_password">שינוי סיסמה</string>
+    <string name="delete_account">מחיקת חשבון</string>
+    <string name="birthday">תאריך לידה</string>
+    <string name="change_image">שינוי תמונה</string>
+    <string name="enter_phone">הכנס מספר טלפון</string>
+    <string name="enter_address">הכנס כתובת</string>
+    <string name="cancel">ביטול</string>
+    <string name="submit">אישור</string>
+    <string name="are_u_sure_delete_user">האם אתה בתוך שברצונך למחוק את המשתמש?</string>
+    <string name="old_password">סיסמה ישנה</string>
+    <string name="new_password">סיסמה חדשה</string>
 
 
 </resources>
