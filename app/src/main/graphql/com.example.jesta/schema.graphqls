@@ -3,10 +3,16 @@ scalar DateTime
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
+type Coordinates {
+    coordinates: [Float]
+}
+
 type Address {
     country: String
     city: String
     street: String
+    houseNumber: Int
+    location: Coordinates
 }
 
 type User {
@@ -36,6 +42,9 @@ input UserCreateInput {
     city: String
     street: String
     imagePath: Upload
+    houseNumber: Int
+    longitude: Float
+    altitude: Float
 }
 
 input UserUpdateInput {
@@ -48,16 +57,25 @@ input UserUpdateInput {
     country: String
     city: String
     street: String
+    houseNumber: Int
+    longitude: Float
+    altitude: Float
 }
 
 type JWT {
     token: String
+    userId: String
 }
 
 type Query {
     getAllUsers: [User]
+    getAllAdmins: [User]
     getUser(_id: String, firstName: String, lastName: String, email: String): User
+    getAllFavors: [Favor]
+    getFavorsInRadios(center: [Float], radius: Float): [Favor]
     getAllCategories: [Category]
+    getAllPerforms: [Perform]
+    getPerformsInRadios(center: [Float], radius: Float): [Perform]
 }
 
 type Mutation {
@@ -65,16 +83,34 @@ type Mutation {
     signUpAdmin(userParams: UserCreateInput, file: Upload): JWT
     deleteUser(_id: String, email: String): String
     updateUser(_id: String, email: String, updatedUser: UserUpdateInput): String
-    connectUser(email: String, password: String): JWT
+    connectUser(email: String!, password: String!): JWT
+    createFavor(favor: FavorInput, image: Upload): Favor
+    deleteFavor(favorId: String): String
+    updateFavor(favorId: String, updatedFavor: UpdateFavorInput): String
     createCategory(name: String): Category
     updateCategory(nameToChange: String, changedName: String): String
     deleteCategory(name: String): String
+    createPerform(perform: PerformInput): Perform
+    deletePerform(performId: String): String
+    updatePerform(performId: String, updatedPerform: UpdatePerformInput): String
+}
+
+input CoordinatesInput {
+    coordinates: [Float]
+}
+
+input AddressInput {
+    country: String
+    city: String
+    street: String
+    houseNumber: Int
+    location: CoordinatesInput
 }
 
 type Favor {
     _id: String!
     ownerId: String!
-    categoryId: String!
+    categoryId: [String!]!
     numOfPeopleNeeded: Int!
     sourceAddress: Address
     destinationAddress: Address
@@ -89,8 +125,98 @@ type Favor {
     dateLastModified: DateTime
 }
 
+enum PaymentType {
+    PAYPAL
+    FREE
+    CASH
+}
+
+input FavorInput {
+    ownerId: String!
+    categoryId: [String!]!
+    numOfPeopleNeeded: Int
+    sourceAddress: AddressInput!
+    destinationAddress: AddressInput
+    description: String!
+    paymentAmount: Float
+    paymentMethod: PaymentType!
+    dateToPublish: DateTime
+    dateToUnpublished: DateTime
+    dateLockedOut: DateTime
+}
+
+input UpdateFavorInput {
+    categoryId: [String!]
+    numOfPeopleNeeded: Int
+    sourceAddress: AddressInput
+    destinationAddress: AddressInput
+    description: String
+    paymentAmount: Float
+    paymentMethod: PaymentType
+    dateToPublish: DateTime
+    dateToUnpublished: DateTime
+    dateLockedOut: DateTime
+}
+
 type Category {
     _id: String!
     name: String
     dateLastModified: DateTime
+}
+
+type ActivityDays {
+    sunday: Boolean
+    monday: Boolean
+    tuesday: Boolean
+    wednesday: Boolean
+    thursday: Boolean
+    friday: Boolean
+    saturday: Boolean
+}
+
+input InputActivityDays {
+    sunday: Boolean
+    monday: Boolean
+    tuesday: Boolean
+    wednesday: Boolean
+    thursday: Boolean
+    friday: Boolean
+    saturday: Boolean
+}
+
+type Perform {
+    _id: String!
+    performerId: String!
+    categoryId: [String!]!
+    addressPreference: Address
+    minimumPaymentAmount: Float
+    activityDays: ActivityDays
+    activityHoursStart: DateTime
+    address: Address
+    dateCreated: DateTime
+    dateLastModified: DateTime
+    preferredPaymentMethod: PaymentType
+}
+
+input PerformInput {
+    performerId: String!
+    categoryId: [String!]!
+    addressPreference: AddressInput
+    minimumPaymentAmount: Float
+    activityDays: InputActivityDays
+    activityHoursStart: DateTime
+    address: AddressInput
+    dateCreated: DateTime
+    dateLastModified: DateTime
+    preferredPaymentMethod: PaymentType
+}
+
+input UpdatePerformInput {
+    categoryId: [String]
+    addressPreference: AddressInput
+    minimumPaymentAmount: Float
+    activityDays: InputActivityDays
+    activityHoursStart: DateTime
+    address: AddressInput
+    preferredPaymentMethod: PaymentType
 }

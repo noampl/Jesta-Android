@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.apollographql.apollo3.ApolloCall;
 import com.apollographql.apollo3.ApolloClient;
+import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.FileUpload;
 import com.apollographql.apollo3.api.Optional;
@@ -16,12 +17,16 @@ import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver;
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator;
 import com.apollographql.apollo3.rx3.Rx3Apollo;
+import com.example.jesta.GetUserQuery;
 import com.example.jesta.LoginMutation;
 import com.example.jesta.SignUpMutation;
+import com.example.jesta.model.enteties.User;
+import com.example.jesta.type.DateTime;
 import com.example.jesta.type.UserCreateInput;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,17 +43,16 @@ public class GrahpqlRepository {
     /**
      * Peleg local Server Address, need to change the ip for each user
      */
-    private final String SERVER_URL="http://10.100.102.10:4111/graphql";
+    private final String SERVER_URL="http://192.168.155.138:4111/graphql";
 
     // endregion
 
     // region Members
 
-    private final ApolloClient _apolloClient;
+    private ApolloClient _apolloClient;
     private final ExecutorService _executorService;
     private final MutableLiveData<Boolean> _isLoggedIn;
     private final MutableLiveData<String> _serverError;
-    private String _token;
 
     // endregion
 
@@ -89,7 +93,6 @@ public class GrahpqlRepository {
         _executorService = Executors.newFixedThreadPool(4);
         _isLoggedIn = new MutableLiveData<>();
         _serverError = new MutableLiveData<>();
-        _token = Consts.INVALID_STRING;
     }
 
     // endregion
@@ -134,8 +137,11 @@ public class GrahpqlRepository {
                  ShardPreferencesHelper.writeToken(response.data.connectUser.token);
                  ShardPreferencesHelper.writeEmail(email);
                  ShardPreferencesHelper.writePassword(password);
-                 _token = response.data.connectUser.token;
+                 ShardPreferencesHelper.writeId(response.data.connectUser.userId);
+
                  _isLoggedIn.postValue(true);
+                 _apolloClient = _apolloClient.newBuilder().addHttpHeader("Authorization", response.data.connectUser.token).build(); // Check if this is working
+                 getMyUserInformation(email);
              }
              else {
                  _isLoggedIn.postValue(false);
@@ -165,8 +171,9 @@ public class GrahpqlRepository {
                 // The server return answer, check if this a good answer
                 if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null){
                     ShardPreferencesHelper.writeToken(dataApolloResponse.data.signUpUser.token);
-                    _token = dataApolloResponse.data.signUpUser.token;
                     _isLoggedIn.postValue(true);
+                    _apolloClient.newBuilder().addHttpHeader("Authorization", dataApolloResponse.data.signUpUser.token).build(); // Check if this is working
+                    getMyUserInformation(userCreateInput.email);
                 }
                 else{
                     _isLoggedIn.postValue(false);
@@ -178,6 +185,41 @@ public class GrahpqlRepository {
             public void onError(@NonNull Throwable e) {
                 System.out.println("peleg - Error");
                 _serverError.postValue(e.getMessage());
+            }
+        });
+    }
+
+    public void getMyUserInformation(String email){
+        ApolloCall<GetUserQuery.Data> getUser = _apolloClient.query(new GetUserQuery(new Optional.Present<>(email)));
+        Single<ApolloResponse<GetUserQuery.Data>> apolloResponseSingle = Rx3Apollo.single(getUser);
+        apolloResponseSingle.subscribe(new SingleObserver<ApolloResponse<GetUserQuery.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<GetUserQuery.Data> dataApolloResponse) {
+                if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null){
+                    UsersRepository.getInstance().set_myUser(new User(
+                            dataApolloResponse.data.getUser._id,
+                            dataApolloResponse.data.getUser.firstName,
+                            dataApolloResponse.data.getUser.lastName,
+                            dataApolloResponse.data.getUser.birthday.toString(),
+                            dataApolloResponse.data.getUser.email,
+                            dataApolloResponse.data.getUser.phone,
+                            dataApolloResponse.data.getUser.role,
+                            dataApolloResponse.data.getUser.imagePath,
+                            dataApolloResponse.data.getUser.address));
+                }
+                else {
+                    Log.e("getUser", dataApolloResponse.errors.get(0).getMessage());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("getuser", e.getMessage());
             }
         });
     }

@@ -143,7 +143,8 @@ public class RegisterFragment extends Fragment {
             lastName += lastName + " " + names[i];
         }
         _loginRegisterViewModel.register(names[0], lastName,null, _binding.emailEditTxt.getText().toString(),
-                _binding.passwordEditTxt.getText().toString(),null,null,null,null, _filePath );
+                _binding.passwordEditTxt.getText().toString(),null,null,null,null, Consts.INVALID_INTEGER ,
+                _filePath, Consts.INVALID_INTEGER, Consts.INVALID_INTEGER );
     }
 
     /**

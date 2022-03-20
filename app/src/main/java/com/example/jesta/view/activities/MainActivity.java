@@ -8,6 +8,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     // region Listener
 
     private final Toolbar.OnMenuItemClickListener menuItemClickListener = new Toolbar.OnMenuItemClickListener() {
+        @SuppressLint("NonConstantResourceId")
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()){
@@ -95,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
                     _navController.navigate(R.id.nav_podium);
                     return true;
 
-                case R.id.profile:
-                    System.out.println("peleg - profile pressed");
+                case R.id.nav_profile_settings:
+                    _navController.navigate(R.id.nav_profile_settings);
                     return true;
                 default:
                     System.out.println("peleg - item pressed " + item.getItemId());

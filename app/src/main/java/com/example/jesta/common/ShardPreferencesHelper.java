@@ -44,6 +44,9 @@ public class ShardPreferencesHelper {
     public static void writePassword(String password){
         writeItem(Consts.PASSWORD,password);
     }
+    public static void writeId(String Id){
+        writeItem(Consts.ID, Id);
+    }
 
     // endregion
 

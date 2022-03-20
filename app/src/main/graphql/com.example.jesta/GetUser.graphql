@@ -1,0 +1,17 @@
+query GetUser($email: String) {
+    getUser(email: $email) {
+        _id
+        firstName
+        lastName
+        birthday
+        email
+        phone
+        role
+        address {
+            country
+            city
+            street
+        }
+        imagePath
+    }
+}

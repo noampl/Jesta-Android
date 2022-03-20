@@ -4,6 +4,7 @@ public class Consts {
 
     public static final String TOKEN = "Token";
     public static final String EMAIL = "Email";
+    public static final String ID = "Id";
     public static final String PASSWORD = "Password";
     public static final String INVALID_STRING = "None";
     public static final String TOKEN_PREFIX ="Bearer";
@@ -22,6 +23,7 @@ public class Consts {
     public static final int CLOSE_ZOOM = 15;
     public static final int CITY_ZOOM = 10;
     public static final int COUNTRY_ZOOM = 7;
+    public static final int INVALID_INTEGER = -1;
 
     // endregion
 
