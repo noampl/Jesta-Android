@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.MyApplication;
+import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentMapBinding;
 import com.example.jesta.model.enteties.Jesta;
@@ -90,23 +92,30 @@ public class MapFragment extends Fragment {
     // endregion
 
     private void init(){
+        _mapViewModel.getRemoteJestas();
         initObservers();
         initListeners();
     }
 
     private void initObservers(){
-        JestaAdapter adapter = new JestaAdapter();
+        JestaAdapter adapter = new JestaAdapter(getViewLifecycleOwner(), _mapViewModel);
         _mapViewModel.getMyLocation().observe(getViewLifecycleOwner(), (ltlg)->{
             if (_mapViewModel.getGoogleMap() != null) {
                 _mapViewModel.moveCamera(ltlg,10);
             }
         });
-        _mapViewModel.get_jestas().observe(getViewLifecycleOwner(), new Observer<List<Jesta>>() {
+        _mapViewModel.get_jestas().observe(getViewLifecycleOwner(), new Observer<List<GetJestasInRadiusQuery.GetFavorsInRadio>>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onChanged(List<Jesta> jestas) {
+            public void onChanged(List<GetJestasInRadiusQuery.GetFavorsInRadio> jestas) {
                 adapter.submitList(jestas);
                 adapter.notifyDataSetChanged();
-                System.out.println("peleg - jestas size " + jestas.size());
+                if (_mapViewModel.getGoogleMap() != null){
+                    _mapViewModel.getGoogleMap().clear();
+                    jestas.forEach(j->_mapViewModel.getGoogleMap().addMarker(
+                            new MarkerOptions().position(new LatLng(j.sourceAddress.location.coordinates.get(0),
+                                    j.sourceAddress.location.coordinates.get(1)))));
+                }
             }
         });
         _binding.jestaLst.setAdapter(adapter);

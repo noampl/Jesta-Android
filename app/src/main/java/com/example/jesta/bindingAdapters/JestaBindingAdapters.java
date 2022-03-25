@@ -13,7 +13,9 @@ import androidx.databinding.BindingAdapter;
 import com.example.jesta.GetUserQuery;
 import com.example.jesta.R;
 import com.example.jesta.common.Consts;
+import com.example.jesta.common.Utilities;
 import com.example.jesta.model.enteties.User;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -21,6 +23,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class JestaBindingAdapters {
 
@@ -111,7 +114,7 @@ public class JestaBindingAdapters {
         }
     }
 
-    @BindingAdapter({"srcHour","srcDate", "dstHour", "dstDate"})
+    @BindingAdapter(value = {"srcHour","srcDate", "dstHour", "dstDate"}, requireAll = false)
     public static void setHoursTitle(TextView textView, Long srcHour, Date srcDate, Long dstHour, Date dstDate) {
         String srcDateStr, srcHourStr="", dstHourSr="", dstDateStr="";
         if (srcDate == null){
@@ -129,7 +132,30 @@ public class JestaBindingAdapters {
        }
        String res = srcDateStr + " " + srcHourStr + " - " + dstDateStr + " " + dstHourSr;
         textView.setText(res);
+    }
 
+    @BindingAdapter({"sourceDate", "destDate"})
+    public static void setTimeTitle(TextView textView, String src, String dest){
+//        String[] srcDate = src.split("T");
+//        String[] destDate = dest.split("T");
+        textView.setText(src + " - " + dest);
+
+    }
+
+    @BindingAdapter({"jestaLocation","myLocation"})
+    public static void calacDistance(TextView textView, List<Double> jesstaLocation, LatLng myLocation){
+        double distance = Utilities.calcCoordinateDistance(jesstaLocation, myLocation);
+        String title = "";
+        if (distance >= 1000){
+            distance = Math.floor(distance/1000);
+            title = "" + (int)distance + " " + textView.getContext().getText(R.string.km);
+        }
+        else{
+            distance = Math.floor(distance);
+            title = "" + (int)distance + " " + textView.getContext().getText(R.string.meter);
+
+        }
+        textView.setText(title);
     }
 
     // region Private methods

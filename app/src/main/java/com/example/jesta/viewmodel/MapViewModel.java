@@ -3,8 +3,10 @@ package com.example.jesta.viewmodel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.jesta.generated.callback.OnClickListener;
-import com.example.jesta.model.enteties.Jesta;
+import com.apollographql.apollo3.api.Optional;
+import com.example.jesta.GetJestasInRadiusQuery;
+import com.example.jesta.common.Consts;
+import com.example.jesta.model.repositories.GrahpqlRepository;
 import com.example.jesta.model.repositories.JestaRepository;
 import com.example.jesta.model.repositories.MapRepository;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -12,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapViewModel extends ViewModel {
@@ -20,7 +23,8 @@ public class MapViewModel extends ViewModel {
 
     private GoogleMap _googleMap;
     private MutableLiveData<LatLng> _myLocation;
-    private MutableLiveData<List<Jesta>> _jestas;
+    private MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> _jestas;
+    private Double radiusInKm = 100D;
 
     // endregion
 
@@ -52,11 +56,11 @@ public class MapViewModel extends ViewModel {
         this._myLocation.setValue(_myLocation);
     }
 
-    public MutableLiveData<List<Jesta>> get_jestas() {
+    public MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> get_jestas() {
         return _jestas;
     }
 
-    public void set_jestas(List<Jesta> _jestas) {
+    public void set_jestas(List<GetJestasInRadiusQuery.GetFavorsInRadio> _jestas) {
         this._jestas.setValue(_jestas);
     }
 
@@ -93,6 +97,16 @@ public class MapViewModel extends ViewModel {
         _googleMap.addMarker(new MarkerOptions().position(position).title(title));
     }
 
+    public void getRemoteJestas(){
+        List<Double> coordinates = new ArrayList<>();
+        coordinates.add(_myLocation.getValue().latitude);
+        coordinates.add(_myLocation.getValue().longitude);
+        GrahpqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates),new Optional.Present<Double>(radiusInKm));
+    }
+
+    public void markerClicked(List<Double> position, String jestaId){
+        moveCamera(new LatLng(position.get(0), position.get(1)), Consts.CLOSE_ZOOM);
+    }
     // endregion
 
 }

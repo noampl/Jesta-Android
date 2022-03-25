@@ -5,30 +5,44 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.JestaItemBinding;
-import com.example.jesta.model.enteties.Jesta;
+import com.example.jesta.viewmodel.MapViewModel;
+import com.google.android.gms.maps.model.LatLng;
 
-public class JestaAdapter extends ListAdapter<Jesta, JestaAdapter.JestaViewHolder> {
+import java.util.Date;
+
+public class JestaAdapter extends ListAdapter<GetJestasInRadiusQuery.GetFavorsInRadio, JestaAdapter.JestaViewHolder> {
+
+    // region Members
+
+    private final LifecycleOwner _lifecycleOwner;
+    private final MapViewModel _mapViewModel;
+    // endregion
 
     // region C'tor
 
-    public JestaAdapter() {
-        super(new DiffUtil.ItemCallback<Jesta>() {
+    public JestaAdapter(LifecycleOwner _lifecycleOwner, MapViewModel mapViewModel) {
+        super(new DiffUtil.ItemCallback<GetJestasInRadiusQuery.GetFavorsInRadio>() {
             @Override
-            public boolean areItemsTheSame(@NonNull Jesta oldItem, @NonNull Jesta newItem) {
-                return true;
+            public boolean areItemsTheSame(@NonNull GetJestasInRadiusQuery.GetFavorsInRadio oldItem, @NonNull GetJestasInRadiusQuery.GetFavorsInRadio newItem) {
+                return oldItem._id.equals(newItem._id);
             }
 
             @Override
-            public boolean areContentsTheSame(@NonNull Jesta oldItem, @NonNull Jesta newItem) {
-                return false;
+            public boolean areContentsTheSame(@NonNull GetJestasInRadiusQuery.GetFavorsInRadio oldItem, @NonNull GetJestasInRadiusQuery.GetFavorsInRadio newItem) {
+                return oldItem.equals(newItem);
             }
         });
+        this._lifecycleOwner = _lifecycleOwner;
+        this._mapViewModel = mapViewModel;
     }
 
     // endregion
@@ -40,7 +54,7 @@ public class JestaAdapter extends ListAdapter<Jesta, JestaAdapter.JestaViewHolde
     public JestaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         JestaItemBinding binding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.getContext()), R.layout.jesta_item, parent, false);
-        return new JestaViewHolder(binding);
+        return new JestaViewHolder(binding, _lifecycleOwner, _mapViewModel);
     }
 
     @Override
@@ -55,14 +69,28 @@ public class JestaAdapter extends ListAdapter<Jesta, JestaAdapter.JestaViewHolde
     public static class JestaViewHolder extends RecyclerView.ViewHolder {
 
         private final JestaItemBinding _binding;
+        private final LifecycleOwner _lifecycleOwner;
+        private final MapViewModel _mapViewModel;
 
-        public JestaViewHolder(@NonNull JestaItemBinding binding) {
+        public JestaViewHolder(@NonNull JestaItemBinding binding, LifecycleOwner lifecycleOwner, MapViewModel mapViewModel) {
             super(binding.getRoot());
             _binding = binding;
+            _lifecycleOwner = lifecycleOwner;
+            _mapViewModel = mapViewModel;
         }
 
-        public void bind(Jesta jesta){
+        public void bind(GetJestasInRadiusQuery.GetFavorsInRadio jesta){
             _binding.setJesta(jesta);
+            _binding.setMyLocation(_mapViewModel.getMyLocation().getValue());
+            _binding.setSrcDate(jesta.dateToPublish.toString());
+            _binding.setDestDate(jesta.dateToUnpublished.toString());
+            _binding.setViewModel(_mapViewModel);
+            _mapViewModel.getMyLocation().observe(_lifecycleOwner, new Observer<LatLng>() {
+                @Override
+                public void onChanged(LatLng latLng) {
+                    _binding.setMyLocation(latLng);
+                }
+            });
             _binding.executePendingBindings();
         }
     }

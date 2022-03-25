@@ -19,6 +19,7 @@ import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerato
 import com.apollographql.apollo3.rx3.Rx3Apollo;
 import com.example.jesta.CreateFavorWithImageMutation;
 import com.example.jesta.CreateFavorWithoutImageMutation;
+import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.GetUserQuery;
 import com.example.jesta.LoginMutation;
 import com.example.jesta.SignUpMutation;
@@ -31,6 +32,7 @@ import com.example.jesta.common.ShardPreferencesHelper;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -73,34 +75,6 @@ public class GrahpqlRepository {
     }
 
     private GrahpqlRepository() {
-//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                .addInterceptor(new Interceptor() {
-//                    @androidx.annotation.NonNull
-//                    @Override
-//                    public Response intercept(@androidx.annotation.NonNull Chain chain) throws IOException {
-//                        return chain.proceed(chain.request().newBuilder().addHeader(Consts.AUTHORIZATION, ShardPreferencesHelper.readToken()).build());
-//                    }
-//                })
-//                .build();
-
-//        ApolloClient.Builder builder = new ApolloClient.Builder()
-//                .serverUrl("http://localhost:4000/graphql");
-//
-//// Optionally, set an http cache
-//        HttpCache.configureApolloClientBuilder(builder, cacheDirectory, cacheMaxSize);
-//
-//// Optionally, set a normalized cache
-//        NormalizedCache.configureApolloClientBuilder(
-//                builder,
-//                new MemoryCacheFactory(10 * 1024 * 1024, -1),
-//                TypePolicyCacheKeyGenerator.INSTANCE,
-//                FieldPolicyCacheResolver.INSTANCE,
-//                false
-//        );
-//
-//        ApolloClient client = builder.build();
-
-
         _apolloClient = new ApolloClient.Builder()
                 .serverUrl(SERVER_URL)
                 .build();
@@ -274,5 +248,34 @@ public class GrahpqlRepository {
             }
         });
     }
+
+    /**
+     * Get all the Needed jestas in the nearby area
+     * @param center The Center of the circle where we start searching from
+     * @param radius The radius in KM
+     */
+    public void GetRemoteJestas(Optional<List<Double>> center, Optional<Double> radius){
+        ApolloCall<GetJestasInRadiusQuery.Data> getJestas = _apolloClient.query(new GetJestasInRadiusQuery(center,radius));
+        Single<ApolloResponse<GetJestasInRadiusQuery.Data>> responseSingle = Rx3Apollo.single(getJestas);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<GetJestasInRadiusQuery.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<GetJestasInRadiusQuery.Data> dataApolloResponse) {
+                if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null){
+                    JestaRepository.getInstance().set_jestas(dataApolloResponse.data.getFavorsInRadios);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+        });
+    }
+
     // endregion
 }
