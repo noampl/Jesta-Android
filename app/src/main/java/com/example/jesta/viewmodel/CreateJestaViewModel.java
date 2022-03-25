@@ -350,6 +350,8 @@ public class CreateJestaViewModel extends ViewModel {
     private Long convertDateAndTime(Date date, Long hour){
         if (date == null)
             return null;
+        if (hour == null)
+            hour = 0L;
         return date.getTime() + hour;
     }
 

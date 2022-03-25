@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
 import com.example.jesta.model.enteties.Jesta;
 import com.example.jesta.type.PaymentType;
@@ -39,7 +40,7 @@ public class JestaRepository {
 
     private ITabsNavigationHelper _tabsNavigationHelper;
     private ExecutorService _executorService;
-    private MutableLiveData<List<Jesta>> _jestas;
+    private MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> _jestas;
 
     // endregion
 
@@ -72,7 +73,6 @@ public class JestaRepository {
         _amount = new MutableLiveData<>(0);
         _jestas = new MutableLiveData<>(new ArrayList<>());
         _executorService = Executors.newSingleThreadExecutor();
-        mock();
     }
 
     // endregion
@@ -147,19 +147,13 @@ public class JestaRepository {
         return _amount;
     }
 
-    public MutableLiveData<List<Jesta>> get_jestas(){return _jestas;}
+    public MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> get_jestas(){return _jestas;}
 
+    public void set_jestas(List<GetJestasInRadiusQuery.GetFavorsInRadio> jestas){
+        _jestas.postValue(jestas);
+    }
     // endregion
 
-
-    private void mock(){
-        Jesta a = new Jesta(), b= new Jesta(), c= new Jesta();
-        List<Jesta> jestas = new ArrayList<>();
-        jestas.add(a);
-        jestas.add(c);
-        jestas.add(b);
-        _jestas.setValue(jestas);
-    }
 
     // region Public Methods
 

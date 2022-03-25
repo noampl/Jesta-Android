@@ -3,16 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="java.util.Date"/>
         <variable
             name="jesta"
-            type="com.example.jesta.model.enteties.Jesta" />
+            type="com.example.jesta.GetJestasInRadiusQuery.GetFavorsInRadio" />
+        <variable
+            name="viewModel"
+            type="com.example.jesta.viewmodel.MapViewModel" />
+        <variable
+            name="myLocation"
+            type="com.google.android.gms.maps.model.LatLng" />
+        <variable
+            name="srcDate"
+            type="String" />
+        <variable
+            name="destDate"
+            type="String" />
     </data>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{()->viewModel.markerClicked(jesta.sourceAddress.location.coordinates, jesta._id)}"
+        >
 
         <TextView
             android:id="@+id/title"
@@ -34,7 +47,8 @@
             app:layout_constraintTop_toTopOf="@id/title"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/margin_side"
-            android:text="950 מ'"
+            app:jestaLocation="@{jesta.sourceAddress.location.coordinates}"
+            app:myLocation="@{myLocation}"
             />
 
         <TextView
@@ -43,7 +57,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/title"
             app:layout_constraintStart_toStartOf="@id/title"
-            android:text="היום מ-17:00 עד 19:00"
+            sourceDate="@{srcDate}"
+            destDate="@{destDate}"
             android:layout_marginTop="@dimen/margin_vertical"
             android:textColor="@color/gray700"
             />
@@ -63,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="הירקון 14, תל אביב"
+            android:text="@{jesta.sourceAddress.fullAddress}"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="@+id/location_icon"
             app:layout_constraintStart_toEndOf="@id/location_icon"
@@ -85,7 +100,7 @@
             app:layout_constraintEnd_toStartOf="@id/amount_icon"
             app:layout_constraintTop_toTopOf="@id/amount_icon"
             app:layout_constraintBottom_toBottomOf="@id/amount_icon"
-            android:text="3"
+            android:text="@{String.valueOf(jesta.numOfPeopleNeeded)}"
             android:layout_marginEnd="2dp"
             />
 
