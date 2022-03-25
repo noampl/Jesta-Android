@@ -3,12 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.fragments.utilities.ProfileSettingsFragment">
-<data>
 
+<data>
     <variable
         name="user"
         type="com.example.jesta.model.enteties.User" />
-
 </data>
 
 
@@ -193,18 +192,6 @@
                 android:textColor="@color/black"
                 android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
                 />
-
-<!--            <TextView-->
-<!--                android:id="@+id/addr_txt"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:userAddress="@{user._address}"-->
-<!--                android:layout_gravity="start |bottom"-->
-<!--                android:layout_marginBottom="@dimen/margin_vertical"-->
-<!--                android:textSize="19sp"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:layout_marginStart="@dimen/margin_side"-->
-<!--                />-->
 
             <ImageView
                 android:id="@+id/side_icon_addr"

@@ -17,11 +17,11 @@ public class JestaAdapter extends ListAdapter<Jesta, JestaAdapter.JestaViewHolde
 
     // region C'tor
 
-    protected JestaAdapter() {
+    public JestaAdapter() {
         super(new DiffUtil.ItemCallback<Jesta>() {
             @Override
             public boolean areItemsTheSame(@NonNull Jesta oldItem, @NonNull Jesta newItem) {
-                return false;
+                return true;
             }
 
             @Override

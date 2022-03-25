@@ -9,9 +9,11 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
 
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentPaymentBinding;
+import com.example.jesta.type.PaymentType;
 import com.example.jesta.viewmodel.CreateJestaViewModel;
 
 
@@ -47,11 +49,13 @@ public class PaymentFragment extends Fragment {
     private void initListeners(){
         _binding.payForItRadio.setOnClickListener(view -> {
             _binding.amountCard.setVisibility(View.VISIBLE);
+            _createJestaViewModel.set_paymentType(PaymentType.CASH);
         });
         _binding.moveItForwardRadio.setOnClickListener(view -> {
             _binding.amountCard.setVisibility(View.GONE);
             _binding.amountEditTxt.setText("");
             _createJestaViewModel.set_amount(0);
+            _createJestaViewModel.set_paymentType(PaymentType.FREE);
         });
     }
 }

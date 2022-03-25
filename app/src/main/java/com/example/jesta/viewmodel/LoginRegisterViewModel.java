@@ -116,51 +116,17 @@ public class LoginRegisterViewModel extends ViewModel {
 
 
     public void register(String firstName, String lastName, String birthday , String email,
-                         String password, String phone, String country, String city, String street,int houseNumber, Uri fileUri, double lng, double lat){
-        Optional<String> optionalPhone = null;
+                         String password, String phone,String address, Uri filePath, double lng, double lat){
         Optional<Upload> optionalFile = null;
-        Optional<String> optionalBirthday = null;
-        Optional<String> optionalCountry = null;
-        Optional<String> optionalCity = null;
-        Optional<String> optionalStreet = null;
-        Optional<Integer> optionalHouseNumber = null;
-        Optional<Double> optionalLat = null, optionalLng = null;
-
-        if (phone!= null && Pattern.matches(Consts.PHONE_VALIDATOR,phone)){
-            optionalPhone = new Optional.Present<>(phone);
-        }
-        if (birthday != null && !birthday.equals("")){
-         optionalBirthday = new Optional.Present<>(birthday);
-        }
-        if (country != null && !country.equals("")){
-            optionalCountry = new Optional.Present<>(country);
-        }
-        if (city != null && !city.equals("")){
-            optionalCity = new Optional.Present<>(city);
-        }
-        if (street != null && !street.equals("")){
-            optionalStreet = new Optional.Present<>(street);
-        }
-        if (houseNumber > 0){
-            optionalHouseNumber = new Optional.Present<>(houseNumber);
-        }
-        if (lng > 0 ){
-            optionalLng = new Optional.Present<>(lng);
-        }
-        if (lat > 0) {
-            optionalLat = new Optional.Present<>(lat);
-        }
-        if (fileUri!= null && !fileUri.toString().equals(Consts.INVALID_STRING)){
+        if (filePath!= null && !filePath.toString().equals(Consts.INVALID_STRING)){
             DefaultUpload upload = new DefaultUpload.Builder()
-                    .content(convertImagePathToData(fileUri))
+                    .content((filePath.toString()))
                     .build();
             optionalFile = new Optional.Present<Upload>(upload);
         }
-         UserCreateInput userCreateInput = new UserCreateInput(
-                firstName, lastName, optionalBirthday, email, password,
-                 optionalPhone
-                , optionalCountry, optionalCity, optionalStreet, optionalFile, optionalHouseNumber,
-                 optionalLng, optionalLat);
+        UserCreateInput userCreateInput = new UserCreateInput(firstName, lastName, new Optional.Present<>(birthday),
+                email, password, new Optional.Present<>(phone),new Optional.Present<>(address),new Optional.Present<>(lng),
+                new Optional.Present<>(lat));
 
         GrahpqlRepository.getInstance().register(userCreateInput, optionalFile);
     }

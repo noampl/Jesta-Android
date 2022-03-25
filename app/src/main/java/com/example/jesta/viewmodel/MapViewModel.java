@@ -3,11 +3,16 @@ package com.example.jesta.viewmodel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.jesta.generated.callback.OnClickListener;
+import com.example.jesta.model.enteties.Jesta;
+import com.example.jesta.model.repositories.JestaRepository;
 import com.example.jesta.model.repositories.MapRepository;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 public class MapViewModel extends ViewModel {
 
@@ -15,6 +20,7 @@ public class MapViewModel extends ViewModel {
 
     private GoogleMap _googleMap;
     private MutableLiveData<LatLng> _myLocation;
+    private MutableLiveData<List<Jesta>> _jestas;
 
     // endregion
 
@@ -23,6 +29,7 @@ public class MapViewModel extends ViewModel {
     public MapViewModel() {
         _googleMap = MapRepository.getInstance().getGoogleMap();
         _myLocation = MapRepository.getInstance().getMyLocation();
+        _jestas = JestaRepository.getInstance().get_jestas();
     }
 
     // endregion
@@ -44,6 +51,15 @@ public class MapViewModel extends ViewModel {
     public void setMyLocation(LatLng _myLocation) {
         this._myLocation.setValue(_myLocation);
     }
+
+    public MutableLiveData<List<Jesta>> get_jestas() {
+        return _jestas;
+    }
+
+    public void set_jestas(List<Jesta> _jestas) {
+        this._jestas.setValue(_jestas);
+    }
+
 
     // endregion
 

@@ -83,10 +83,9 @@ public class JestaBindingAdapters {
 
     @SuppressLint("SetTextI18n")
     @BindingAdapter("userAddress")
-    public static void setUserAddressTitle(TextView textView, GetUserQuery.Address address){
+    public static void setUserAddressTitle(TextView textView, Place address){
         if (address != null){
-            String title = address.street + " " + address.city + ", " + address.country;
-            textView.setText(title);
+            textView.setText(address.getAddress());
         }
         else{
             textView.setText(R.string.enter_address);
@@ -120,7 +119,7 @@ public class JestaBindingAdapters {
         }
         srcDateStr = dateConverter(textView, srcDate);
        if (srcHour != null){
-           srcHourStr =hourConverter(srcHour);
+           srcHourStr = hourConverter(srcHour);
        }
        if (dstDate != null){
            dstDateStr = dateConverter(textView, dstDate);

@@ -27,5 +27,11 @@ public class Consts {
 
     // endregion
 
+    // region Graphql
+
+    public static final String AUTHORIZATION = "Authorization";
+
+    // endregion
+
 
 }
