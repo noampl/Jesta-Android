@@ -8,9 +8,7 @@ query GetUser($email: String) {
         phone
         role
         address {
-            country
-            city
-            street
+            fullAddress
         }
         imagePath
     }

@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -21,6 +22,8 @@ import android.view.ViewGroup;
 import com.example.MyApplication;
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentMapBinding;
+import com.example.jesta.model.enteties.Jesta;
+import com.example.jesta.view.adapters.JestaAdapter;
 import com.example.jesta.viewmodel.MapViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -92,11 +95,21 @@ public class MapFragment extends Fragment {
     }
 
     private void initObservers(){
+        JestaAdapter adapter = new JestaAdapter();
         _mapViewModel.getMyLocation().observe(getViewLifecycleOwner(), (ltlg)->{
             if (_mapViewModel.getGoogleMap() != null) {
                 _mapViewModel.moveCamera(ltlg,10);
             }
         });
+        _mapViewModel.get_jestas().observe(getViewLifecycleOwner(), new Observer<List<Jesta>>() {
+            @Override
+            public void onChanged(List<Jesta> jestas) {
+                adapter.submitList(jestas);
+                adapter.notifyDataSetChanged();
+                System.out.println("peleg - jestas size " + jestas.size());
+            }
+        });
+        _binding.jestaLst.setAdapter(adapter);
     }
 
     private void initListeners(){

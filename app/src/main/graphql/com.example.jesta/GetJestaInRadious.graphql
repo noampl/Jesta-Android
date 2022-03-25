@@ -1,0 +1,15 @@
+query Query($center: [Float], $radius: Float) {
+    getFavorsInRadios(center: $center, radius: $radius) {
+        _id
+        ownerId
+        categoryId
+        description
+        numOfPeopleNeeded
+        sourceAddress {
+            fullAddress
+        }
+        destinationAddress {
+            fullAddress
+        }
+    }
+}

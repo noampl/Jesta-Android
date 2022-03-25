@@ -5,10 +5,12 @@ import android.os.Bundle;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentSummaryBinding;
@@ -34,6 +36,7 @@ public class SummaryFragment extends Fragment {
     }
 
     private void init(){
+        _createJestaViewModel.validSummaryDetails();
         initBinding();
         initListeners();
         initObservers();
@@ -46,7 +49,12 @@ public class SummaryFragment extends Fragment {
 
     private void initListeners(){
         _binding.finish.setOnClickListener(view -> {
-            // TODO implement addition of jesta
+            if(_createJestaViewModel.createJesta()){
+                Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
+            }
+            else{
+                Toast.makeText(requireContext(),"ERROR",Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

@@ -10,6 +10,9 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.ArrayList;
 
+/**
+ * Uses foe TabLayout
+ */
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
     private ArrayList<Fragment> fragmentArrayList;

@@ -17,15 +17,19 @@ import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver;
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator;
 import com.apollographql.apollo3.rx3.Rx3Apollo;
+import com.example.jesta.CreateFavorWithImageMutation;
+import com.example.jesta.CreateFavorWithoutImageMutation;
 import com.example.jesta.GetUserQuery;
 import com.example.jesta.LoginMutation;
 import com.example.jesta.SignUpMutation;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.type.DateTime;
+import com.example.jesta.type.FavorInput;
 import com.example.jesta.type.UserCreateInput;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,8 +38,10 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.OkHttpClient.Builder;
+import okhttp3.Response;
 
 public class GrahpqlRepository {
 
@@ -67,7 +73,15 @@ public class GrahpqlRepository {
     }
 
     private GrahpqlRepository() {
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .addInterceptor(new Interceptor() {
+//                    @androidx.annotation.NonNull
+//                    @Override
+//                    public Response intercept(@androidx.annotation.NonNull Chain chain) throws IOException {
+//                        return chain.proceed(chain.request().newBuilder().addHeader(Consts.AUTHORIZATION, ShardPreferencesHelper.readToken()).build());
+//                    }
+//                })
+//                .build();
 
 //        ApolloClient.Builder builder = new ApolloClient.Builder()
 //                .serverUrl("http://localhost:4000/graphql");
@@ -140,7 +154,7 @@ public class GrahpqlRepository {
                  ShardPreferencesHelper.writeId(response.data.connectUser.userId);
 
                  _isLoggedIn.postValue(true);
-                 _apolloClient = _apolloClient.newBuilder().addHttpHeader("Authorization", response.data.connectUser.token).build(); // Check if this is working
+                 _apolloClient = _apolloClient.newBuilder().addHttpHeader(Consts.AUTHORIZATION, response.data.connectUser.token).build(); // Check if this is working
                  getMyUserInformation(email);
              }
              else {
@@ -189,6 +203,11 @@ public class GrahpqlRepository {
         });
     }
 
+    /**
+     * Gets User Information by email
+     *
+     * @param email The user email
+     */
     public void getMyUserInformation(String email){
         ApolloCall<GetUserQuery.Data> getUser = _apolloClient.query(new GetUserQuery(new Optional.Present<>(email)));
         Single<ApolloResponse<GetUserQuery.Data>> apolloResponseSingle = Rx3Apollo.single(getUser);
@@ -224,5 +243,36 @@ public class GrahpqlRepository {
         });
     }
 
+    /**
+     * Create new Jesta
+     *
+     * @param favorInput The jseta details
+     * @param image the Image of the jesta;
+     */
+    public void createJesta( Optional<FavorInput> favorInput, Optional<Upload> image){
+        ApolloCall<CreateFavorWithImageMutation.Data> createFavor = _apolloClient.mutation(new CreateFavorWithImageMutation(favorInput, image));
+        Single<ApolloResponse<CreateFavorWithImageMutation.Data>> responseSignle = Rx3Apollo.single(createFavor);
+        responseSignle.subscribe(new SingleObserver<ApolloResponse<CreateFavorWithImageMutation.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<CreateFavorWithImageMutation.Data> dataApolloResponse) {
+                if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null){
+                    System.out.println("peleg - createJesta");
+                }
+                else{
+                    Log.d("CreateJesta", dataApolloResponse.errors.get(0).getMessage());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                    Log.e("CreateJesta", e.getMessage());
+            }
+        });
+    }
     // endregion
 }

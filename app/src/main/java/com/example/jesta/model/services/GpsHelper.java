@@ -31,14 +31,14 @@ public class GpsHelper implements LocationListener {
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        System.out.println("peleg - onLocationChanged " + " " + Thread.currentThread().getName());
+        System.out.println("peleg - onLocationChanged " + " " + location.toString());
         _myLocation.setValue(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
     @Override
     public void onLocationChanged(@NonNull List<Location> locations) {
-        System.out.println("peleg - onLocationChanged " + Thread.currentThread().getName());
-
+        System.out.println("peleg - onLocationsssChanged " + Thread.currentThread().getName());
+        _myLocation.setValue(new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude()));
     }
 
     @Override

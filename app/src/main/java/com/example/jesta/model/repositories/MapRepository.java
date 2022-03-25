@@ -17,7 +17,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -56,7 +58,7 @@ public class MapRepository {
             return ;
         }
         _locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 3, new GpsHelper(_myLocation));
-        _geoCoder = new Geocoder(MyApplication.getAppContext());
+        _geoCoder = new Geocoder(MyApplication.getAppContext(), Locale.forLanguageTag("he"));
         _executorService = Executors.newFixedThreadPool(2);
     }
 
@@ -91,17 +93,18 @@ public class MapRepository {
         });
     }
 
-    public void getAddressByLocation(long lat, long lng) {
-        _executorService.execute(()->{
-            try {
-                List<Address> addressList = _geoCoder.getFromLocation(lat,lng,10);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            // TODO publish addresses
-        });
+    public Address setAddressByCurrentLocation(){
+        return getAddressByLocation(_myLocation.getValue());
     }
 
-
+    public Address getAddressByLocation(LatLng latLng) {
+        List<Address> addressList = new ArrayList<>();
+        try {
+             addressList = _geoCoder.getFromLocation(latLng.latitude, latLng.longitude,10);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+       return addressList.get(0);
+    }
 
 }

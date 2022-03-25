@@ -1,39 +1,45 @@
 package com.example.jesta.model.repositories;
 
-import android.graphics.Bitmap;
 import android.location.Address;
 import android.net.Uri;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.jesta.common.enums.PaymentMethod;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
+import com.example.jesta.model.enteties.Jesta;
+import com.example.jesta.type.PaymentType;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class JestaRepository {
 
     // region Members
 
-    private MutableLiveData<Integer> _category;
-    private MutableLiveData<String> _description;
-    private MutableLiveData<Integer> _numOfPeople;
-    private MutableLiveData<Uri> image1;
-    private MutableLiveData<Uri> image2;
-    private MutableLiveData<Uri> image3;
-    private MutableLiveData<Date> _startDate;
-    private MutableLiveData<Long> _startTime;
-    private MutableLiveData<Date> _endDate;
-    private MutableLiveData<Long> _endTime;
-    private MutableLiveData<Boolean> _isRepeatedly;
-    private MutableLiveData<Place> _source;
-    private MutableLiveData<Place> _destention;
-    private MutableLiveData<PaymentMethod> _paymentMethod;
-    private MutableLiveData<Integer> _amount;
+    private final MutableLiveData<Integer> _category;
+    private final MutableLiveData<String> _description;
+    private final MutableLiveData<Integer> _numOfPeople;
+    private final MutableLiveData<Uri> image1;
+    private final MutableLiveData<Uri> image2;
+    private final MutableLiveData<Uri> image3;
+    private final MutableLiveData<Date> _startDate;
+    private final MutableLiveData<Long> _startTime;
+    private final MutableLiveData<Date> _endDate;
+    private final MutableLiveData<Long> _endTime;
+    private final MutableLiveData<Boolean> _isRepeatedly;
+    private final MutableLiveData<Place> _source;
+    private final MutableLiveData<Place> _destination;
+    private final MutableLiveData<PaymentType> _paymentType;
+    private final MutableLiveData<Integer> _amount;
 
     private ITabsNavigationHelper _tabsNavigationHelper;
-
+    private ExecutorService _executorService;
+    private MutableLiveData<List<Jesta>> _jestas;
 
     // endregion
 
@@ -61,9 +67,12 @@ public class JestaRepository {
         _endTime = new MutableLiveData<>();
         _isRepeatedly = new MutableLiveData<>(false);
         _source = new MutableLiveData<>();
-        _destention = new MutableLiveData<>();
-        _paymentMethod = new MutableLiveData<>(PaymentMethod.MOVE_IT_FORWARD);
+        _destination = new MutableLiveData<>();
+        _paymentType = new MutableLiveData<>(PaymentType.FREE);
         _amount = new MutableLiveData<>(0);
+        _jestas = new MutableLiveData<>(new ArrayList<>());
+        _executorService = Executors.newSingleThreadExecutor();
+        mock();
     }
 
     // endregion
@@ -126,19 +135,41 @@ public class JestaRepository {
         return _source;
     }
 
-    public MutableLiveData<Place> get_destention() {
-        return _destention;
+    public MutableLiveData<Place> get_destination() {
+        return _destination;
     }
 
-    public MutableLiveData<PaymentMethod> get_paymentMethod() {
-        return _paymentMethod;
+    public MutableLiveData<PaymentType> get_paymentType() {
+        return _paymentType;
     }
 
     public MutableLiveData<Integer> get_amount() {
         return _amount;
     }
 
+    public MutableLiveData<List<Jesta>> get_jestas(){return _jestas;}
+
     // endregion
 
 
+    private void mock(){
+        Jesta a = new Jesta(), b= new Jesta(), c= new Jesta();
+        List<Jesta> jestas = new ArrayList<>();
+        jestas.add(a);
+        jestas.add(c);
+        jestas.add(b);
+        _jestas.setValue(jestas);
+    }
+
+    // region Public Methods
+
+    public void setSourceAddressByCurrentLocation() {
+        _executorService.execute(()->{
+            Address address = MapRepository.getInstance().setAddressByCurrentLocation();
+            _source.postValue(Place.builder().setAddress(address.getAddressLine(0))
+                    .setLatLng(new LatLng(address.getLatitude(), address.getLongitude())).build());
+        });
+    }
+
+    // ednregion
 }

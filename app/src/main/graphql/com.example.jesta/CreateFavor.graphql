@@ -1,0 +1,11 @@
+mutation CreateFavorWithImage($favor: FavorInput, $image: Upload) {
+    createFavor(favor: $favor, image: $image) {
+        _id
+    }
+}
+
+mutation CreateFavorWithoutImage($favor: FavorInput) {
+    createFavor(favor: $favor) {
+        _id
+    }
+}

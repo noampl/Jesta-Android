@@ -42,9 +42,10 @@
             tools:ignore="BottomAppBar"
             android:shadowColor="@color/gray400"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:behavior_saveFlags="peekHeight"
             style="?attr/bottomSheetStyle"
             android:background="@color/gray50"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior_Layout_behavior_draggable">
 
             <View
                 android:id="@+id/top_dvider"

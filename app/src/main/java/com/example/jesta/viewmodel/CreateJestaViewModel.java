@@ -2,7 +2,6 @@ package com.example.jesta.viewmodel;
 
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import android.location.Address;
 import android.net.Uri;
 import android.widget.CompoundButton;
@@ -10,13 +9,25 @@ import android.widget.CompoundButton;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.jesta.common.enums.PaymentMethod;
+import com.apollographql.apollo3.api.Optional;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
+import com.example.jesta.model.repositories.GrahpqlRepository;
 import com.example.jesta.model.repositories.JestaRepository;
+import com.example.jesta.model.repositories.MapRepository;
+import com.example.jesta.model.repositories.UsersRepository;
+import com.example.jesta.type.AddressInput;
+
+import com.example.jesta.type.CoordinatesInput;
+import com.example.jesta.type.FavorInput;
+import com.example.jesta.type.PaymentType;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class CreateJestaViewModel extends ViewModel {
 
@@ -34,7 +45,7 @@ public class CreateJestaViewModel extends ViewModel {
     private final MutableLiveData<Boolean> _isRepeatedly;
     private final MutableLiveData<Place> _source;
     private final MutableLiveData<Place> _destention;
-    private final MutableLiveData<PaymentMethod> _paymentMethod;
+    private final MutableLiveData<PaymentType> _paymentType;
     private final MutableLiveData<Integer> _numOfPeople;
     private final MutableLiveData<Integer> _amount;
 
@@ -54,8 +65,8 @@ public class CreateJestaViewModel extends ViewModel {
         _endTime = JestaRepository.getInstance().get_endTime();
         _isRepeatedly = JestaRepository.getInstance().get_isRepeatedly();
         _source = JestaRepository.getInstance().get_source();
-        _destention = JestaRepository.getInstance().get_destention();
-        _paymentMethod = JestaRepository.getInstance().get_paymentMethod();
+        _destention = JestaRepository.getInstance().get_destination();
+        _paymentType = JestaRepository.getInstance().get_paymentType();
         _category = JestaRepository.getInstance().get_category();
         _numOfPeople = JestaRepository.getInstance().get_numOfPeople();
         _amount = JestaRepository.getInstance().get_amount();
@@ -187,12 +198,12 @@ public class CreateJestaViewModel extends ViewModel {
         this._destention.setValue(_destention);
     }
 
-    public MutableLiveData<PaymentMethod> get_paymentMethod() {
-        return _paymentMethod;
+    public MutableLiveData<PaymentType> get_paymentType() {
+        return _paymentType;
     }
 
-    public void set_paymentMethod(PaymentMethod _paymentMethod) {
-        this._paymentMethod.setValue(_paymentMethod);
+    public void set_paymentType(PaymentType _paymentType) {
+        this._paymentType.setValue(_paymentType);
     }
 
 
@@ -284,6 +295,75 @@ public class CreateJestaViewModel extends ViewModel {
         }
         return res;
 
+    }
+
+    /**
+     * Create new jesta by the vm params
+     */
+    public boolean createJesta() {
+        if (get_category() == null || get_category().getValue() == 0){
+            return false;
+        }
+
+        GrahpqlRepository.getInstance().createJesta(jestaConverter(),null);
+        return true;
+    }
+
+    // endregion
+
+    // region Private Methods
+
+    /**
+     * Convert the vm members data into Optional favor input
+     *
+     * @return the jesta data
+     */
+    private com.apollographql.apollo3.api.Optional<FavorInput> jestaConverter(){
+        return new Optional.Present<>(
+                new FavorInput(UsersRepository.getInstance().get_myUser().getValue().get_id(),
+                               new ArrayList<String>(), new Optional.Present<>(get_numOfPeople().getValue()),
+                               addressConverter(get_source().getValue()),
+                               new Optional.Present<>(addressConverter(get_destention().getValue())),
+                               get_description().getValue(),new Optional.Present<Double>(Double.valueOf(get_amount().getValue())),
+                               get_paymentType().getValue(), new Optional.Present<>(convertDateAndTime(get_startDate().getValue(),get_startTime().getValue())),
+                               new Optional.Present<>(convertDateAndTime(get_endDate().getValue(), get_endTime().getValue())),null));
+    }
+
+    /**
+     * Convert Google Place to AddressInput
+     *
+     * @param address The Place to convert
+     * @return An AddressInput
+     */
+    private AddressInput addressConverter(Place address) {
+        if (address == null)
+            return null;
+        List<Double> coordinateList = new ArrayList<>();
+        coordinateList.add(address.getLatLng().latitude);
+        coordinateList.add(address.getLatLng().longitude);
+
+        return new AddressInput(new Optional.Present<>(address.getAddress()),
+                new Optional.Present<>(new CoordinatesInput(new Optional.Present<>(coordinateList))));
+
+    }
+
+    private Long convertDateAndTime(Date date, Long hour){
+        if (date == null)
+            return null;
+        return date.getTime() + hour;
+    }
+
+    /**
+     * Checks if the needed param are initalized;
+     */
+    public void validSummaryDetails() {
+        if (get_source() == null || get_source().getValue() == null ||
+                get_source().getValue().getAddress() == null || get_source().getValue().getAddress().length() < 2){
+            JestaRepository.getInstance().setSourceAddressByCurrentLocation();
+        }
+        if (get_startDate().getValue() == null || get_startDate().getValue().getTime() == 0){
+            set_startDate(MaterialDatePicker.todayInUtcMilliseconds());
+        }
     }
 
     // endregion
