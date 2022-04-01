@@ -2,7 +2,6 @@ package com.example.jesta.viewmodel;
 
 
 import android.annotation.SuppressLint;
-import android.location.Address;
 import android.net.Uri;
 import android.widget.CompoundButton;
 
@@ -13,14 +12,12 @@ import com.apollographql.apollo3.api.Optional;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
 import com.example.jesta.model.repositories.GrahpqlRepository;
 import com.example.jesta.model.repositories.JestaRepository;
-import com.example.jesta.model.repositories.MapRepository;
 import com.example.jesta.model.repositories.UsersRepository;
 import com.example.jesta.type.AddressInput;
 
 import com.example.jesta.type.CoordinatesInput;
 import com.example.jesta.type.FavorInput;
 import com.example.jesta.type.PaymentType;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
@@ -325,8 +322,8 @@ public class CreateJestaViewModel extends ViewModel {
                                addressConverter(get_source().getValue()),
                                new Optional.Present<>(addressConverter(get_destention().getValue())),
                                get_description().getValue(),new Optional.Present<Double>(Double.valueOf(get_amount().getValue())),
-                               get_paymentType().getValue(), new Optional.Present<>(convertDateAndTime(get_startDate().getValue(),get_startTime().getValue())),
-                               new Optional.Present<>(convertDateAndTime(get_endDate().getValue(), get_endTime().getValue())),null));
+                               get_paymentType().getValue(), new Optional.Present<>(concatDateAndTime(get_startDate().getValue(),get_startTime().getValue())),
+                               new Optional.Present<>(concatDateAndTime(get_endDate().getValue(), get_endTime().getValue())),null));
     }
 
     /**
@@ -347,7 +344,7 @@ public class CreateJestaViewModel extends ViewModel {
 
     }
 
-    private Long convertDateAndTime(Date date, Long hour){
+    private Long concatDateAndTime(Date date, Long hour){
         if (date == null)
             return null;
         if (hour == null)

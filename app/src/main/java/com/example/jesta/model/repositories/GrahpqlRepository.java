@@ -23,12 +23,14 @@ import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.GetUserQuery;
 import com.example.jesta.LoginMutation;
 import com.example.jesta.SignUpMutation;
+import com.example.jesta.UpdateUserMutation;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.type.DateTime;
 import com.example.jesta.type.FavorInput;
 import com.example.jesta.type.UserCreateInput;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
+import com.example.jesta.type.UserUpdateInput;
 
 import java.io.IOException;
 import java.util.Date;
@@ -101,7 +103,7 @@ public class GrahpqlRepository {
 
     // endregion
 
-    // region Public Method
+    // region Server Interactions Method
 
     /**
      * Login to the remote server
@@ -273,6 +275,41 @@ public class GrahpqlRepository {
             @Override
             public void onError(@NonNull Throwable e) {
 
+            }
+        });
+    }
+
+    /**
+     * Update the logged in user parameters
+     *
+     * @param updatedUser The new parameters
+     */
+    public void UpdateUser(Optional<UserUpdateInput> updatedUser ){
+        ApolloCall<UpdateUserMutation.Data> updateUser = _apolloClient.mutation(
+                new UpdateUserMutation(new Optional.Present<>(UsersRepository.getInstance()
+                        .get_myUser().getValue().get_id()),updatedUser));
+        Single<ApolloResponse<UpdateUserMutation.Data>> responseSingle = Rx3Apollo.single(updateUser);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<UpdateUserMutation.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<UpdateUserMutation.Data> dataApolloResponse) {
+                if (!dataApolloResponse.hasErrors()){
+                    Log.d("UpdateUser", "Success");
+                    UsersRepository.getInstance().set_isUserChanged(true);
+                }
+                else{
+                    Log.d("UpdateUser", "Failed " + dataApolloResponse.errors.get(0));
+                    UsersRepository.getInstance().set_isUserChanged(false);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.d("UpdateUser", e.getMessage());
             }
         });
     }

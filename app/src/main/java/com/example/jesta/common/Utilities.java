@@ -7,7 +7,7 @@ import java.util.List;
 public class Utilities {
 
     /**
-     * REturn the distance between to coordinates in Meters
+     * Return the distance between to coordinates in KM
      *
      * @param p1 First point represent as List
      * @param p2 Second point represent as Latlng
@@ -15,7 +15,7 @@ public class Utilities {
      * @return The distance beteen p1 -p2 in Meters
      */
     public static double calcCoordinateDistance(List<Double> p1, LatLng p2) {
-        double R = 6371000; // Radius of the earth in k
+        double R = 6371; // Radius of the earth in KM
         double dLat = deg2rad(p1.get(0)- p2.latitude);  // deg2rad below
         double dLon = deg2rad(p1.get(1)- p2.longitude);
         double a =

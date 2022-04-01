@@ -15,10 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +25,7 @@ import android.view.ViewGroup;
 import com.example.jesta.R;
 import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentProfileSettingsBinding;
-import com.example.jesta.model.enteties.User;
+import com.example.jesta.type.DateTime;
 import com.example.jesta.viewmodel.UsersViewModel;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.model.Place;
@@ -35,8 +33,6 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.dialog.MaterialDialogs;
-import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
 
@@ -127,18 +123,22 @@ public class ProfileSettingsFragment extends Fragment {
 
     private void initObservers(){
         _usersViewModel.get_myUser().observe(getViewLifecycleOwner(), u-> {
-            System.out.println("peleg - update user " + u.get_lastName());
             _binding.setUser(u);});
+        // Check is user is update my our changes
+        _usersViewModel.get_isUserUpdated().observe(getViewLifecycleOwner(), isUpdated->{
+            if (isUpdated)
+                _binding.setUser(_usersViewModel.get_myUser().getValue());
+        });
     }
 
     private void initAutoComplete(){
         AutocompleteSupportFragment autoCompleteSrcAddr = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.addr_autocomplete_fragment);
         autoCompleteSrcAddr.setHint(getString(R.string.address));
-        if (_usersViewModel.get_myUser() != null){
-            autoCompleteSrcAddr.setText(_usersViewModel.get_myUser().getValue().get_address().toString());
+        if (_usersViewModel.get_myUser().getValue() != null &&
+                _usersViewModel.get_myUser().getValue().get_address().fullAddress != null){
+            autoCompleteSrcAddr.setText(_usersViewModel.get_myUser().getValue().get_address().fullAddress);
         }
-//        autoCompleteSrcAddr.
         autoCompleteSrcAddr.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS));
         autoCompleteSrcAddr.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -149,8 +149,8 @@ public class ProfileSettingsFragment extends Fragment {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 System.out.println("peleg - places selected " + place.getName());
-//                _usersViewModel.get_myUser()..set_source(place);
-                // TODO use the places
+                _usersViewModel.get_myUser().getValue().set_fullAddress(place.getAddress());
+                _usersViewModel.updateUser();
             }
         });
     }

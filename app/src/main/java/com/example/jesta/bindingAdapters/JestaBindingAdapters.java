@@ -21,6 +21,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -136,9 +137,23 @@ public class JestaBindingAdapters {
 
     @BindingAdapter({"sourceDate", "destDate"})
     public static void setTimeTitle(TextView textView, String src, String dest){
-//        String[] srcDate = src.split("T");
-//        String[] destDate = dest.split("T");
-        textView.setText(src + " - " + dest);
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat format =new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        Date dstDate = null, srcDate = null;
+        String srcD="",destD="";
+        try {
+            srcDate = format.parse(src);
+            dstDate = format.parse(dest);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (srcDate != null){
+            srcD = dateConverter(textView, srcDate);
+        }
+        if (dstDate != null) {
+            destD = dateConverter(textView, dstDate);
+        }
+        textView.setText(srcD + " - " + destD);
 
     }
 
@@ -146,12 +161,12 @@ public class JestaBindingAdapters {
     public static void calacDistance(TextView textView, List<Double> jesstaLocation, LatLng myLocation){
         double distance = Utilities.calcCoordinateDistance(jesstaLocation, myLocation);
         String title = "";
-        if (distance >= 1000){
-            distance = Math.floor(distance/1000);
+        if (distance >= 1){
+            distance = Math.floor(distance);
             title = "" + (int)distance + " " + textView.getContext().getText(R.string.km);
         }
         else{
-            distance = Math.floor(distance);
+            distance = Math.floor(distance*1000);
             title = "" + (int)distance + " " + textView.getContext().getText(R.string.meter);
 
         }

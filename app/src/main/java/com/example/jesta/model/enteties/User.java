@@ -105,8 +105,8 @@ public class User {
         return _address;
     }
 
-    public void set_address(GetUserQuery.Address _address) {
-        this._address = _address;
+    public void set_fullAddress(String _address) {
+        this._address.fullAddress = _address;
     }
 
     // endregion
