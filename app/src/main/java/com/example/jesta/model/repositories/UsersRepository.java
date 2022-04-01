@@ -10,7 +10,8 @@ public class UsersRepository {
 
     // region Members
 
-    private MutableLiveData<User> _myUser;
+    private final MutableLiveData<User> _myUser;
+    private final MutableLiveData<Boolean> _isUserChanged;
 
     // endregion
 
@@ -20,6 +21,7 @@ public class UsersRepository {
 
     private UsersRepository(){
         _myUser = new MutableLiveData<>();
+        _isUserChanged = new MutableLiveData<>(false);
     }
 
     public static UsersRepository getInstance(){
@@ -37,8 +39,15 @@ public class UsersRepository {
     }
 
     public void set_myUser(User user){
-        System.out.println("peleg = setuser " + user.get_firstName());
         _myUser.postValue(user);
+    }
+
+    public MutableLiveData<Boolean> get_isUserChanged() {
+        return _isUserChanged;
+    }
+
+    public void set_isUserChanged(Boolean isUserChanged) {
+        this._isUserChanged.postValue(isUserChanged);
     }
 
     // endregion

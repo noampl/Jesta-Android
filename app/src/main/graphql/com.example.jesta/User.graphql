@@ -1,0 +1,26 @@
+mutation UpdateUser($id: String, $updatedUser: UserUpdateInput) {
+    updateUser(_id: $id, updatedUser: $updatedUser)
+}
+
+mutation SignUp($userParams: UserCreateInput!, $file: Upload) {
+    signUpUser(userParams: $userParams, file: $file) {
+        token
+        userId
+    }
+}
+
+query GetUser($email: String) {
+    getUser(email: $email) {
+        _id
+        firstName
+        lastName
+        birthday
+        email
+        phone
+        role
+        address {
+            fullAddress
+        }
+        imagePath
+    }
+}
