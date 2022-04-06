@@ -30,6 +30,15 @@ public class Consts {
     // region Graphql
 
     public static final String AUTHORIZATION = "Authorization";
+    public static final String JPG = ".jpg";
+
+    // endregion
+
+    // region Server Path
+    /**
+     * Peleg local Server Address, need to change the ip for each user
+     */
+    public static final String SERVER_PRE_FIX = "http://192.168.155.138:4111/";
 
     // endregion
 

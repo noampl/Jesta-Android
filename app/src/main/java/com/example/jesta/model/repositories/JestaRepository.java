@@ -3,11 +3,12 @@ package com.example.jesta.model.repositories;
 import android.location.Address;
 import android.net.Uri;
 
+import androidx.core.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
-import com.example.jesta.model.enteties.Jesta;
 import com.example.jesta.type.PaymentType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import okio.Source;
+
 public class JestaRepository {
 
     // region Members
@@ -25,9 +28,9 @@ public class JestaRepository {
     private final MutableLiveData<Integer> _category;
     private final MutableLiveData<String> _description;
     private final MutableLiveData<Integer> _numOfPeople;
-    private final MutableLiveData<Uri> image1;
-    private final MutableLiveData<Uri> image2;
-    private final MutableLiveData<Uri> image3;
+    private final MutableLiveData<Pair<Uri, Source>> image1;
+    private final MutableLiveData<Pair<Uri, Source>> image2;
+    private final MutableLiveData<Pair<Uri, Source>> image3;
     private final MutableLiveData<Date> _startDate;
     private final MutableLiveData<Long> _startTime;
     private final MutableLiveData<Date> _endDate;
@@ -37,6 +40,9 @@ public class JestaRepository {
     private final MutableLiveData<Place> _destination;
     private final MutableLiveData<PaymentType> _paymentType;
     private final MutableLiveData<Integer> _amount;
+    private final MutableLiveData<GetJestaQuery.GetFavor> _jestaDetails;
+    private final MutableLiveData<Boolean> _isSuggestHelp;
+    private String _comment;
 
     private ITabsNavigationHelper _tabsNavigationHelper;
     private ExecutorService _executorService;
@@ -72,12 +78,19 @@ public class JestaRepository {
         _paymentType = new MutableLiveData<>(PaymentType.FREE);
         _amount = new MutableLiveData<>(0);
         _jestas = new MutableLiveData<>(new ArrayList<>());
+        _jestaDetails = new MutableLiveData<>();
         _executorService = Executors.newSingleThreadExecutor();
+        _comment = "";
+        _isSuggestHelp = new MutableLiveData<>(false);
     }
 
     // endregion
 
     // region Properties
+
+    public MutableLiveData<Boolean> get_isSuggestHelp() {
+        return _isSuggestHelp;
+    }
 
     public ITabsNavigationHelper get_tabsNavigationHelper() {
         return _tabsNavigationHelper;
@@ -99,15 +112,15 @@ public class JestaRepository {
         return _numOfPeople;
     }
 
-    public MutableLiveData<Uri> getImage1() {
+    public MutableLiveData<Pair<Uri, Source>> getImage1() {
         return image1;
     }
 
-    public MutableLiveData<Uri> getImage2() {
+    public MutableLiveData<Pair<Uri, Source>> getImage2() {
         return image2;
     }
 
-    public MutableLiveData<Uri> getImage3() {
+    public MutableLiveData<Pair<Uri, Source>> getImage3() {
         return image3;
     }
 
@@ -149,8 +162,24 @@ public class JestaRepository {
 
     public MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> get_jestas(){return _jestas;}
 
+    public MutableLiveData<GetJestaQuery.GetFavor> get_jestaDetails() {
+        return _jestaDetails;
+    }
+
     public void set_jestas(List<GetJestasInRadiusQuery.GetFavorsInRadio> jestas){
         _jestas.postValue(jestas);
+    }
+
+    public void set_jestaDetails(GetJestaQuery.GetFavor jestaDetails){
+        _jestaDetails.postValue(jestaDetails);
+    }
+
+    public String get_comment() {
+        return _comment;
+    }
+
+    public void set_isSuggestHelp(Boolean bool){
+        _isSuggestHelp.postValue(bool);
     }
     // endregion
 

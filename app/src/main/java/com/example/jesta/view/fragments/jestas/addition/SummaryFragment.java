@@ -49,7 +49,12 @@ public class SummaryFragment extends Fragment {
 
     private void initListeners(){
         _binding.finish.setOnClickListener(view -> {
+            if (_createJestaViewModel.getImage1().getValue()!= null){
+                _createJestaViewModel.initUploadImage(_createJestaViewModel.getImage1().getValue().second);
+            }
+
             if(_createJestaViewModel.createJesta()){
+                _createJestaViewModel.clearData();
                 Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
             }
             else{

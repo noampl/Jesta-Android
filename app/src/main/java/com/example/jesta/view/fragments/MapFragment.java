@@ -24,6 +24,7 @@ import com.example.MyApplication;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentMapBinding;
+import com.example.jesta.interfaces.INavigationHelper;
 import com.example.jesta.model.enteties.Jesta;
 import com.example.jesta.view.adapters.JestaAdapter;
 import com.example.jesta.viewmodel.MapViewModel;
@@ -32,12 +33,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.List;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener, INavigationHelper {
 
     // region Members
 
@@ -58,11 +60,13 @@ public class MapFragment extends Fragment {
                 return;
             }
             googleMap.setMyLocationEnabled(true);
+            googleMap.setOnMarkerClickListener(_markerClickListener);
         }
     };
 
     private MapViewModel _mapViewModel;
     private FragmentMapBinding _binding;
+    private GoogleMap.OnMarkerClickListener _markerClickListener;
 
     // endregion
 
@@ -80,6 +84,7 @@ public class MapFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        _markerClickListener = this;
         _mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -91,8 +96,11 @@ public class MapFragment extends Fragment {
 
     // endregion
 
+    // region Private Methods
+
     private void init(){
         _mapViewModel.getRemoteJestas();
+        _mapViewModel.set_navigationHelper(this);
         initObservers();
         initListeners();
     }
@@ -112,9 +120,15 @@ public class MapFragment extends Fragment {
                 adapter.notifyDataSetChanged();
                 if (_mapViewModel.getGoogleMap() != null){
                     _mapViewModel.getGoogleMap().clear();
-                    jestas.forEach(j->_mapViewModel.getGoogleMap().addMarker(
-                            new MarkerOptions().position(new LatLng(j.sourceAddress.location.coordinates.get(0),
-                                    j.sourceAddress.location.coordinates.get(1)))));
+                    _mapViewModel.get_markerToJesta().clear();
+                    jestas.forEach(j->{
+                        Marker marker = _mapViewModel.getGoogleMap().addMarker(
+                                new MarkerOptions()
+                                        .position(new LatLng(j.sourceAddress.location.coordinates.get(0),
+                                                j.sourceAddress.location.coordinates.get(1)))
+                        );
+                        _mapViewModel.addMarkerAndJesta(marker,j);
+                    });
                 }
             }
         });
@@ -125,4 +139,34 @@ public class MapFragment extends Fragment {
         _binding.plusBtn.setOnClickListener((v)->
                 Navigation.findNavController(requireActivity(), R.id.main_container).navigate(R.id.action_nav_map_to_addJestaFragment));
     }
+
+    // endregion
+
+    // region OnMarkerClickListener
+
+    @Override
+    public boolean onMarkerClick(@NonNull Marker marker) {
+        openJestaDetails(_mapViewModel.get_markerToJesta().get(marker)._id);
+        return true;
+    }
+
+    // endregion
+
+    // region NavigationHelper
+
+    @Override
+    public void navigate(String arg) {
+        openJestaDetails(arg);
+    }
+
+    // endregion
+
+    // region Private Methods
+
+    private void openJestaDetails(String id){
+        MapFragmentDirections.ActionNavMapToJestaDetailsFragment action =
+                MapFragmentDirections.actionNavMapToJestaDetailsFragment(id);
+        Navigation.findNavController(requireActivity(),R.id.main_container).navigate(action);
+    }
+    // endregion
 }

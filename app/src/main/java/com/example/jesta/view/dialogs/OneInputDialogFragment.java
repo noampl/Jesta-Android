@@ -73,27 +73,10 @@ public class OneInputDialogFragment extends DialogFragment {
     private void initDialog() {
         _binding.submit.setOnClickListener(view -> {
             String newVal = _binding.inputEditTxt.getText().toString();
-            switch (_filedType){
-                case NAME:
-                    String[] names = newVal.split(" ");
-                    String lastName ="";
-                    for (int index= 1 ; index < names.length; index++) {
-                        lastName += lastName + " " + names[index];
-                    }
-                    _userViewModel.get_myUser().getValue().set_firstName(names[0]);
-                    _userViewModel.get_myUser().getValue().set_lastName(lastName);
-                    break;
-                case EMAIL:
-                    _userViewModel.get_myUser().getValue().set_email(newVal);
-                    break;
-                case PHONE:
-                    _userViewModel.get_myUser().getValue().set_phone(newVal);
-                    break;
-                default:
-                    Log.e("Dialog", "could not recognize filed type " + _filedType);
+            if (!newVal.equals("")){
+                _userViewModel.get_dialogConsumerHelper().consume(newVal);
+                _dialog.dismiss();
             }
-            _userViewModel.updateUser();
-            _dialog.dismiss();
         });
         _binding.cancelButton.setOnClickListener(view -> _dialog.dismiss());
         _dialog.setView(_binding.getRoot());
@@ -113,6 +96,7 @@ public class OneInputDialogFragment extends DialogFragment {
                 type = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
                 break;
             case NAME:
+            default:
                 type = InputType.TYPE_TEXT_VARIATION_PERSON_NAME;
                 break;
         }

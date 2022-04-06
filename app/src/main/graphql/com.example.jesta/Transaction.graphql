@@ -1,0 +1,3 @@
+mutation CreateFavorTransactionRequest($favorId: String!, $comment: String) {
+    createFavorTransactionRequest(favorId: $favorId, comment: $comment)
+}

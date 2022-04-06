@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_nav_map_to_addJestaFragment"
             app:destination="@id/addJestaFragment" />
+        <action
+            android:id="@+id/action_nav_map_to_jestaDetailsFragment"
+            app:destination="@id/jestaDetailsFragment" />
     </fragment>
 
     <fragment
@@ -100,13 +103,15 @@
         tools:layout="@layout/fragment_one_input_dialog" >
         <argument
             android:name="text"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
         <argument
             android:name="hint"
             app:argType="string" />
         <argument
             android:name="filedType"
-            app:argType="integer" />
+            app:argType="integer"
+            android:defaultValue="2" />
         <argument
             android:name="title"
             app:argType="string" />
@@ -116,4 +121,19 @@
         android:name="com.example.jesta.view.dialogs.ChangePasswordDialogFragment"
         android:label="fragment_change_password_dialog"
         tools:layout="@layout/fragment_change_password_dialog" />
+    <fragment
+        android:id="@+id/jestaDetailsFragment"
+        android:name="com.example.jesta.view.fragments.jestas.JestaDetailsFragment"
+        android:label="@string/jesta_details"
+        tools:layout="@layout/fragment_jesta_details" >
+        <action
+            android:id="@+id/action_jestaDetailsFragment_to_nav_map"
+            app:destination="@id/nav_map" />
+        <argument
+            android:name="JestaId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_jestaDetailsFragment_to_oneInputDialogFragment"
+            app:destination="@id/oneInputDialogFragment" />
+    </fragment>
 </navigation>

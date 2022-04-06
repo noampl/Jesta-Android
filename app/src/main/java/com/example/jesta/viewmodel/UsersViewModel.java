@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.apollographql.apollo3.api.Optional;
 import com.example.jesta.common.ShardPreferencesHelper;
+import com.example.jesta.interfaces.IDialogConsumerHelper;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.model.repositories.GrahpqlRepository;
 import com.example.jesta.model.repositories.UsersRepository;
@@ -22,6 +23,7 @@ public class UsersViewModel extends ViewModel {
 
     private final MutableLiveData<User> _myUser;
     private final MutableLiveData<Boolean> _isUserUpdated;
+    private IDialogConsumerHelper _dialogConsumerHelper;
 
     // endregion
 
@@ -30,6 +32,7 @@ public class UsersViewModel extends ViewModel {
     public UsersViewModel(){
         _myUser = UsersRepository.getInstance().get_myUser();
         _isUserUpdated = UsersRepository.getInstance().get_isUserChanged();
+        _dialogConsumerHelper = UsersRepository.getInstance().get_dialogConsumerHelper();
     }
 
     // endregion
@@ -56,6 +59,13 @@ public class UsersViewModel extends ViewModel {
         this._isUserUpdated.setValue(_isUserUpdated);
     }
 
+    public IDialogConsumerHelper get_dialogConsumerHelper() {
+        return _dialogConsumerHelper;
+    }
+
+    public void set_dialogConsumerHelper(IDialogConsumerHelper _dialogConsumerHelper) {
+        this._dialogConsumerHelper = _dialogConsumerHelper;
+    }
     // endregion
 
     // region Private Methods
@@ -91,6 +101,10 @@ public class UsersViewModel extends ViewModel {
         UserUpdateInput userUpdateInput = new UserUpdateInput(null,null,null,
                 null,new Optional.Present<>(password),null,null,null,null);
         GrahpqlRepository.getInstance().UpdateUser(new Optional.Present<>(userUpdateInput));
+    }
+
+    public void logout() {
+        ShardPreferencesHelper.logout();
     }
 
     // endregion
