@@ -53,7 +53,7 @@ public class GrahpqlRepository {
     /**
      * Peleg local Server Address, need to change the ip for each user
      */
-    private final String SERVER_URL="http://192.168.155.138:4111/graphql";
+    private final String SERVER_URL="http://192.168.56.1:4111/graphql";
 
     // endregion
 
