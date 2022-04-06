@@ -1,5 +1,5 @@
 # Jesta
-Jesta Android in an app for the Colman of management final project
+Jesta Android is an app for the College of management final project
 
 
 # Connect to local server

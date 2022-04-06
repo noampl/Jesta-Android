@@ -51,12 +51,10 @@ import okhttp3.OkHttpClient.Builder;
 import okhttp3.Response;
 
 public class GrahpqlRepository {
-
-    // region Consts
-
-
+  
+     // region Conts  
+  
     private final String SERVER_POST_FIX = "graphql";
-
     private final String SERVER_URL= Consts.SERVER_PRE_FIX + SERVER_POST_FIX;
 
     // endregion
