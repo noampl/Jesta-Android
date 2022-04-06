@@ -14,6 +14,7 @@
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/drawable/ic_baseline_help_outline_24.xml" value="0.26458333333333334" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.26458333333333334" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/drawable/ic_baseline_jesta_settings.xml" value="0.26458333333333334" />
+        <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/drawable/ic_baseline_location_orange_24.xml" value="0.21388888888888888" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.26458333333333334" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/drawable/ic_baseline_sort_24.xml" value="0.23697916666666666" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/drawable/ic_baseline_todo_jesta.xml" value="0.26458333333333334" />
@@ -30,6 +31,7 @@
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_about.xml" value="0.2484375" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_add_jesta.xml" value="0.4" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_change_password_dialog.xml" value="0.264" />
+        <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_jesta_details.xml" value="0.4" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_login.xml" value="0.24270833333333333" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_main.xml" value="0.2484375" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_map.xml" value="0.4" />

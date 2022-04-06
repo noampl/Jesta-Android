@@ -12,12 +12,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.MyApplication;
+import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.model.services.GpsHelper;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -31,8 +34,9 @@ public class MapRepository {
     // region Members
 
     private GoogleMap _googleMap;
-    private MutableLiveData<LatLng> _myLocation;
+    private final MutableLiveData<LatLng> _myLocation;
     private final LocationManager _locationManager;
+    private HashMap<Marker,GetJestasInRadiusQuery.GetFavorsInRadio> _markerToJesta;
     private Geocoder _geoCoder;
     private ExecutorService _executorService;
 
@@ -60,6 +64,7 @@ public class MapRepository {
         _locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 3, new GpsHelper(_myLocation));
         _geoCoder = new Geocoder(MyApplication.getAppContext(), Locale.forLanguageTag("he"));
         _executorService = Executors.newFixedThreadPool(2);
+        _markerToJesta = new HashMap<>();
     }
 
     // endregion
@@ -76,6 +81,11 @@ public class MapRepository {
 
     public MutableLiveData<LatLng> getMyLocation(){
         return _myLocation;
+    }
+
+
+    public HashMap<Marker, GetJestasInRadiusQuery.GetFavorsInRadio> getMarkerTOJesta() {
+        return _markerToJesta;
     }
 
     // endregion

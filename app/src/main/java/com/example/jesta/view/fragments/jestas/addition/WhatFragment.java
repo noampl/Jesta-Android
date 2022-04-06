@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.util.Pair;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
@@ -27,6 +28,12 @@ import com.example.jesta.databinding.FragmentWhatBinding;
 import com.example.jesta.viewmodel.CreateJestaViewModel;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import okio.Okio;
+import okio.Source;
 
 public class WhatFragment extends Fragment {
 
@@ -160,14 +167,22 @@ public class WhatFragment extends Fragment {
             Intent data = result.getData();
             Uri uri = data != null ? data.getData() : null;
             Picasso.with(imageView.getContext()).load(uri).fit().into(imageView);
+            InputStream inputStream = null;
+            Source source = null;
+            try {
+                inputStream = getContext().getContentResolver().openInputStream(uri);
+                source = Okio.source(inputStream);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
             if (imageView == _binding.firstImage){
-                _createJestaViewModel.setImage1(uri);
+                _createJestaViewModel.setImage1(new Pair<Uri, Source>(uri, source));
             }
             else if (imageView == _binding.secondImage){
-                _createJestaViewModel.setImage2(uri);
+                _createJestaViewModel.setImage2(new Pair<Uri, Source>(uri, source));
             }
             else if (imageView == _binding.thirdImage){
-                _createJestaViewModel.setImage3(uri);
+                _createJestaViewModel.setImage3(new Pair<Uri, Source>(uri, source));
             }
             else{
                 Log.e("WhatFragment","get activity result for unknown imageview ");

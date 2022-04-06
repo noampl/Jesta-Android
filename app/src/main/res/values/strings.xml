@@ -77,10 +77,15 @@
     <string name="cancel">ביטול</string>
     <string name="submit">אישור</string>
     <string name="are_u_sure_delete_user">האם אתה בתוך שברצונך למחוק את המשתמש?</string>
+    <string name="are_u_sure_logout_user">האם אתה בתוך שברצונך להתנתק?</string>
     <string name="old_password">סיסמה ישנה</string>
     <string name="new_password">סיסמה חדשה</string>
     <string name="meter">מ\'</string>
     <string name="km">קמ\'</string>
-
-
+    <string name="your_location">המיקום שלך</string>
+    <string name="suggest_help">הצעה עזרה</string>
+    <string name="jesta_details">פרטי ג\'סטה</string>
+    <string name="logout">התנתק</string>
+    <string name="send_msg">שלח הודעה</string>
+    <string name="sent">נשלח</string>
 </resources>

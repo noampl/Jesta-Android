@@ -17,8 +17,10 @@ import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver;
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator;
 import com.apollographql.apollo3.rx3.Rx3Apollo;
+import com.example.jesta.CreateFavorTransactionRequestMutation;
 import com.example.jesta.CreateFavorWithImageMutation;
 import com.example.jesta.CreateFavorWithoutImageMutation;
+import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.GetUserQuery;
 import com.example.jesta.LoginMutation;
@@ -33,6 +35,7 @@ import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.type.UserUpdateInput;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -50,10 +53,11 @@ import okhttp3.Response;
 public class GrahpqlRepository {
 
     // region Consts
-    /**
-     * Peleg local Server Address, need to change the ip for each user
-     */
-    private final String SERVER_URL="http://192.168.155.138:4111/graphql";
+
+
+    private final String SERVER_POST_FIX = "graphql";
+
+    private final String SERVER_URL= Consts.SERVER_PRE_FIX + SERVER_POST_FIX;
 
     // endregion
 
@@ -310,6 +314,61 @@ public class GrahpqlRepository {
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.d("UpdateUser", e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Get JEsta Details
+     * @param id Rhe Jesta ID
+     */
+    public void getJestaDetails(String id){
+        ApolloCall<GetJestaQuery.Data> query = _apolloClient.query(new GetJestaQuery(new Optional.Present<>(id)));
+        Single<ApolloResponse<GetJestaQuery.Data>> responseSingle = Rx3Apollo.single(query);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<GetJestaQuery.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<GetJestaQuery.Data> dataApolloResponse) {
+                if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null){
+                    JestaRepository.getInstance().set_jestaDetails(dataApolloResponse.data.getFavor);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("GetJestaDetails",e.getMessage());
+            }
+        });
+    }
+
+    public void suggestHelp(String favorId, Optional<String> comment ) {
+        ApolloCall<CreateFavorTransactionRequestMutation.Data> mutation = _apolloClient.mutation(new CreateFavorTransactionRequestMutation(favorId,comment));
+        Single<ApolloResponse<CreateFavorTransactionRequestMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<CreateFavorTransactionRequestMutation.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<CreateFavorTransactionRequestMutation.Data> dataApolloResponse) {
+                if (!dataApolloResponse.hasErrors()){
+                    JestaRepository.getInstance().set_isSuggestHelp(true);
+                }
+                else{
+                    Log.e("suggestHelp", dataApolloResponse.errors.get(0).getMessage());
+                    JestaRepository.getInstance().set_isSuggestHelp(false);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("suggestHelp", e.getMessage());
+                JestaRepository.getInstance().set_isSuggestHelp(false);
             }
         });
     }

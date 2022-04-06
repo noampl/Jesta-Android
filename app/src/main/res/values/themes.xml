@@ -34,9 +34,12 @@
     </style>
 
     <style name="Theme.Jesta.ButtonWhite">
-        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorSecondary">@color/white</item>
+        <item name="background">@color/white</item>
+        <item name="backgroundColor">@color/white</item>
         <item name="colorSurface">@color/white</item>
-        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurface">@color/white</item>
     </style>
 
 </resources>

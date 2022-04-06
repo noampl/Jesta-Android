@@ -4,6 +4,7 @@ import android.hardware.usb.UsbDevice;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.jesta.interfaces.IDialogConsumerHelper;
 import com.example.jesta.model.enteties.User;
 
 public class UsersRepository {
@@ -12,6 +13,7 @@ public class UsersRepository {
 
     private final MutableLiveData<User> _myUser;
     private final MutableLiveData<Boolean> _isUserChanged;
+    private IDialogConsumerHelper _dialogConsumerHelper;
 
     // endregion
 
@@ -48,6 +50,10 @@ public class UsersRepository {
 
     public void set_isUserChanged(Boolean isUserChanged) {
         this._isUserChanged.postValue(isUserChanged);
+    }
+
+    public IDialogConsumerHelper get_dialogConsumerHelper() {
+        return _dialogConsumerHelper;
     }
 
     // endregion

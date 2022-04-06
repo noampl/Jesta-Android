@@ -1,7 +1,9 @@
 package com.example.jesta.view.fragments.login;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -26,6 +28,13 @@ import com.example.jesta.viewmodel.LoginRegisterViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import okio.Okio;
+import okio.Source;
+
 
 public class RegisterFragment extends Fragment {
 
@@ -34,6 +43,7 @@ public class RegisterFragment extends Fragment {
     private FragmentRegisterBinding _binding;
     private LoginRegisterViewModel _loginRegisterViewModel;
     private Uri _filePath;
+//    private ContentResolver contentResolver = getContext().getContentResolver();
 
     // endregion
 
@@ -142,9 +152,19 @@ public class RegisterFragment extends Fragment {
         for (int i= 1 ; i < names.length; i++) {
             lastName += lastName + " " + names[i];
         }
+
+        InputStream inputStream = null;
+        Source source = null;
+        try {
+            inputStream = getContext().getContentResolver().openInputStream(_filePath);
+            source = Okio.source(inputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         _loginRegisterViewModel.register(names[0], lastName,null, _binding.emailEditTxt.getText().toString(),
-                _binding.passwordEditTxt.getText().toString(),null,null,_filePath,
-                Consts.INVALID_INTEGER, Consts.INVALID_INTEGER );
+                _binding.passwordEditTxt.getText().toString(),null,null, source,
+                Consts.INVALID_INTEGER,Consts.INVALID_INTEGER);
     }
 
     /**

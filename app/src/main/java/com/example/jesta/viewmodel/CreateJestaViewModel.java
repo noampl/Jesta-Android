@@ -5,10 +5,14 @@ import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.widget.CompoundButton;
 
+import androidx.core.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.apollographql.apollo3.api.DefaultUpload;
 import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo3.api.Upload;
+import com.example.jesta.common.Consts;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
 import com.example.jesta.model.repositories.GrahpqlRepository;
 import com.example.jesta.model.repositories.JestaRepository;
@@ -26,15 +30,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import okio.Okio;
+import okio.Source;
+
 public class CreateJestaViewModel extends ViewModel {
 
     // region Members
     private final MutableLiveData<Integer> _category;
     private ITabsNavigationHelper navigationHelper;
     private final MutableLiveData<String> _description;
-    private final MutableLiveData<Uri> image1;
-    private final MutableLiveData<Uri> image2;
-    private final MutableLiveData<Uri> image3;
+    private final MutableLiveData<Pair<Uri, Source>> image1;
+    private final MutableLiveData<Pair<Uri, Source>> image2;
+    private final MutableLiveData<Pair<Uri, Source>> image3;
     private final MutableLiveData<Date> _startDate;
     private final MutableLiveData<Long> _startTime;
     private final MutableLiveData<Date> _endDate;
@@ -45,6 +52,7 @@ public class CreateJestaViewModel extends ViewModel {
     private final MutableLiveData<PaymentType> _paymentType;
     private final MutableLiveData<Integer> _numOfPeople;
     private final MutableLiveData<Integer> _amount;
+    private Optional<Upload> _image1;
 
     // endregion
 
@@ -115,27 +123,27 @@ public class CreateJestaViewModel extends ViewModel {
         this._description.setValue(_description);
     }
 
-    public MutableLiveData<Uri> getImage1() {
+    public MutableLiveData<Pair<Uri, Source>> getImage1() {
         return image1;
     }
 
-    public void setImage1(Uri image1) {
+    public void setImage1(Pair<Uri, Source> image1) {
         this.image1.setValue(image1);
     }
 
-    public MutableLiveData<Uri> getImage2() {
+    public MutableLiveData<Pair<Uri, Source>> getImage2() {
         return image2;
     }
 
-    public void setImage2(Uri image2) {
+    public void setImage2(Pair<Uri, Source> image2) {
         this.image2.setValue(image2);
     }
 
-    public MutableLiveData<Uri> getImage3() {
+    public MutableLiveData<Pair<Uri, Source>> getImage3() {
         return image3;
     }
 
-    public void setImage3(Uri image3) {
+    public void setImage3(Pair<Uri, Source> image3) {
         this.image3.setValue(image3);
     }
 
@@ -302,7 +310,7 @@ public class CreateJestaViewModel extends ViewModel {
             return false;
         }
 
-        GrahpqlRepository.getInstance().createJesta(jestaConverter(),null);
+        GrahpqlRepository.getInstance().createJesta(jestaConverter(),_image1);
         return true;
     }
 
@@ -321,7 +329,7 @@ public class CreateJestaViewModel extends ViewModel {
                                new ArrayList<String>(), new Optional.Present<>(get_numOfPeople().getValue()),
                                addressConverter(get_source().getValue()),
                                new Optional.Present<>(addressConverter(get_destention().getValue())),
-                               get_description().getValue(),new Optional.Present<Double>(Double.valueOf(get_amount().getValue())),
+                               new Optional.Present<>(get_description().getValue()),new Optional.Present<Double>(Double.valueOf(get_amount().getValue())),
                                get_paymentType().getValue(), new Optional.Present<>(concatDateAndTime(get_startDate().getValue(),get_startTime().getValue())),
                                new Optional.Present<>(concatDateAndTime(get_endDate().getValue(), get_endTime().getValue())),null));
     }
@@ -363,6 +371,18 @@ public class CreateJestaViewModel extends ViewModel {
         if (get_startDate().getValue() == null || get_startDate().getValue().getTime() == 0){
             set_startDate(MaterialDatePicker.todayInUtcMilliseconds());
         }
+    }
+
+    public void initUploadImage(Source filePath) {
+        DefaultUpload upload = new DefaultUpload.Builder()
+                .content(Okio.buffer(filePath))
+                .fileName("_" + Consts.JPG)
+                .build();
+        _image1 =  new Optional.Present<>(upload);
+    }
+
+    public void clearData() {
+        // TODO delete all the data
     }
 
     // endregion

@@ -97,6 +97,12 @@ public class ShardPreferencesHelper {
         return map.getOrDefault(key, Consts.INVALID_STRING);
     }
 
+    public static void logout() {
+        writeId(Consts.INVALID_STRING);
+        writePassword(Consts.INVALID_STRING);
+        writeEmail(Consts.INVALID_STRING);
+        writeToken(Consts.INVALID_STRING);
+    }
 
 
     // endregion

@@ -6,15 +6,18 @@ import androidx.lifecycle.ViewModel;
 import com.apollographql.apollo3.api.Optional;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.common.Consts;
+import com.example.jesta.interfaces.INavigationHelper;
 import com.example.jesta.model.repositories.GrahpqlRepository;
 import com.example.jesta.model.repositories.JestaRepository;
 import com.example.jesta.model.repositories.MapRepository;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MapViewModel extends ViewModel {
@@ -25,6 +28,8 @@ public class MapViewModel extends ViewModel {
     private MutableLiveData<LatLng> _myLocation;
     private MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> _jestas;
     private Double radiusInKm = 100D;
+    private HashMap<Marker,GetJestasInRadiusQuery.GetFavorsInRadio> _markerToJesta;
+    private INavigationHelper _navigationHelper;
 
     // endregion
 
@@ -34,11 +39,20 @@ public class MapViewModel extends ViewModel {
         _googleMap = MapRepository.getInstance().getGoogleMap();
         _myLocation = MapRepository.getInstance().getMyLocation();
         _jestas = JestaRepository.getInstance().get_jestas();
+        _markerToJesta = MapRepository.getInstance().getMarkerTOJesta();
     }
 
     // endregion
 
     // region Properties
+
+    public INavigationHelper get_navigationHelper() {
+        return _navigationHelper;
+    }
+
+    public void set_navigationHelper(INavigationHelper _navigationHelper) {
+        this._navigationHelper = _navigationHelper;
+    }
 
     public GoogleMap getGoogleMap() {
         return _googleMap;
@@ -64,7 +78,13 @@ public class MapViewModel extends ViewModel {
         this._jestas.setValue(_jestas);
     }
 
+    public HashMap<Marker, GetJestasInRadiusQuery.GetFavorsInRadio> get_markerToJesta() {
+        return _markerToJesta;
+    }
 
+    public void addMarkerAndJesta(Marker marker, GetJestasInRadiusQuery.GetFavorsInRadio jesta){
+        _markerToJesta.put(marker, jesta);
+    }
     // endregion
 
     // region Public Methods
@@ -104,9 +124,10 @@ public class MapViewModel extends ViewModel {
         GrahpqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates),new Optional.Present<Double>(radiusInKm));
     }
 
-    public void markerClicked(List<Double> position, String jestaId){
-        moveCamera(new LatLng(position.get(0), position.get(1)), Consts.CLOSE_ZOOM);
+    public void markerClicked(String jestaId){
+        _navigationHelper.navigate(jestaId);
     }
+
     // endregion
 
 }
