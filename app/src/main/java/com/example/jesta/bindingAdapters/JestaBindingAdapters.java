@@ -1,7 +1,9 @@
 package com.example.jesta.bindingAdapters;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.databinding.BindingAdapter;
 
+import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetUserQuery;
 import com.example.jesta.R;
 import com.example.jesta.common.Consts;
@@ -36,6 +39,25 @@ public class JestaBindingAdapters {
         Picasso.with(imageView.getContext()).load(R.drawable.no_profile_picture).fit().into(imageView);
     }
 
+    @BindingAdapter("setImage")
+    public static void setImage(ImageView imageView, String path){
+        if (path != null && path.length() > 5 ){
+            String fullPath =Consts.SERVER_PRE_FIX + path;
+            Picasso.with(imageView.getContext()).load(fullPath).fit().into(imageView);
+        }
+        else{
+            imageView.setImageResource(R.drawable.ic_baseline_account_circle_24);
+        }
+    }
+
+    @BindingAdapter("setJestaImages")
+    public static void setJestaImage(ImageView imageView, List<String> path){
+        if (path != null && path.size() > 0 && path.get(0).length() > 5){
+            String fullPath =Consts.SERVER_PRE_FIX + path.get(0);
+            Picasso.with(imageView.getContext()).load(fullPath).into(imageView);
+        }
+    }
+
     @BindingAdapter({"setText","defaultText"})
     public static void setText(TextView view, String text, int resId){
         if (text != null && !text.equals("") && !text.equals(Consts.INVALID_STRING)){
@@ -56,6 +78,12 @@ public class JestaBindingAdapters {
             textView.setText(R.string.full_name);
         }
     }
+    @BindingAdapter({"firstName","secondName"})
+    public static void concatNames(TextView textView, String firstName, String secondName){
+        String title = firstName+ " " + secondName;
+        textView.setText(title);
+    }
+
 
     @SuppressLint("SetTextI18n")
     @BindingAdapter({"setBirthday"})
@@ -137,6 +165,8 @@ public class JestaBindingAdapters {
 
     @BindingAdapter({"sourceDate", "destDate"})
     public static void setTimeTitle(TextView textView, String src, String dest){
+        if (src == null)
+            return;
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat format =new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         Date dstDate = null, srcDate = null;
@@ -159,6 +189,8 @@ public class JestaBindingAdapters {
 
     @BindingAdapter({"jestaLocation","myLocation"})
     public static void calacDistance(TextView textView, List<Double> jesstaLocation, LatLng myLocation){
+        if (myLocation == null || jesstaLocation == null)
+            return;
         double distance = Utilities.calcCoordinateDistance(jesstaLocation, myLocation);
         String title = "";
         if (distance >= 1){
@@ -171,6 +203,12 @@ public class JestaBindingAdapters {
 
         }
         textView.setText(title);
+    }
+
+    @BindingAdapter({"sourceLocation","destLocation"})
+    public static void calacDistanceList(TextView textView, GetJestaQuery.SourceAddress source, GetJestaQuery.DestinationAddress dest){
+        if (source != null && dest != null)
+        calacDistance(textView,source.location.coordinates, new LatLng(dest.location.coordinates.get(0), dest.location.coordinates.get(1)));
     }
 
     // region Private methods

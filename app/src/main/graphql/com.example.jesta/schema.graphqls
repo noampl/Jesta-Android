@@ -61,11 +61,16 @@ type Query {
     getAllUsers: [User]
     getAllAdmins: [User]
     getUser(_id: String, firstName: String, lastName: String, email: String): User
+    getFavor(favorId: String): PopulatedFavor
+    getFavorsByDate(startingDate: DateTime, limitDate: DateTime): [Favor]
     getAllFavors: [Favor]
     getFavorsInRadios(center: [Float], radius: Float): [Favor]
     getAllCategories: [Category]
     getAllPerforms: [Perform]
     getPerformsInRadios(center: [Float], radius: Float): [Perform]
+    getAllFavorTransaction: [FavorTransaction]
+    getAllUserFavorsRequestedTransaction: [FavorTransaction]
+    getAllUserFavorsWaitingForHandleTransaction: [FavorTransaction]
 }
 
 type Mutation {
@@ -83,6 +88,9 @@ type Mutation {
     createPerform(perform: PerformInput): Perform
     deletePerform(performId: String): String
     updatePerform(performId: String, updatedPerform: UpdatePerformInput): String
+    createFavorTransactionRequest(favorId: String!, comment: String): String
+    handleFavorTransactionRequest(favorTransactionId: String!, status: FavorTransactionStatus, comment: String): String
+    deleteFavorTransactionRequest(favorTransactionId: String!): String
 }
 
 input CoordinatesInput {
@@ -92,6 +100,24 @@ input CoordinatesInput {
 input AddressInput {
     fullAddress: String
     location: CoordinatesInput
+}
+
+type PopulatedFavor {
+    _id: String!
+    ownerId: User
+    categoryId: [Category]
+    numOfPeopleNeeded: Int!
+    sourceAddress: Address
+    destinationAddress: Address
+    description: String
+    imagesPath: [String]
+    paymentAmount: Float
+    paymentMethod: String
+    dateToPublish: DateTime
+    dateToUnpublished: DateTime
+    dateLockedOut: DateTime
+    dateCreated: DateTime
+    dateLastModified: DateTime
 }
 
 type Favor {
@@ -124,7 +150,7 @@ input FavorInput {
     numOfPeopleNeeded: Int
     sourceAddress: AddressInput!
     destinationAddress: AddressInput
-    description: String!
+    description: String
     paymentAmount: Float
     paymentMethod: PaymentType!
     dateToPublish: DateTime
@@ -206,4 +232,23 @@ input UpdatePerformInput {
     activityHoursStart: DateTime
     address: AddressInput
     preferredPaymentMethod: PaymentType
+}
+
+enum FavorTransactionStatus {
+    Approved
+    Waiting
+    Canceled
+}
+
+type FavorTransaction {
+    _id: String!
+    favorId: String!
+    favorOwnerId: String!
+    handledByUserId: String!
+    ownerComment: String
+    handlerComment: String
+    dateAccepted: DateTime
+    dateCompleted: DateTime
+    dateCreated: DateTime
+    dateLastModified: DateTime
 }

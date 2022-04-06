@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.apollographql.apollo3.ApolloClient;
 import com.apollographql.apollo3.api.DefaultUpload;
+import com.apollographql.apollo3.api.FileUpload;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Upload;
 import com.example.MyApplication;
@@ -21,7 +22,9 @@ import com.example.jesta.model.repositories.GrahpqlRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
@@ -30,6 +33,7 @@ import java.util.regex.Pattern;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.Okio;
+import okio.Source;
 
 
 public class LoginRegisterViewModel extends ViewModel {
@@ -114,13 +118,13 @@ public class LoginRegisterViewModel extends ViewModel {
         return res;
     }
 
-
     public void register(String firstName, String lastName, String birthday , String email,
-                         String password, String phone,String address, Uri filePath, double lng, double lat){
+                         String password, String phone, String address, Source filePath, double lng, double lat){
         Optional<Upload> optionalFile = null;
-        if (filePath!= null && !filePath.toString().equals(Consts.INVALID_STRING)){
+        if (filePath != null && !filePath.toString().equals(Consts.INVALID_STRING)){
             DefaultUpload upload = new DefaultUpload.Builder()
-                    .content((filePath.toString()))
+                    .content(Okio.buffer(filePath))
+                    .fileName(firstName + "_" + lastName + Consts.JPG)
                     .build();
             optionalFile = new Optional.Present<Upload>(upload);
         }

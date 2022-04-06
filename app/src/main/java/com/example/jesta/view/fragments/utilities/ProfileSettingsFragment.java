@@ -13,8 +13,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -25,7 +27,9 @@ import android.view.ViewGroup;
 import com.example.jesta.R;
 import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentProfileSettingsBinding;
+import com.example.jesta.interfaces.IDialogConsumerHelper;
 import com.example.jesta.type.DateTime;
+import com.example.jesta.view.activities.LoginRegisterActivity;
 import com.example.jesta.viewmodel.UsersViewModel;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.model.Place;
@@ -34,7 +38,12 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Arrays;
+
+import okio.Okio;
+import okio.Source;
 
 
 public class ProfileSettingsFragment extends Fragment {
@@ -43,9 +52,36 @@ public class ProfileSettingsFragment extends Fragment {
 
     private FragmentProfileSettingsBinding _binding;
     private UsersViewModel _usersViewModel;
+    private final FragmentActivity activity = getActivity();
+    private final IDialogConsumerHelper nameConsumer = new IDialogConsumerHelper() {
+        @Override
+        public void consume(String val) {
+            String[] names = val.split(" ");
+            String lastName ="";
+            for (int index= 1 ; index < names.length; index++) {
+                lastName += lastName + " " + names[index];
+            }
+            _usersViewModel.get_myUser().getValue().set_firstName(names[0]);
+            _usersViewModel.get_myUser().getValue().set_lastName(lastName);
+            _usersViewModel.updateUser();
+        }
+    };
+    private final IDialogConsumerHelper emailConsumer = new IDialogConsumerHelper() {
+        @Override
+        public void consume(String val) {
+            _usersViewModel.get_myUser().getValue().set_email(val);
+            _usersViewModel.updateUser();
+        }
+    };
+    private final IDialogConsumerHelper phoneConsumer = new IDialogConsumerHelper() {
+        @Override
+        public void consume(String val) {
+            _usersViewModel.get_myUser().getValue().set_phone(val);
+            _usersViewModel.updateUser();
+        }
+    };
 
     // endregion
-
 
     // region Lifecycle
 
@@ -78,15 +114,15 @@ public class ProfileSettingsFragment extends Fragment {
     private void initListeners(){
         _binding.nameCard.setOnClickListener(view -> {
             showDialog(R.string.full_name,_binding.nameTitle.getText().toString(), FiledType.NAME,
-                    _binding.nameTxt.getText().toString());
+                    _binding.nameTxt.getText().toString(), nameConsumer);
         });
         _binding.emailCard.setOnClickListener(view -> {
             showDialog(R.string.email,_binding.emailTitle.getText().toString(), FiledType.EMAIL,
-                    _binding.emailTxt.getText().toString());
+                    _binding.emailTxt.getText().toString(), emailConsumer);
         });
         _binding.phoneCard.setOnClickListener(view -> {
             showDialog(R.string.phone,_binding.phoneTitle.getText().toString(), FiledType.NAME,
-                    _binding.phoneTxt.getText().toString());
+                    _binding.phoneTxt.getText().toString(), phoneConsumer);
         });
         _binding.birthdayCard.setOnClickListener(view -> {
             dateDialog();
@@ -107,6 +143,7 @@ public class ProfileSettingsFragment extends Fragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             _usersViewModel.deleteAccount();
                             dialogInterface.dismiss();
+                            // TODO navigate back to map
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -119,6 +156,28 @@ public class ProfileSettingsFragment extends Fragment {
             dialog.show();
         });
 
+        _binding.logoutCard.setOnClickListener(v ->{
+            AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                    .setMessage(R.string.are_u_sure_logout_user)
+                    .setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            _usersViewModel.logout();
+                            dialogInterface.dismiss();
+                            Intent intent = new Intent(activity,LoginRegisterActivity.class);
+                            startActivity(intent);
+                            activity.finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
+        });
     }
 
     private void initObservers(){
@@ -163,10 +222,11 @@ public class ProfileSettingsFragment extends Fragment {
      * @param type The type of the dialog
      * @param text
      */
-
-    private void showDialog(int title, String hint, FiledType type, String text){
+    private void showDialog(int title, String hint, FiledType type, String text, IDialogConsumerHelper dialogConsumerHelper){
+        _usersViewModel.set_dialogConsumerHelper(dialogConsumerHelper);
         ProfileSettingsFragmentDirections.ActionNavProfileSettingsToOneInputDialogFragment action =
-                ProfileSettingsFragmentDirections.actionNavProfileSettingsToOneInputDialogFragment(text, hint, type.ordinal(), getString(title));
+                ProfileSettingsFragmentDirections.actionNavProfileSettingsToOneInputDialogFragment(text, hint, getString(title));
+        action.setFiledType(type.ordinal());
         Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
     }
 
@@ -193,14 +253,24 @@ public class ProfileSettingsFragment extends Fragment {
                     if(result.getResultCode() == Activity.RESULT_OK){
                         Intent data = result.getData();
                         Uri uri = data != null ? data.getData() : null;
-                        System.out.println("peleg - uri is " + uri);
-                        // TODO change the profile image
-//                        Picasso.with(_binding.getRoot().getContext()).load(uri).fit().into(_binding.profileImageButton);
-//                        _filePath = uri;
+                        updatePhoto(uri);
                     }
                 }
             }
     );
+
+    private void updatePhoto(Uri filePath){
+        if (filePath == null)
+            return;
+        InputStream inputStream = null;
+        Source source = null;
+        try {
+            inputStream = getContext().getContentResolver().openInputStream(filePath);
+            source = Okio.source(inputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     // endregion
 }

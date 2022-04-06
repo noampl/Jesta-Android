@@ -34,6 +34,7 @@ android {
     apollo {
         generateKotlinModels.set(false)
         packageName.set("com.example.jesta")
+//        mapScalarToUpload("Upload","com.apollographql.apollo3.api.Upload")
         customTypeMapping = [
                 "Upload" : "com.apollographql.apollo3.api.Upload"
         ]

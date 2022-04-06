@@ -33,10 +33,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         _binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
-
         // make sure the window is RTL
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
         init();
     }
 

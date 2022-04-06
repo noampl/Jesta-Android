@@ -339,12 +339,51 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/delete_card"
+            android:id="@+id/logout_card"
             android:layout_width="match_parent"
             android:layout_height="@dimen/settings_height"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/password_card"
+            app:cardBackgroundColor="@color/white"
+            >
+
+            <TextView
+                android:id="@+id/logout_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/logout"
+                android:layout_gravity="start |center"
+                android:textSize="19sp"
+                android:textColor="@color/black"
+                android:layout_marginStart="@dimen/margin_side"
+                />
+
+            <ImageView
+                android:id="@+id/logout_icon_addr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end |center"
+                android:background="@drawable/ic_baseline_arrow_right_24"
+                android:backgroundTint="@color/black"
+                android:layout_marginEnd="@dimen/margin_side"
+                />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/delete_card"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_height"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logout_card"
             app:cardBackgroundColor="@color/white"
             >
 
@@ -376,6 +415,8 @@
                 />
 
         </com.google.android.material.card.MaterialCardView>
+
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
