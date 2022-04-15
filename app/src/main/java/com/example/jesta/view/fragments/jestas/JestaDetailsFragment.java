@@ -1,5 +1,8 @@
 package com.example.jesta.view.fragments.jestas;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
@@ -79,10 +82,28 @@ public class JestaDetailsFragment extends Fragment {
     }
 
     private void initListeners(){
-        _binding.suggestHelp.setOnClickListener(v->{
-            if (_jestaDetailsViewModel.get_isSuggestHelp().getValue() != null && !_jestaDetailsViewModel.get_isSuggestHelp().getValue())
-                _jestaDetailsViewModel.suggestHelp(_jestaId);
-        });
+        _binding.suggestHelp.setOnClickListener(v-> {
+                    if (_jestaDetailsViewModel.get_isSuggestHelp().getValue() != null) {
+                        if (!_jestaDetailsViewModel.get_isSuggestHelp().getValue()) {
+                            _jestaDetailsViewModel.suggestHelp(_jestaId);
+                        } else {
+                            new AlertDialog.Builder(requireContext()).setMessage(R.string.disable_offer)
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            // TODO cancel transaction
+                                            dialogInterface.dismiss();
+                                        }                                        ;
+                                    }
+                            ).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.dismiss();
+                                        }
+                                    }).create().show();
+                        }
+                    };
+                });
 
         _binding.sendMsg.setOnClickListener(v->{
             _jestaDetailsViewModel.set_dialogConsumerHelper(messageConsumer);

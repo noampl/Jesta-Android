@@ -106,6 +106,9 @@
     <string name="offer_favor">%1$s! רוצה לעשות לך ג\'סטה</string>
     <string name="favor_approved">הג\'סטה ל%1$s! מאושרת לביצוע</string>
     <string name="favor_finish">הג\'סטה ל%1$s! הושלמה בהצלחה</string>
+    <string name="yes">כן</string>
+    <string name="no">לא</string>
+    <string name="disable_offer">האם אתה רוצה לבטל את הצעתך לעזרה?</string>
 
 
 </resources>

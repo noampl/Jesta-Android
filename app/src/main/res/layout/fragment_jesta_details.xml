@@ -339,12 +339,13 @@
 
          </androidx.core.widget.NestedScrollView>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/suggest_help"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/black"
+            android:background="@{isSuggestHelp ? @color/light_orange : @color/black}"
             android:text="@{isSuggestHelp ? @string/sent : @string/suggest_help}"
+            android:textColor="@{isSuggestHelp ? @color/black : @color/white}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/half_guidline"
             app:layout_constraintEnd_toEndOf="parent" />
