@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 import androidx.databinding.DataBindingUtil;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -85,8 +86,9 @@ public class NotificationAdapter extends ListAdapter<GetAllUserFavorsRequestedTr
                 } else{
                     Log.d("NotificationViewHolder","unrecognized status " + transaction.status);
                 }
-
             });
+
+            _binding.detailsBtn.setOnClickListener(v->viewModel.openDetails(transaction.favorId._id));
         }
     }
 }
