@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -12,12 +13,14 @@ import android.widget.TextView;
 
 import androidx.databinding.BindingAdapter;
 
+import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetUserQuery;
 import com.example.jesta.R;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.Utilities;
 import com.example.jesta.model.enteties.User;
+import com.example.jesta.type.FavorTransactionStatus;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.button.MaterialButton;
@@ -31,7 +34,11 @@ import java.util.List;
 
 public class JestaBindingAdapters {
 
+    // region Consts
+
     private static final long DAY_IN_MS = 86400000;
+
+    // endregion
 
     @BindingAdapter("setProfilePlaceHolder")
     public static void setProfilePlaceHolder(ImageView imageView, Drawable res){
@@ -49,6 +56,39 @@ public class JestaBindingAdapters {
             imageView.setImageResource(R.drawable.ic_baseline_account_circle_24);
         }
     }
+
+    @BindingAdapter("setImageNotification")
+    public static void setImage(ImageView imageView, GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction transaction){
+        System.out.println("peleg - set image");
+        int resId = 0;
+        if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(transaction.status)) {
+            resId = R.drawable.ic_baseline_waving_hand_24;
+        } else if (FavorTransactionStatus.JESTA_DONE.equals(transaction.status)) {
+            resId = R.drawable.ic_baseline_check_circle_24;
+        } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.equals(transaction.status)) {
+            resId = R.drawable.ic_baseline_handshake_24;
+        }
+        Picasso.with(imageView.getContext()).load(imageView.getContext().getString(resId)).fit().into(imageView);
+    }
+
+    @BindingAdapter("setColor")
+    public static void setColor(Button btn, String status){
+        int resId = 0, titleId = 0;
+        System.out.println("peleg - set color");
+        if (FavorTransactionStatus.PENDING_FOR_OWNER.rawValue.equals(status)) {
+            resId = R.color.orange;
+            titleId = R.string.accepted_by_me;
+        } else if (FavorTransactionStatus.JESTA_DONE.rawValue.equals(status)) {
+            resId = R.color.green;
+            titleId = R.string.read_comments;
+        } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.rawValue.equals(status)){
+            resId = R.color.blue;
+            titleId = R.string.navigate_now;
+        }
+        btn.setBackgroundColor(resId);
+        btn.setText(btn.getContext().getText(titleId));
+    }
+
 
     @BindingAdapter("setJestaImages")
     public static void setJestaImage(ImageView imageView, List<String> path){
@@ -78,12 +118,12 @@ public class JestaBindingAdapters {
             textView.setText(R.string.full_name);
         }
     }
+
     @BindingAdapter({"firstName","secondName"})
     public static void concatNames(TextView textView, String firstName, String secondName){
         String title = firstName+ " " + secondName;
         textView.setText(title);
     }
-
 
     @SuppressLint("SetTextI18n")
     @BindingAdapter({"setBirthday"})
@@ -111,6 +151,28 @@ public class JestaBindingAdapters {
         else{
             textView.setText(R.string.phone);
         }
+    }
+
+    @BindingAdapter({"notificationTransaction"})
+    public static void setTitle(TextView textView, GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction transaction){
+        String title="";
+        if (FavorTransactionStatus.JESTA_DONE.equals(transaction.status)) {
+            // 4
+            title = textView.getContext().getString(R.string.favor_finish, transaction.favorOwnerId.firstName);
+        } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.equals(transaction.status)) {
+            // 3
+        } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.equals(transaction.status)) {
+            //2
+            title = textView.getContext().getString(R.string.favor_approved,transaction.favorOwnerId.firstName);
+        } else if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(transaction.status)) {
+            //1
+            title = textView.getContext().getString(R.string.offer_favor, transaction.handledByUserId.firstName);
+        } else if (FavorTransactionStatus.CANCELED.equals(transaction.status)) {
+            // both
+        } else{
+            Log.d("NotificationTitle", "Unrecognized status " + transaction.status.rawValue);
+        }
+        textView.setText(title);
     }
 
     @SuppressLint("SetTextI18n")
@@ -187,6 +249,30 @@ public class JestaBindingAdapters {
 
     }
 
+    @BindingAdapter("notificationDate")
+    public static void notificationDate(TextView textView, String date){
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat format =new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        Date date1 = null;
+        try {
+            date1 = format.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (date1.after(new Date(MaterialDatePicker.todayInUtcMilliseconds()))){
+            SimpleDateFormat newFormat = new SimpleDateFormat("HH:mm");
+            textView.setText(newFormat.format(date1));
+        }
+        else if (date1.after(new Date(MaterialDatePicker.todayInUtcMilliseconds() - DAY_IN_MS))){
+            textView.setText(textView.getContext().getText(R.string.yesterday));
+        }
+        else {
+            SimpleDateFormat newFormat = new SimpleDateFormat("dd/MM");
+            textView.setText(newFormat.format(date1));
+        }
+    }
+
     @BindingAdapter({"jestaLocation","myLocation"})
     public static void calacDistance(TextView textView, List<Double> jesstaLocation, LatLng myLocation){
         if (myLocation == null || jesstaLocation == null)
@@ -209,6 +295,11 @@ public class JestaBindingAdapters {
     public static void calacDistanceList(TextView textView, GetJestaQuery.SourceAddress source, GetJestaQuery.DestinationAddress dest){
         if (source != null && dest != null)
         calacDistance(textView,source.location.coordinates, new LatLng(dest.location.coordinates.get(0), dest.location.coordinates.get(1)));
+    }
+
+    @BindingAdapter("notificationImage")
+    public static void notificationImage(ImageView imageView, FavorTransactionStatus status){
+
     }
 
     // region Private methods

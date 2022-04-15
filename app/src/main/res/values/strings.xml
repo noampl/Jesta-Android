@@ -65,6 +65,7 @@
     <string name="dest">יעד:</string>
     <string name="src">מוצא:</string>
     <string name="tommorow">מחר</string>
+    <string name="yesterday">אתמול</string>
     <string name="settings">הגדרות</string>
     <string name="phone">טלפון</string>
     <string name="address">כתובת</string>
@@ -98,4 +99,13 @@
     <string name="logout">התנתק</string>
     <string name="send_msg">שלח הודעה</string>
     <string name="sent">נשלח</string>
+    <string name="full_details">פרטים מלאים</string>
+    <string name="accepted_by_me">מקובל עליי</string>
+    <string name="read_comments">קרא חוות דעת</string>
+    <string name="navigate_now">נווט עכשיו</string>
+    <string name="offer_favor">%1$s! רוצה לעשות לך ג\'סטה</string>
+    <string name="favor_approved">הג\'סטה ל%1$s! מאושרת לביצוע</string>
+    <string name="favor_finish">הג\'סטה ל%1$s! הושלמה בהצלחה</string>
+
+
 </resources>

@@ -24,3 +24,16 @@ query GetUser($email: String) {
         imagePath
     }
 }
+
+query GetUserById($id: String) {
+    getUser(_id: $id) {
+        firstName
+        lastName
+        birthday
+        email
+        dateEmailVerified
+        phone
+        imagePath
+        _id
+    }
+}

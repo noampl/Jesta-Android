@@ -52,7 +52,7 @@ public class CreateJestaViewModel extends ViewModel {
     private final MutableLiveData<PaymentType> _paymentType;
     private final MutableLiveData<Integer> _numOfPeople;
     private final MutableLiveData<Integer> _amount;
-    private Optional<Upload> _image1;
+    private List<Upload> _images;
 
     // endregion
 
@@ -75,6 +75,7 @@ public class CreateJestaViewModel extends ViewModel {
         _category = JestaRepository.getInstance().get_category();
         _numOfPeople = JestaRepository.getInstance().get_numOfPeople();
         _amount = JestaRepository.getInstance().get_amount();
+        _images = new ArrayList<>();
     }
 
     // endregion
@@ -309,8 +310,7 @@ public class CreateJestaViewModel extends ViewModel {
         if (get_category() == null || get_category().getValue() == 0){
             return false;
         }
-
-        GrahpqlRepository.getInstance().createJesta(jestaConverter(),_image1);
+        GrahpqlRepository.getInstance().createJesta(jestaConverter(),new Optional.Present<>(_images));
         return true;
     }
 
@@ -378,7 +378,9 @@ public class CreateJestaViewModel extends ViewModel {
                 .content(Okio.buffer(filePath))
                 .fileName("_" + Consts.JPG)
                 .build();
-        _image1 =  new Optional.Present<>(upload);
+        if (!_images.contains(upload)){
+            _images.add(upload);
+        }
     }
 
     public void clearData() {

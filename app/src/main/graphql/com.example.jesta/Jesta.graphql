@@ -31,6 +31,7 @@ query GetJesta($favorId: String) {
         paymentMethod
         dateToPublish
         dateToUnpublished
+        status
     }
 }
 

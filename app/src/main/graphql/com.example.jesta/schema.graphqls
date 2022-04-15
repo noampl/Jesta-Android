@@ -40,6 +40,12 @@ input UserCreateInput {
     altitude: Float
 }
 
+input UserSecureUpdate {
+    email: String
+    password: String
+    accountDelete: Boolean
+}
+
 input UserUpdateInput {
     firstName: String
     lastName: String
@@ -65,32 +71,39 @@ type Query {
     getFavorsByDate(startingDate: DateTime, limitDate: DateTime): [Favor]
     getAllFavors: [Favor]
     getFavorsInRadios(center: [Float], radius: Float): [Favor]
+    getByRadiosAndDateAndOnlyAvailable(center: [Float], radius: Float, startingDate: DateTime, limitDate: DateTime): [Favor]
+    gatAllFavorsByStatus(status: FavorStatus): [Favor]
     getAllCategories: [Category]
     getAllPerforms: [Perform]
     getPerformsInRadios(center: [Float], radius: Float): [Perform]
     getAllFavorTransaction: [FavorTransaction]
-    getAllUserFavorsRequestedTransaction: [FavorTransaction]
+    getAllUserFavorsRequestedTransaction: [PopulatedFavorTransaction]
     getAllUserFavorsWaitingForHandleTransaction: [FavorTransaction]
+    getAllOwnerFavorTransactionByStatus(status: FavorTransactionStatus): [FavorTransaction]
+    getAllExecutorFavorTransactionByStatus(status: FavorTransactionStatus): [FavorTransaction]
 }
 
 type Mutation {
     signUpUser(userParams: UserCreateInput, file: Upload): JWT
     signUpAdmin(userParams: UserCreateInput, file: Upload): JWT
     deleteUser(_id: String, email: String): String
-    updateUser(_id: String, email: String, updatedUser: UserUpdateInput): String
+    updateUser(_id: String, email: String, updatedUser: UserUpdateInput, newImage: Upload): String
+    secureEmailPasswordAccountUpdate(_id: String, email: String, password: String, updateParams: UserSecureUpdate): String
     connectUser(email: String!, password: String!): JWT
-    createFavor(favor: FavorInput, image: Upload): Favor
+    createFavor(favor: FavorInput, images: [Upload]): Favor
     deleteFavor(favorId: String): String
-    updateFavor(favorId: String, updatedFavor: UpdateFavorInput): String
-    createCategory(name: String): Category
-    updateCategory(nameToChange: String, changedName: String): String
+    updateFavor(favorId: String, updatedFavor: UpdateFavorInput, newImages: [Upload]): String
+    createCategory(name: String, parentCategory: String): Category
+    updateCategory(nameToChange: String, newParentCategoryId: String, changedName: String): String
     deleteCategory(name: String): String
     createPerform(perform: PerformInput): Perform
     deletePerform(performId: String): String
     updatePerform(performId: String, updatedPerform: UpdatePerformInput): String
     createFavorTransactionRequest(favorId: String!, comment: String): String
-    handleFavorTransactionRequest(favorTransactionId: String!, status: FavorTransactionStatus, comment: String): String
+    handleFavorTransactionRequest(favorTransactionId: String!, comment: String): String
     deleteFavorTransactionRequest(favorTransactionId: String!): String
+    executorNotifyDoneFavor(favorTransactionId: String!): String
+    ownerNotifyJestaHasBeenDone(favorTransactionId: String!, rate: Int): String
 }
 
 input CoordinatesInput {
@@ -104,6 +117,7 @@ input AddressInput {
 
 type PopulatedFavor {
     _id: String!
+    status: String!
     ownerId: User
     categoryId: [Category]
     numOfPeopleNeeded: Int!
@@ -122,6 +136,7 @@ type PopulatedFavor {
 
 type Favor {
     _id: String!
+    status: String!
     ownerId: String!
     categoryId: [String!]!
     numOfPeopleNeeded: Int!
@@ -142,6 +157,11 @@ enum PaymentType {
     PAYPAL
     FREE
     CASH
+}
+
+enum FavorStatus {
+    Available
+    Unavailable
 }
 
 input FavorInput {
@@ -173,6 +193,7 @@ input UpdateFavorInput {
 
 type Category {
     _id: String!
+    parentCategory: Category
     name: String
     dateLastModified: DateTime
 }
@@ -235,16 +256,33 @@ input UpdatePerformInput {
 }
 
 enum FavorTransactionStatus {
-    Approved
-    Waiting
-    Canceled
+    PENDING_FOR_OWNER
+    WAITING_FOR_JESTA_EXECUTION_TIME
+    EXECUTOR_FINISH_JESTA
+    JESTA_DONE
+    CANCELED
 }
 
 type FavorTransaction {
     _id: String!
+    status: FavorTransactionStatus!
     favorId: String!
     favorOwnerId: String!
     handledByUserId: String!
+    ownerComment: String
+    handlerComment: String
+    dateAccepted: DateTime
+    dateCompleted: DateTime
+    dateCreated: DateTime
+    dateLastModified: DateTime
+}
+
+type PopulatedFavorTransaction {
+    _id: String!
+    status: FavorTransactionStatus!
+    favorId: Favor!
+    favorOwnerId: User!
+    handledByUserId: User!
     ownerComment: String
     handlerComment: String
     dateAccepted: DateTime
