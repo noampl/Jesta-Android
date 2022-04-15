@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +17,16 @@ import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentNotificationBinding;
+import com.example.jesta.interfaces.INavigationHelper;
 import com.example.jesta.view.adapters.NotificationAdapter;
 import com.example.jesta.viewmodel.NotificationViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NavigableMap;
 
-public class NotificationFragment extends Fragment {
+public class NotificationFragment extends Fragment implements INavigationHelper {
 
     // region Members
 
@@ -38,9 +41,16 @@ public class NotificationFragment extends Fragment {
                              Bundle savedInstanceState) {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_notification,container,false);
         _notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
+        _notificationViewModel.set_iNavigationHelper(this);
 
         init();
         return _binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        _notificationViewModel.set_iNavigationHelper(null);
     }
 
     // endregion
@@ -61,6 +71,13 @@ public class NotificationFragment extends Fragment {
              }
         });
         _binding.notificationLst.setAdapter(adapter);
+    }
+
+    @Override
+    public void navigate(String arg) {
+        NotificationFragmentDirections.ActionNavNotificationToJestaDetailsFragment action =
+                NotificationFragmentDirections.actionNavNotificationToJestaDetailsFragment(arg);
+        Navigation.findNavController(requireActivity(),R.id.main_container).navigate(action);
     }
 
     // endregion
