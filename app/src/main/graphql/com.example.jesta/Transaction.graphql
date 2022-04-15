@@ -1,3 +1,30 @@
 mutation CreateFavorTransactionRequest($favorId: String!, $comment: String) {
     createFavorTransactionRequest(favorId: $favorId, comment: $comment)
 }
+
+query GetAllUserFavorsRequestedTransaction {
+    getAllUserFavorsRequestedTransaction {
+        _id
+        status
+        favorId {
+            _id
+            status
+            ownerId
+        }
+        favorOwnerId {
+            _id
+            firstName
+            lastName
+        }
+        handledByUserId {
+            _id
+            firstName
+            lastName
+        }
+        dateCreated
+    }
+}
+
+mutation ApproveFavorSuggestion($favorTransactionId: String!, $comment: String) {
+    handleFavorTransactionRequest(favorTransactionId: $favorTransactionId, comment: $comment)
+}

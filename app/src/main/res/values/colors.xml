@@ -8,6 +8,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="light_blue">#3E97EF</color>
+    <color name="red">#F34343</color>
+    <color name="orange">#B08636</color>
+    <color name="blue">#38669B</color>
+    <color name="green">#316E32</color>
+
+
 
 
     <!-- App Theme-->

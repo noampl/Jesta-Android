@@ -113,6 +113,7 @@ public class MapRepository {
              addressList = _geoCoder.getFromLocation(latLng.latitude, latLng.longitude,10);
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
        return addressList.get(0);
     }

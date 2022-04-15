@@ -38,7 +38,7 @@ public class Consts {
     /**
      * Peleg local Server Address, need to change the ip for each user
      */
-    public static final String SERVER_PRE_FIX = "http://192.168.155.138:4111/";
+    public static final String SERVER_PRE_FIX = "http://192.168.199.138:4111/";
 
     // endregion
 

@@ -1,21 +1,37 @@
 package com.example.jesta.view.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
+import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.ActivityMainBinding;
+import com.example.jesta.viewmodel.NotificationViewModel;
+import com.example.jesta.workes.NotificationWorker;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding _binding;
     private NavController _navController;
     private AppBarConfiguration _appBarConfiguration;
+    private TextView _notificationNumber;
+    private CardView _notificationCard;
 
     // endregion
 
@@ -35,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         _binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         // make sure the window is RTL
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        _notificationNumber = findViewById(R.id.notification_number);
+        _notificationCard = findViewById(R.id.notification_container);
         init();
     }
 
@@ -60,6 +80,33 @@ public class MainActivity extends AppCompatActivity {
 
         // listen to toolbar items click
         _binding.mainToolbar.setOnMenuItemClickListener(menuItemClickListener);
+        initWorkers();
+        initObservers();
+    }
+
+    private void initWorkers(){
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class,1, TimeUnit.MINUTES)
+                .addTag("Notification")
+                .build();
+        WorkManager.getInstance(this).enqueue(periodicWorkRequest);
+    }
+
+    private void initObservers(){
+        NotificationViewModel viewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
+        viewModel.get_notificationTransaction().observe(this, new Observer<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>>() {
+            @Override
+            public void onChanged(List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction> transactions) {
+                if (transactions != null) {
+                    System.out.println("peleg - map size is " + transactions.size());
+                    if (transactions.size() > 0) {
+                        _notificationCard.setVisibility(View.VISIBLE);
+                    } else {
+                        _notificationCard.setVisibility(View.INVISIBLE);
+                    }
+                    _notificationNumber.setText(String.valueOf(transactions.size()));
+                }
+            }
+        });
     }
 
     // endregion
@@ -75,6 +122,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        // THis is a patch for getting the action view clickes
+        final Menu m = menu;
+        final MenuItem item = menu.findItem(R.id.nav_notification);
+        item.getActionView().setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                m.performIdentifierAction(item.getItemId(), 0);
+            }
+        });
         return true;
     }
 
@@ -87,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()){
-
                 case R.id.nav_notification:
                     _navController.navigate(R.id.nav_notification);
                     return true;

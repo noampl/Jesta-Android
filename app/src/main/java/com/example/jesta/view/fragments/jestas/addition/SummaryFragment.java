@@ -52,7 +52,12 @@ public class SummaryFragment extends Fragment {
             if (_createJestaViewModel.getImage1().getValue()!= null){
                 _createJestaViewModel.initUploadImage(_createJestaViewModel.getImage1().getValue().second);
             }
-
+            if (_createJestaViewModel.getImage2().getValue()!= null){
+                _createJestaViewModel.initUploadImage(_createJestaViewModel.getImage2().getValue().second);
+            }
+            if (_createJestaViewModel.getImage2().getValue()!= null){
+                _createJestaViewModel.initUploadImage(_createJestaViewModel.getImage2().getValue().second);
+            }
             if(_createJestaViewModel.createJesta()){
                 _createJestaViewModel.clearData();
                 Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
