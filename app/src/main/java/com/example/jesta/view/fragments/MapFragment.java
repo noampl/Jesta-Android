@@ -168,5 +168,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                 MapFragmentDirections.actionNavMapToJestaDetailsFragment(id);
         Navigation.findNavController(requireActivity(),R.id.main_container).navigate(action);
     }
+
     // endregion
 }

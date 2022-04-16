@@ -1,13 +1,13 @@
 package com.example.jesta.view.fragments.jestas;
 
-import android.annotation.SuppressLint;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -16,13 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.jesta.R;
+import com.example.jesta.common.enums.FavorTransactionStatus;
 import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentJestaDetailsBinding;
 import com.example.jesta.interfaces.IDialogConsumerHelper;
 import com.example.jesta.viewmodel.JestaDetailsViewModel;
-import com.google.android.datatransport.runtime.scheduling.persistence.EventStoreModule_SchemaVersionFactory;
 
-import okio._Base64Kt;
 
 public class JestaDetailsFragment extends Fragment {
 
@@ -44,7 +43,7 @@ public class JestaDetailsFragment extends Fragment {
     // region LifeCycle
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         _binding = DataBindingUtil.inflate(inflater,R.layout.fragment_jesta_details,container,false);
         _jestaDetailsViewModel = new ViewModelProvider(this).get(JestaDetailsViewModel.class);
@@ -56,10 +55,10 @@ public class JestaDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        _jestaDetailsViewModel.set_comment("");
-        _jestaDetailsViewModel.set_isSuggestHelp(false);
+    public void onDestroy() {
+        super.onDestroy();
+        _jestaDetailsViewModel.set_jestaDetails(null);
+        _jestaDetailsViewModel.set_favorTransactionStatus(null);
     }
 
     // endregion
@@ -79,30 +78,38 @@ public class JestaDetailsFragment extends Fragment {
         });
         _jestaDetailsViewModel.get_myLocation().observe(getViewLifecycleOwner(), latLng ->
                 _binding.setMyLocation(latLng));
+
+        _jestaDetailsViewModel.get_favorTransactionStatus().observe(getViewLifecycleOwner(), status->{
+            System.out.println("peleg - status is " + status);
+            _binding.setTransactionStatus(status);
+        });
     }
 
     private void initListeners(){
         _binding.suggestHelp.setOnClickListener(v-> {
-                    if (_jestaDetailsViewModel.get_isSuggestHelp().getValue() != null) {
-                        if (!_jestaDetailsViewModel.get_isSuggestHelp().getValue()) {
+                    if (_jestaDetailsViewModel.get_favorTransactionStatus().getValue()!= null) {
+                        if (_jestaDetailsViewModel.get_favorTransactionStatus().getValue().equals(FavorTransactionStatus.CANCELED.toString())) {
                             _jestaDetailsViewModel.suggestHelp(_jestaId);
                         } else {
                             new AlertDialog.Builder(requireContext()).setMessage(R.string.disable_offer)
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            // TODO cancel transaction
-                                            dialogInterface.dismiss();
-                                        }                                        ;
-                                    }
-                            ).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.dismiss();
-                                        }
-                                    }).create().show();
+                                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    _jestaDetailsViewModel.cancelTransaction(_jestaId);
+                                                    dialogInterface.dismiss();
+                                                }                                        ;
+                                            }
+                                    ).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).create().show();
                         }
-                    };
+                    }
+                    else {
+                        _jestaDetailsViewModel.suggestHelp(_jestaId);
+                    }
                 });
 
         _binding.sendMsg.setOnClickListener(v->{
@@ -111,6 +118,10 @@ public class JestaDetailsFragment extends Fragment {
                     JestaDetailsFragmentDirections.actionJestaDetailsFragmentToOneInputDialogFragment(null,getString(R.string.send_msg),getString(R.string.send_msg));
             action.setFiledType(FiledType.NAME.ordinal());
             Navigation.findNavController(requireActivity(),R.id.main_container).navigate(action);
+        });
+
+        _binding.doneBtn.setOnClickListener(v->{
+            _jestaDetailsViewModel.notifyExcuterFinish(_jestaId);
         });
     }
 

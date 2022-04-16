@@ -65,6 +65,7 @@ type JWT {
 
 type Query {
     getAllUsers: [User]
+    getAllClients: [User]
     getAllAdmins: [User]
     getUser(_id: String, firstName: String, lastName: String, email: String): User
     getFavor(favorId: String): PopulatedFavor
@@ -76,6 +77,7 @@ type Query {
     getAllCategories: [Category]
     getAllPerforms: [Perform]
     getPerformsInRadios(center: [Float], radius: Float): [Perform]
+    getAllUserFavorTransactionByFavorId(favorId: String!): FavorTransaction
     getAllFavorTransaction: [FavorTransaction]
     getAllUserFavorsRequestedTransaction: [PopulatedFavorTransaction]
     getAllUserFavorsWaitingForHandleTransaction: [FavorTransaction]
@@ -101,7 +103,7 @@ type Mutation {
     updatePerform(performId: String, updatedPerform: UpdatePerformInput): String
     createFavorTransactionRequest(favorId: String!, comment: String): String
     handleFavorTransactionRequest(favorTransactionId: String!, comment: String): String
-    deleteFavorTransactionRequest(favorTransactionId: String!): String
+    cancelFavorTransaction(favorTransactionId: String!): String
     executorNotifyDoneFavor(favorTransactionId: String!): String
     ownerNotifyJestaHasBeenDone(favorTransactionId: String!, rate: Int): String
 }
@@ -265,7 +267,7 @@ enum FavorTransactionStatus {
 
 type FavorTransaction {
     _id: String!
-    status: FavorTransactionStatus!
+    status: String!
     favorId: String!
     favorOwnerId: String!
     handledByUserId: String!
@@ -279,7 +281,7 @@ type FavorTransaction {
 
 type PopulatedFavorTransaction {
     _id: String!
-    status: FavorTransactionStatus!
+    status: String!
     favorId: Favor!
     favorOwnerId: User!
     handledByUserId: User!

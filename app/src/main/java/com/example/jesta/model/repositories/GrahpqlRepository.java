@@ -12,16 +12,22 @@ import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Upload;
 import com.apollographql.apollo3.rx3.Rx3Apollo;
 import com.example.jesta.ApproveFavorSuggestionMutation;
+import com.example.jesta.CancelFavorTransactionMutation;
 import com.example.jesta.CreateFavorTransactionRequestMutation;
 import com.example.jesta.CreateFavorWithImageMutation;
+import com.example.jesta.ExecutorFinishFavorMutation;
+import com.example.jesta.GetAllUserFavorTransactionByFavorIdQuery;
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.GetUserByIdQuery;
 import com.example.jesta.GetUserQuery;
 import com.example.jesta.LoginMutation;
+import com.example.jesta.OwnerFinishFavorMutation;
 import com.example.jesta.SignUpMutation;
 import com.example.jesta.UpdateUserMutation;
+import com.example.jesta.adapter.GetAllUserFavorTransactionByFavorIdQuery_ResponseAdapter;
+import com.example.jesta.common.enums.FavorTransactionStatus;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.type.FavorInput;
 import com.example.jesta.type.UserCreateInput;
@@ -95,6 +101,8 @@ public class GrahpqlRepository {
     // endregion
 
     // region Server Interactions Method
+
+    // region Mutations
 
     /**
      * Login to the remote server
@@ -171,46 +179,6 @@ public class GrahpqlRepository {
     }
 
     /**
-     * Gets User Information by email
-     *
-     * @param email The user email
-     */
-    public void getMyUserInformation(String email){
-        ApolloCall<GetUserQuery.Data> getUser = _apolloClient.query(new GetUserQuery(new Optional.Present<>(email)));
-        Single<ApolloResponse<GetUserQuery.Data>> apolloResponseSingle = Rx3Apollo.single(getUser);
-        apolloResponseSingle.subscribe(new SingleObserver<ApolloResponse<GetUserQuery.Data>>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-
-            }
-
-            @Override
-            public void onSuccess(@NonNull ApolloResponse<GetUserQuery.Data> dataApolloResponse) {
-                if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null){
-                    UsersRepository.getInstance().set_myUser(new User(
-                            dataApolloResponse.data.getUser._id,
-                            dataApolloResponse.data.getUser.firstName,
-                            dataApolloResponse.data.getUser.lastName,
-                            dataApolloResponse.data.getUser.birthday.toString(),
-                            dataApolloResponse.data.getUser.email,
-                            dataApolloResponse.data.getUser.phone,
-                            dataApolloResponse.data.getUser.role,
-                            dataApolloResponse.data.getUser.imagePath,
-                            dataApolloResponse.data.getUser.address));
-                }
-                else {
-                    Log.e("getUser", dataApolloResponse.errors.get(0).getMessage());
-                }
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                Log.e("getuser", e.getMessage());
-            }
-        });
-    }
-
-    /**
      * Create new Jesta
      *
      * @param favorInput The jseta details
@@ -237,35 +205,7 @@ public class GrahpqlRepository {
 
             @Override
             public void onError(@NonNull Throwable e) {
-                    Log.e("CreateJesta", e.getMessage());
-            }
-        });
-    }
-
-    /**
-     * Get all the Needed jestas in the nearby area
-     * @param center The Center of the circle where we start searching from
-     * @param radius The radius in KM
-     */
-    public void GetRemoteJestas(Optional<List<Double>> center, Optional<Double> radius){
-        ApolloCall<GetJestasInRadiusQuery.Data> getJestas = _apolloClient.query(new GetJestasInRadiusQuery(center,radius));
-        Single<ApolloResponse<GetJestasInRadiusQuery.Data>> responseSingle = Rx3Apollo.single(getJestas);
-        responseSingle.subscribe(new SingleObserver<ApolloResponse<GetJestasInRadiusQuery.Data>>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-
-            }
-
-            @Override
-            public void onSuccess(@NonNull ApolloResponse<GetJestasInRadiusQuery.Data> dataApolloResponse) {
-                if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null){
-                    JestaRepository.getInstance().set_jestas(dataApolloResponse.data.getFavorsInRadios);
-                }
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-
+                Log.e("CreateJesta", e.getMessage());
             }
         });
     }
@@ -306,25 +246,13 @@ public class GrahpqlRepository {
     }
 
     /**
-     * Get JEsta Details
-     * @param id Rhe Jesta ID
-     */
-    public void getJestaDetails(String id){
-        _executorService.execute(()->{
-            GetJestaQuery.GetFavor favor = synchronizeJestDetails(id);
-            if (favor != null){
-                JestaRepository.getInstance().set_jestaDetails(favor);
-            }
-        });
-    }
-
-    /**
      * Suggest help for a nearby jesta
      *
      * @param favorId The jesta Id
      * @param comment Comment for help
      */
     public void suggestHelp(String favorId, Optional<String> comment ) {
+        System.out.println("peleg - 5.5");
         ApolloCall<CreateFavorTransactionRequestMutation.Data> mutation = _apolloClient.mutation(new CreateFavorTransactionRequestMutation(favorId,comment));
         Single<ApolloResponse<CreateFavorTransactionRequestMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
         responseSingle.subscribe(new SingleObserver<ApolloResponse<CreateFavorTransactionRequestMutation.Data>>() {
@@ -337,6 +265,13 @@ public class GrahpqlRepository {
             public void onSuccess(@NonNull ApolloResponse<CreateFavorTransactionRequestMutation.Data> dataApolloResponse) {
                 if (!dataApolloResponse.hasErrors()){
                     JestaRepository.getInstance().set_isSuggestHelp(true);
+                    GetAllUserFavorTransactionByFavorIdQuery.GetAllUserFavorTransactionByFavorId transaction = synchronizeGetTransaction(favorId);
+                    if (transaction != null){
+                        JestaRepository.getInstance().set_favorTransactionStatus(transaction.status);
+                    }
+                    else{
+                        JestaRepository.getInstance().set_favorTransactionStatus(null);
+                    }
                 }
                 else{
                     Log.e("suggestHelp", dataApolloResponse.errors.get(0).getMessage());
@@ -348,6 +283,190 @@ public class GrahpqlRepository {
             public void onError(@NonNull Throwable e) {
                 Log.e("suggestHelp", e.getMessage());
                 JestaRepository.getInstance().set_isSuggestHelp(false);
+            }
+        });
+    }
+
+    /**
+     * Approve favors suggestion of other users
+     *
+     * @param transactionId the transzation Id
+     * @param comment Comment of the transaction
+     */
+    public void approveFavorSuggestion(String transactionId, String comment){
+        ApolloCall<ApproveFavorSuggestionMutation.Data> mutation = _apolloClient.mutation(new ApproveFavorSuggestionMutation(transactionId, new Optional.Present<>(comment)));
+        Single<ApolloResponse<ApproveFavorSuggestionMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<ApproveFavorSuggestionMutation.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<ApproveFavorSuggestionMutation.Data> dataApolloResponse) {
+                if (dataApolloResponse.hasErrors()){
+                    for (Error e : dataApolloResponse.errors)
+                        Log.e("ApproveFavorSuggestion", e.getMessage());
+                    // TODO consider raise an error to user
+                }
+                else{
+                    Log.d("ApproveFavorSuggestion", "mutation success " + dataApolloResponse.data.handleFavorTransactionRequest);
+                    getFavorTransaction();
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("ApproveFavorSuggestion", e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Executor notifu he finish the favor transaction
+     * @param favorId The favor id related to the transaction
+     */
+    public void executorFinishFavor(String favorId){
+        _executorService.execute(()->{
+            GetAllUserFavorTransactionByFavorIdQuery.GetAllUserFavorTransactionByFavorId transaction = synchronizeGetTransaction(favorId);
+            if (transaction != null){
+                ApolloCall<ExecutorFinishFavorMutation.Data> mutation = _apolloClient.mutation(new ExecutorFinishFavorMutation(transaction._id));
+                Single<ApolloResponse<ExecutorFinishFavorMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
+                ApolloResponse<ExecutorFinishFavorMutation.Data> dataApolloResponse = responseSingle.blockingGet();
+                if (dataApolloResponse.hasErrors()){
+                    for (Error e : dataApolloResponse.errors)
+                        Log.e("executorFinishFavor", e.getMessage());
+                }
+                else{
+                    Log.d("executorFinishFavor", dataApolloResponse.data.executorNotifyDoneFavor);
+                    JestaRepository.getInstance().set_favorTransactionStatus(FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString());
+                }
+            }
+        });
+    }
+
+    /**
+     * Onwer rating the jestioner performance
+     *
+     * @param id The TransactionId
+     * @param rate The Rate (1-5)
+     */
+    public void ownerFinishFavor(String id, int rate){
+        ApolloCall<OwnerFinishFavorMutation.Data> mutation = _apolloClient.mutation(new OwnerFinishFavorMutation(id, new Optional.Present<>(rate)));
+        Single<ApolloResponse<OwnerFinishFavorMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<OwnerFinishFavorMutation.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<OwnerFinishFavorMutation.Data> dataApolloResponse) {
+                if (dataApolloResponse.hasErrors()){
+                    for (Error e : dataApolloResponse.errors)
+                        Log.e("ownerFinishFavor", e.getMessage());
+                }
+                else{
+                    Log.d("ownerFinishFavor", "Rate transaction " + id + " " + rate);
+                    getFavorTransaction();
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("ownerFinishFavor", e.getMessage());
+            }
+        });
+    }
+
+    // endregion
+
+    // region Queries
+
+    /**
+     * Gets User Information by email
+     *
+     * @param email The user email
+     */
+    public void getMyUserInformation(String email){
+        ApolloCall<GetUserQuery.Data> getUser = _apolloClient.query(new GetUserQuery(new Optional.Present<>(email)));
+        Single<ApolloResponse<GetUserQuery.Data>> apolloResponseSingle = Rx3Apollo.single(getUser);
+        apolloResponseSingle.subscribe(new SingleObserver<ApolloResponse<GetUserQuery.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<GetUserQuery.Data> dataApolloResponse) {
+                if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null){
+                    UsersRepository.getInstance().set_myUser(new User(
+                            dataApolloResponse.data.getUser._id,
+                            dataApolloResponse.data.getUser.firstName,
+                            dataApolloResponse.data.getUser.lastName,
+                            dataApolloResponse.data.getUser.birthday.toString(),
+                            dataApolloResponse.data.getUser.email,
+                            dataApolloResponse.data.getUser.phone,
+                            dataApolloResponse.data.getUser.role,
+                            dataApolloResponse.data.getUser.imagePath,
+                            dataApolloResponse.data.getUser.address));
+                }
+                else {
+                    Log.e("getUser", dataApolloResponse.errors.get(0).getMessage());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("getuser", e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Get all the Needed jestas in the nearby area
+     * @param center The Center of the circle where we start searching from
+     * @param radius The radius in KM
+     */
+    public void GetRemoteJestas(Optional<List<Double>> center, Optional<Double> radius){
+        ApolloCall<GetJestasInRadiusQuery.Data> getJestas = _apolloClient.query(new GetJestasInRadiusQuery(center,radius));
+        Single<ApolloResponse<GetJestasInRadiusQuery.Data>> responseSingle = Rx3Apollo.single(getJestas);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<GetJestasInRadiusQuery.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<GetJestasInRadiusQuery.Data> dataApolloResponse) {
+                if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null){
+                    JestaRepository.getInstance().set_jestas(dataApolloResponse.data.getFavorsInRadios);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+        });
+    }
+
+    /**
+     * Get JEsta Details
+     * @param id Rhe Jesta ID
+     */
+    public void getJestaDetails(String id){
+        _executorService.execute(()->{
+            GetJestaQuery.GetFavor favor = synchronizeJestDetails(id);
+            if (favor != null){
+                JestaRepository.getInstance().set_jestaDetails(favor);
+                GetAllUserFavorTransactionByFavorIdQuery.GetAllUserFavorTransactionByFavorId transaction = synchronizeGetTransaction(id);
+                if (transaction != null){
+                    JestaRepository.getInstance().set_favorTransactionStatus(transaction.status);
+                }
+                else{
+                    JestaRepository.getInstance().set_favorTransactionStatus(null);
+                }
             }
         });
     }
@@ -385,37 +504,31 @@ public class GrahpqlRepository {
     }
 
     /**
-     * Approve favors suggestion of other users
-     *
-     * @param transactionId the transzation Id
-     * @param comment Comment of the transaction
+     * Cancel Transaction
+     * @param favorId The id of the favorId connect to the transaction cancel
      */
-    public void approveFavorSuggestion(String transactionId, String comment){
-        ApolloCall<ApproveFavorSuggestionMutation.Data> mutation = _apolloClient.mutation(new ApproveFavorSuggestionMutation(transactionId, new Optional.Present<>(comment)));
-        Single<ApolloResponse<ApproveFavorSuggestionMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
-        responseSingle.subscribe(new SingleObserver<ApolloResponse<ApproveFavorSuggestionMutation.Data>>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
+    public void cancelFavorTransaction(String favorId){
+        _executorService.execute(()->{
+            GetAllUserFavorTransactionByFavorIdQuery.GetAllUserFavorTransactionByFavorId transaction = synchronizeGetTransaction(favorId);
+            if (transaction != null){
+                ApolloCall<CancelFavorTransactionMutation.Data> mutaion = _apolloClient.mutation(new CancelFavorTransactionMutation(transaction._id));
+                Single<ApolloResponse<CancelFavorTransactionMutation.Data>> responseSingle = Rx3Apollo.single(mutaion);
+                ApolloResponse<CancelFavorTransactionMutation.Data> dataApolloResponse = responseSingle.blockingGet();
 
-            }
-
-            @Override
-            public void onSuccess(@NonNull ApolloResponse<ApproveFavorSuggestionMutation.Data> dataApolloResponse) {
                 if (dataApolloResponse.hasErrors()){
                     for (Error e : dataApolloResponse.errors)
-                        Log.e("ApproveFavorSuggestion", e.getMessage());
+                        Log.e("cancelFavorTransaction", e.getMessage());
                 }
                 else{
-                    Log.d("ApproveFavorSuggestion", "mutation success " + dataApolloResponse.data.handleFavorTransactionRequest);
+                    Log.d("cancelFavorTransaction", "Cancel transaction " + transaction._id);
+                    JestaRepository.getInstance().set_favorTransactionStatus(FavorTransactionStatus.CANCELED.toString());
                 }
             }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                Log.e("ApproveFavorSuggestion", e.getMessage());
-            }
         });
+
     }
+
+    // endregion
 
     // endregion
 
@@ -446,6 +559,22 @@ public class GrahpqlRepository {
             return dataApolloResponse.data.getUser;
         }
     }
+
+    private GetAllUserFavorTransactionByFavorIdQuery.GetAllUserFavorTransactionByFavorId synchronizeGetTransaction(String favorId){
+        ApolloCall<GetAllUserFavorTransactionByFavorIdQuery.Data> query = _apolloClient.query(new GetAllUserFavorTransactionByFavorIdQuery(favorId));
+        Single<ApolloResponse<GetAllUserFavorTransactionByFavorIdQuery.Data>> responseSingle = Rx3Apollo.single(query);
+        ApolloResponse<GetAllUserFavorTransactionByFavorIdQuery.Data> dataApolloResponse = responseSingle.blockingGet();
+        if (dataApolloResponse.hasErrors() || dataApolloResponse.data == null ||
+                dataApolloResponse.data.getAllUserFavorTransactionByFavorId == null){
+            if (dataApolloResponse.errors != null){
+                for (Error e : dataApolloResponse.errors)
+                    Log.e("synchronizeGetTransaction", e.getMessage());
+            }
+            return null;
+        }
+            return dataApolloResponse.data.getAllUserFavorTransactionByFavorId;
+    }
+
 
     // endregion
 }

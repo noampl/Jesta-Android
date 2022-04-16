@@ -101,14 +101,26 @@
     <string name="sent">נשלח</string>
     <string name="full_details">פרטים מלאים</string>
     <string name="accepted_by_me">מקובל עליי</string>
-    <string name="read_comments">קרא חוות דעת</string>
+    <string name="view_rating">צפה בדירוג</string>
+    <string name="write_rating">דרג</string>
     <string name="navigate_now">נווט עכשיו</string>
     <string name="offer_favor">%1$s! רוצה לעשות לך ג\'סטה</string>
     <string name="favor_approved">הג\'סטה ל%1$s! מאושרת לביצוע</string>
+    <string name="approve_for_doing">מאושרת לביצוע</string>
     <string name="favor_finish">הג\'סטה ל%1$s! הושלמה בהצלחה</string>
+    <string name="executor_finish_favor">%1$s! ביצע את הג\'סטה </string>
     <string name="yes">כן</string>
     <string name="no">לא</string>
     <string name="disable_offer">האם אתה רוצה לבטל את הצעתך לעזרה?</string>
+    <string name="status">סטטוס</string>
+    <string name="done">סיימתי</string>
+    <string name="arrived">הגעתי</string>
+    <string name="on_my_way">בדרך</string>
+    <string name="finished">הסתיימה</string>
+    <string name="pending_for_owner">ממתינה לאישור</string>
+    <string name="pendig_for_execution_time">ממתינה לביצוע</string>
+    <string name="executor_finish_jesta">נעשתה</string>
+    <string name="ready_to_execute">מוכן לבצע</string>
 
 
 </resources>
