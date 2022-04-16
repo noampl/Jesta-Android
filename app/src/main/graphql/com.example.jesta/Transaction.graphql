@@ -22,9 +22,30 @@ query GetAllUserFavorsRequestedTransaction {
             lastName
         }
         dateCreated
+        dateLastModified
     }
 }
 
 mutation ApproveFavorSuggestion($favorTransactionId: String!, $comment: String) {
     handleFavorTransactionRequest(favorTransactionId: $favorTransactionId, comment: $comment)
+}
+
+mutation cancelFavorTransaction($favorTransactionId: String!) {
+    cancelFavorTransaction(favorTransactionId: $favorTransactionId)
+}
+
+query GetAllUserFavorTransactionByFavorId($favorId: String!) {
+    getAllUserFavorTransactionByFavorId(favorId: $favorId) {
+        _id
+        status
+        favorId
+    }
+}
+
+mutation ExecutorFinishFavor($favorTransactionId: String!) {
+    executorNotifyDoneFavor(favorTransactionId: $favorTransactionId)
+}
+
+mutation OwnerFinishFavor($favorTransactionId: String!, $rate: Int) {
+    ownerNotifyJestaHasBeenDone(favorTransactionId: $favorTransactionId, rate: $rate)
 }

@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
+import com.example.jesta.common.enums.FavorTransactionStatus;
 import com.example.jesta.databinding.NotificationItemBinding;
-import com.example.jesta.type.FavorTransactionStatus;
 import com.example.jesta.viewmodel.NotificationViewModel;
 
 
@@ -24,7 +24,7 @@ public class NotificationAdapter extends ListAdapter<GetAllUserFavorsRequestedTr
 
     // region Members
 
-    private NotificationViewModel _notificationViewModel;
+    private final NotificationViewModel _notificationViewModel;
 
     // endregion
 
@@ -70,20 +70,26 @@ public class NotificationAdapter extends ListAdapter<GetAllUserFavorsRequestedTr
             _binding = binding;
         }
 
-        public void bind(GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction transaction , NotificationViewModel viewModel){
-            System.out.println("peleg - " + transaction.toString());
+        public void bind(GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction transaction ,NotificationViewModel viewModel){
             _binding.setTransaction(transaction);
             _binding.executePendingBindings();
 
             _binding.positiveBtn.setOnClickListener(v->{
-                if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(transaction.status)) {
+                if (transaction.status == null){
+                 viewModel.suggestHelp(transaction._id);
+                 return;
+                }
+                if (FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(transaction.status)) {
                     viewModel.approveSuggestion(transaction._id);
-                    _binding.positiveBtn.setText(v.getContext().getString(R.string.sent));
-                } else if (FavorTransactionStatus.JESTA_DONE.equals(transaction.status)) {
-
-                } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.equals(transaction.status)) {
-
-                } else{
+                } else if (FavorTransactionStatus.JESTA_DONE.toString().equals(transaction.status)) {
+                // TODO Remove from notification
+                } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(transaction.status)) {
+                // TODO write a comment about the jestionar
+                    viewModel.openRating(transaction._id);
+                } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString().equals(transaction.status)){
+                 // TODO open WAZE
+                }
+                else{
                     Log.d("NotificationViewHolder","unrecognized status " + transaction.status);
                 }
             });

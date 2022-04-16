@@ -6,6 +6,7 @@ import android.net.Uri;
 import androidx.core.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
@@ -46,7 +47,8 @@ public class JestaRepository {
 
     private ITabsNavigationHelper _tabsNavigationHelper;
     private ExecutorService _executorService;
-    private MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> _jestas;
+    private final MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> _jestas;
+    private final MutableLiveData<String> _favorTransaction;
 
     // endregion
 
@@ -82,11 +84,16 @@ public class JestaRepository {
         _executorService = Executors.newSingleThreadExecutor();
         _comment = "";
         _isSuggestHelp = new MutableLiveData<>(false);
+        _favorTransaction = new MutableLiveData<>();
     }
 
     // endregion
 
     // region Properties
+
+    public MutableLiveData<String> get_favorTransaction() {
+        return _favorTransaction;
+    }
 
     public MutableLiveData<Boolean> get_isSuggestHelp() {
         return _isSuggestHelp;
@@ -181,6 +188,12 @@ public class JestaRepository {
     public void set_isSuggestHelp(Boolean bool){
         _isSuggestHelp.postValue(bool);
     }
+
+    public void set_favorTransactionStatus(String status){
+        System.out.println("peleg - set_favorTransaction");
+        _favorTransaction.postValue(status);
+    }
+
     // endregion
 
 

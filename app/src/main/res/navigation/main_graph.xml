@@ -47,6 +47,9 @@
         <action
             android:id="@+id/action_nav_notification_to_jestaDetailsFragment"
             app:destination="@id/jestaDetailsFragment" />
+        <action
+            android:id="@+id/action_nav_notification_to_ratingDialogFragment"
+            app:destination="@id/ratingDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_privacy"
@@ -140,4 +143,20 @@
             android:id="@+id/action_jestaDetailsFragment_to_oneInputDialogFragment"
             app:destination="@id/oneInputDialogFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/ratingDialogFragment"
+        android:name="com.example.jesta.view.dialogs.RatingDialogFragment"
+        android:label="@string/write_rating"
+        tools:layout="@layout/fragment_rating_dialog" >
+        <argument
+            android:name="transactionId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_ratingDialogFragment_to_nav_map"
+            app:destination="@id/nav_map" />
+        <argument
+            android:name="rating"
+            app:argType="float"
+            android:defaultValue="-1" />
+    </dialog>
 </navigation>

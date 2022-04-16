@@ -2,7 +2,6 @@ package com.example.jesta.view.fragments;
 
 import android.os.Bundle;
 
-import androidx.core.util.Pair;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -14,17 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
-import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentNotificationBinding;
 import com.example.jesta.interfaces.INavigationHelper;
 import com.example.jesta.view.adapters.NotificationAdapter;
 import com.example.jesta.viewmodel.NotificationViewModel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.NavigableMap;
 
 public class NotificationFragment extends Fragment implements INavigationHelper {
 
@@ -32,6 +27,15 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
 
     private FragmentNotificationBinding _binding;
     private NotificationViewModel _notificationViewModel;
+    private final INavigationHelper _ratingDialogOpener = new INavigationHelper() {
+        @Override
+        public void navigate(String arg) {
+            NotificationFragmentDirections.ActionNavNotificationToRatingDialogFragment action =
+            NotificationFragmentDirections.actionNavNotificationToRatingDialogFragment(arg);
+            Navigation.findNavController(requireActivity(),R.id.main_container).navigate(action);
+        }
+    };
+
     // endregion
 
     // region LifeCycle
@@ -42,6 +46,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_notification,container,false);
         _notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
         _notificationViewModel.set_iNavigationHelper(this);
+        _notificationViewModel.set_ratingDialogOpener(_ratingDialogOpener);
 
         init();
         return _binding.getRoot();
@@ -67,7 +72,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         _notificationViewModel.get_notificationTransaction().observe(getViewLifecycleOwner(), new Observer<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>>() {
             @Override
             public void onChanged(List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction> transactions) {
-                adapter.submitList(transactions);
+                adapter.submitList(transactions); // TODO add here sort by lastDate
              }
         });
         _binding.notificationLst.setAdapter(adapter);

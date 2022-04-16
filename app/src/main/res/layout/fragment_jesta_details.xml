@@ -13,6 +13,10 @@
             type="com.example.jesta.GetJestaQuery.GetFavor" />
 
         <variable
+            name="transactionStatus"
+            type="String" />
+
+        <variable
             name="myLocation"
             type="com.google.android.gms.maps.model.LatLng" />
 
@@ -343,10 +347,9 @@
             android:id="@+id/suggest_help"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@{isSuggestHelp ? @color/light_orange : @color/black}"
-            android:text="@{isSuggestHelp ? @string/sent : @string/suggest_help}"
-            android:textColor="@{isSuggestHelp ? @color/black : @color/white}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:btnStatus="@{transactionStatus}"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/status_layout"
             app:layout_constraintStart_toEndOf="@+id/half_guidline"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -357,11 +360,66 @@
             android:background="@color/white"
             android:textColor="@color/black"
             android:text="@string/send_msg"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/status_layout"
             app:layout_constraintEnd_toStartOf="@+id/half_guidline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/suggest_help" >
-        </androidx.appcompat.widget.AppCompatButton>
+            app:layout_constraintTop_toTopOf="@+id/suggest_help" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/status_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layoutVisibility="@{transactionStatus}"
+            >
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/status_divider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/status_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/status_val"
+                android:layout_marginBottom="@dimen/margin_vertical"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/status_val"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp"
+                app:status="@{transactionStatus}"
+                app:layout_constraintBottom_toTopOf="@id/done_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/done_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/done"
+                android:background="@color/black"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                 />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/half_guidline"
