@@ -38,6 +38,7 @@ import com.example.jesta.type.UserUpdateInput;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Single;
@@ -252,7 +253,6 @@ public class GrahpqlRepository {
      * @param comment Comment for help
      */
     public void suggestHelp(String favorId, Optional<String> comment ) {
-        System.out.println("peleg - 5.5");
         ApolloCall<CreateFavorTransactionRequestMutation.Data> mutation = _apolloClient.mutation(new CreateFavorTransactionRequestMutation(favorId,comment));
         Single<ApolloResponse<CreateFavorTransactionRequestMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
         responseSingle.subscribe(new SingleObserver<ApolloResponse<CreateFavorTransactionRequestMutation.Data>>() {
@@ -489,16 +489,19 @@ public class GrahpqlRepository {
             public void onSuccess(@NonNull ApolloResponse<GetAllUserFavorsRequestedTransactionQuery.Data> dataApolloResponse) {
                 if (!dataApolloResponse.hasErrors()) {
                     NotificationRepository.getInstance().set_notificationTransaction(dataApolloResponse.data.getAllUserFavorsRequestedTransaction);
+//                            dataApolloResponse.data.getAllUserFavorsRequestedTransaction.stream().filter(t-> t.status.equals(FavorTransactionStatus.JESTA_DONE.toString())).collect(Collectors.toList()));
                 }
                 else {
                     for (Error e : dataApolloResponse.errors)
                         Log.e("getFavorTransaction", e.getMessage());
                 }
+                NotificationRepository.getInstance().set_isTransactionLoading(false);
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.e("getFavotTransaction", e.getMessage());
+                NotificationRepository.getInstance().set_isTransactionLoading(false);
             }
         });
     }

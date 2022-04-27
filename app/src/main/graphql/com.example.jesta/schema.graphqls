@@ -26,6 +26,7 @@ type User {
     role: String
     imagePath: String
     created_date: String
+    mostVolunteered: Boolean
 }
 
 input UserCreateInput {
@@ -72,7 +73,7 @@ type Query {
     getFavorsByDate(startingDate: DateTime, limitDate: DateTime): [Favor]
     getAllFavors: [Favor]
     getFavorsInRadios(center: [Float], radius: Float): [Favor]
-    getByRadiosAndDateAndOnlyAvailable(center: [Float], radius: Float, startingDate: DateTime, limitDate: DateTime): [Favor]
+    getByRadiosAndDateAndOnlyAvailable(center: [Float], radius: Float, startingDate: DateTime, limitDate: DateTime, notIncludeMe: Boolean): [Favor]
     gatAllFavorsByStatus(status: FavorStatus): [Favor]
     getAllCategories: [Category]
     getAllPerforms: [Perform]
@@ -153,6 +154,7 @@ type Favor {
     dateLockedOut: DateTime
     dateCreated: DateTime
     dateLastModified: DateTime
+    mostVolunteeredOwner: Boolean
 }
 
 enum PaymentType {
@@ -285,7 +287,7 @@ type PopulatedFavorTransaction {
     favorId: Favor!
     favorOwnerId: User!
     handledByUserId: User!
-    ownerComment: String
+    ownerComment: Stringco
     handlerComment: String
     dateAccepted: DateTime
     dateCompleted: DateTime

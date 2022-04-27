@@ -15,7 +15,7 @@ public class NotificationRepository {
     // region Members
 
     private final MutableLiveData<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>> _notificationTransaction;
-
+    private final MutableLiveData<Boolean> _isTransactionLoading;
     // endregion
 
     // region Singleton
@@ -24,6 +24,7 @@ public class NotificationRepository {
 
     private NotificationRepository(){
         _notificationTransaction = new MutableLiveData<>(new ArrayList<>());
+        _isTransactionLoading = new MutableLiveData<>(false);
     }
 
     public static NotificationRepository getInstance(){
@@ -43,6 +44,14 @@ public class NotificationRepository {
 
     public void set_notificationTransaction(List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction> transactions){
         _notificationTransaction.postValue(transactions);
+    }
+
+    public MutableLiveData<Boolean> get_isTransactionLoading() {
+        return _isTransactionLoading;
+    }
+
+    public void set_isTransactionLoading(boolean isTransactionLoading){
+        _isTransactionLoading.postValue(isTransactionLoading);
     }
 
     public void addNotification(GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction transaction) {

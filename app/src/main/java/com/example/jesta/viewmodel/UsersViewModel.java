@@ -104,6 +104,7 @@ public class UsersViewModel extends ViewModel {
     }
 
     public void logout() {
+        GrahpqlRepository.getInstance().getIsLoggedIn().setValue(false);
         ShardPreferencesHelper.logout();
     }
 
