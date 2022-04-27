@@ -17,6 +17,7 @@ public class NotificationViewModel extends ViewModel {
     private final MutableLiveData<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>> _notificationTransaction;
     private INavigationHelper _iNavigationHelper;
     private INavigationHelper _ratingDialogOpener;
+    private final MutableLiveData<Boolean> _isTransactionLoading;
 
     // endregion
 
@@ -24,6 +25,7 @@ public class NotificationViewModel extends ViewModel {
 
     public NotificationViewModel() {
         this._notificationTransaction = NotificationRepository.getInstance().get_notificationTransaction();
+        this._isTransactionLoading = NotificationRepository.getInstance().get_isTransactionLoading();
     }
 
     // endregion
@@ -32,6 +34,14 @@ public class NotificationViewModel extends ViewModel {
 
     public MutableLiveData<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>> get_notificationTransaction() {
         return _notificationTransaction;
+    }
+
+    public MutableLiveData<Boolean> get_isTransactionLoading() {
+        return _isTransactionLoading;
+    }
+
+    public void setIsTransactionLoading(boolean isTransactionLoading){
+        _isTransactionLoading.setValue(isTransactionLoading);
     }
 
     public INavigationHelper get_iNavigationHelper() {

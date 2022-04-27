@@ -52,7 +52,6 @@ public class ProfileSettingsFragment extends Fragment {
 
     private FragmentProfileSettingsBinding _binding;
     private UsersViewModel _usersViewModel;
-    private final FragmentActivity activity = getActivity();
     private final IDialogConsumerHelper nameConsumer = new IDialogConsumerHelper() {
         @Override
         public void consume(String val) {
@@ -164,9 +163,9 @@ public class ProfileSettingsFragment extends Fragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             _usersViewModel.logout();
                             dialogInterface.dismiss();
-                            Intent intent = new Intent(activity,LoginRegisterActivity.class);
+                            Intent intent = new Intent(requireActivity(),LoginRegisterActivity.class);
                             startActivity(intent);
-                            activity.finish();
+                            requireActivity().finish();
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

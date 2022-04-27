@@ -65,6 +65,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     private void init(){
         _notificationViewModel.fetchTransaction();
         initAdapter();
+        initSwiper();
     }
 
     private void initAdapter(){
@@ -76,6 +77,11 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
              }
         });
         _binding.notificationLst.setAdapter(adapter);
+    }
+
+    private void initSwiper(){
+        _binding.swiper.setOnRefreshListener(()-> _notificationViewModel.fetchTransaction());
+        _notificationViewModel.get_isTransactionLoading().observe(getViewLifecycleOwner(),b -> _binding.swiper.setRefreshing(b));
     }
 
     @Override
