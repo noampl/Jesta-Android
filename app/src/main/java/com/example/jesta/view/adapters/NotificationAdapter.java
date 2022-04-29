@@ -1,5 +1,8 @@
 package com.example.jesta.view.adapters;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -17,10 +20,14 @@ import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
 import com.example.jesta.common.enums.FavorTransactionStatus;
 import com.example.jesta.databinding.NotificationItemBinding;
+import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.viewmodel.NotificationViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class NotificationAdapter extends ListAdapter<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction, NotificationAdapter.NotificationViewHolder> {
+
+public class NotificationAdapter extends ListAdapter<Transaction, NotificationAdapter.NotificationViewHolder> {
 
     // region Members
 
@@ -29,14 +36,14 @@ public class NotificationAdapter extends ListAdapter<GetAllUserFavorsRequestedTr
     // endregion
 
     public NotificationAdapter(NotificationViewModel notificationViewModel) {
-        super(new DiffUtil.ItemCallback<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>() {
+        super(new DiffUtil.ItemCallback<Transaction>() {
             @Override
-            public boolean areItemsTheSame(@NonNull GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction oldItem, @NonNull GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction newItem) {
-                return oldItem._id.equals(newItem._id);
+            public boolean areItemsTheSame(@NonNull Transaction oldItem, @NonNull Transaction newItem) {
+                return oldItem.get_id().equals(newItem.get_id());
             }
 
             @Override
-            public boolean areContentsTheSame(@NonNull GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction oldItem, @NonNull GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction newItem) {
+            public boolean areContentsTheSame(@NonNull Transaction oldItem, @NonNull Transaction newItem) {
                 return oldItem.equals(newItem);
             }
         });
@@ -70,31 +77,35 @@ public class NotificationAdapter extends ListAdapter<GetAllUserFavorsRequestedTr
             _binding = binding;
         }
 
-        public void bind(GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction transaction ,NotificationViewModel viewModel){
+        public void bind(Transaction transaction ,NotificationViewModel viewModel){
             _binding.setTransaction(transaction);
             _binding.executePendingBindings();
 
             _binding.positiveBtn.setOnClickListener(v->{
-                if (transaction.status == null){
-                 viewModel.suggestHelp(transaction._id);
+                if (transaction.getStatus() == null){
+                 viewModel.suggestHelp(transaction.get_id());
                  return;
                 }
-                if (FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(transaction.status)) {
-                    viewModel.approveSuggestion(transaction._id);
-                } else if (FavorTransactionStatus.JESTA_DONE.toString().equals(transaction.status)) {
+                if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(transaction.getStatus())) {
+                    viewModel.approveSuggestion(transaction.get_id());
+                } else if (FavorTransactionStatus.JESTA_DONE.equals(transaction.getStatus())) {
                 // TODO Remove from notification
-                } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(transaction.status)) {
+                } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.equals(transaction.getStatus())) {
                 // TODO write a comment about the jestionar
-                    viewModel.openRating(transaction._id);
-                } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString().equals(transaction.status)){
+                    viewModel.openRating(transaction.get_id());
+                } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.equals(transaction.getStatus())){
                  // TODO open WAZE
+                    List<String> lst = new ArrayList<>();
+                    lst.add(String.valueOf(transaction.getFavorId().getSourceAddress().getCoordinates().get(0)));
+                    lst.add(String.valueOf(transaction.getFavorId().getSourceAddress().getCoordinates().get(1)));
+                    viewModel.openNavigationApp(lst);
                 }
                 else{
-                    Log.d("NotificationViewHolder","unrecognized status " + transaction.status);
+                    Log.d("NotificationViewHolder","unrecognized status " + transaction.getStatus());
                 }
             });
 
-            _binding.detailsBtn.setOnClickListener(v->viewModel.openDetails(transaction.favorId._id));
+            _binding.detailsBtn.setOnClickListener(v->viewModel.openDetails(transaction.getFavorId().get_id()));
         }
     }
 }

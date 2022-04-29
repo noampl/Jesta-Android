@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.MyApplication;
+import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentMapBinding;
@@ -112,10 +113,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                 _mapViewModel.moveCamera(ltlg,10);
             }
         });
-        _mapViewModel.get_jestas().observe(getViewLifecycleOwner(), new Observer<List<GetJestasInRadiusQuery.GetFavorsInRadio>>() {
+        _mapViewModel.get_jestas().observe(getViewLifecycleOwner(), new Observer<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onChanged(List<GetJestasInRadiusQuery.GetFavorsInRadio> jestas) {
+            public void onChanged(List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> jestas) {
                 adapter.submitList(jestas);
                 adapter.notifyDataSetChanged();
                 if (_mapViewModel.getGoogleMap() != null){

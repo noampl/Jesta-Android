@@ -7,6 +7,7 @@ import androidx.core.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
+import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
@@ -47,7 +48,7 @@ public class JestaRepository {
 
     private ITabsNavigationHelper _tabsNavigationHelper;
     private ExecutorService _executorService;
-    private final MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> _jestas;
+    private final MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> _jestas;
     private final MutableLiveData<String> _favorTransaction;
 
     // endregion
@@ -167,13 +168,13 @@ public class JestaRepository {
         return _amount;
     }
 
-    public MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> get_jestas(){return _jestas;}
+    public MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> get_jestas(){return _jestas;}
 
     public MutableLiveData<GetJestaQuery.GetFavor> get_jestaDetails() {
         return _jestaDetails;
     }
 
-    public void set_jestas(List<GetJestasInRadiusQuery.GetFavorsInRadio> jestas){
+    public void set_jestas(List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> jestas){
         _jestas.postValue(jestas);
     }
 

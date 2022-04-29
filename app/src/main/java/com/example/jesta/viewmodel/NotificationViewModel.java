@@ -4,7 +4,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
+import com.example.jesta.interfaces.IDeepLinkHelper;
 import com.example.jesta.interfaces.INavigationHelper;
+import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.model.repositories.GrahpqlRepository;
 import com.example.jesta.model.repositories.NotificationRepository;
 
@@ -14,9 +16,10 @@ public class NotificationViewModel extends ViewModel {
 
     // region Members
 
-    private final MutableLiveData<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>> _notificationTransaction;
+    private final MutableLiveData<List<Transaction>> _notificationTransaction;
     private INavigationHelper _iNavigationHelper;
     private INavigationHelper _ratingDialogOpener;
+    private IDeepLinkHelper _deepLingHelper;
     private final MutableLiveData<Boolean> _isTransactionLoading;
 
     // endregion
@@ -32,7 +35,15 @@ public class NotificationViewModel extends ViewModel {
 
     // region Properties
 
-    public MutableLiveData<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>> get_notificationTransaction() {
+    public IDeepLinkHelper get_deepLingHelper() {
+        return _deepLingHelper;
+    }
+
+    public void set_deepLingHelper(IDeepLinkHelper _deepLingHelper) {
+        this._deepLingHelper = _deepLingHelper;
+    }
+
+    public MutableLiveData<List<Transaction>> get_notificationTransaction() {
         return _notificationTransaction;
     }
 
@@ -80,6 +91,10 @@ public class NotificationViewModel extends ViewModel {
         if (_ratingDialogOpener != null){
             _ratingDialogOpener.navigate(id);
         }
+    }
+
+    public void openNavigationApp(List<String> lst) {
+        _deepLingHelper.navigate(lst);
     }
 
     // endregion

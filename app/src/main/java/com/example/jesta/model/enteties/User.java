@@ -33,6 +33,12 @@ public class User {
         this._address = _address;
     }
 
+    public User(String _id, String firstName, String lastName){
+        this._id = _id;
+        this._firstName = firstName;
+        this._lastName = lastName;
+    }
+
     // endregion
 
     // region Properties

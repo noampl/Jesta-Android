@@ -5,17 +5,20 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetUserByIdQuery;
+import com.example.jesta.model.enteties.Transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class NotificationRepository {
 
     // region Members
 
-    private final MutableLiveData<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>> _notificationTransaction;
+    private final MutableLiveData<List<Transaction>> _notificationTransaction;
     private final MutableLiveData<Boolean> _isTransactionLoading;
+
     // endregion
 
     // region Singleton
@@ -38,12 +41,18 @@ public class NotificationRepository {
 
     // region Public Method
 
-    public MutableLiveData<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>> get_notificationTransaction() {
+    public MutableLiveData<List<Transaction>> get_notificationTransaction() {
         return _notificationTransaction;
     }
 
-    public void set_notificationTransaction(List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction> transactions){
+    public void set_notificationTransaction(List<Transaction> transactions){
         _notificationTransaction.postValue(transactions);
+    }
+
+    public void add_notificationTransaction(List<Transaction> transactions){
+        List<Transaction> transactions1 = new ArrayList<>(Objects.requireNonNull(_notificationTransaction.getValue()));
+        transactions1.addAll(transactions);
+        set_notificationTransaction(transactions1);
     }
 
     public MutableLiveData<Boolean> get_isTransactionLoading() {
@@ -52,15 +61,6 @@ public class NotificationRepository {
 
     public void set_isTransactionLoading(boolean isTransactionLoading){
         _isTransactionLoading.postValue(isTransactionLoading);
-    }
-
-    public void addNotification(GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction transaction) {
-        System.out.println("peleg - add notifications");
-        List<GetAllUserFavorsRequestedTransactionQuery.
-                GetAllUserFavorsRequestedTransaction> transactions = new ArrayList<>(_notificationTransaction.getValue());
-
-        transactions.add(transaction);
-        _notificationTransaction.postValue(transactions);
     }
 
     // endregion

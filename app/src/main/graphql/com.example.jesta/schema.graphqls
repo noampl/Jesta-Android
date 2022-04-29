@@ -27,6 +27,7 @@ type User {
     imagePath: String
     created_date: String
     mostVolunteered: Boolean
+    rating: Float
 }
 
 input UserCreateInput {
@@ -75,15 +76,17 @@ type Query {
     getFavorsInRadios(center: [Float], radius: Float): [Favor]
     getByRadiosAndDateAndOnlyAvailable(center: [Float], radius: Float, startingDate: DateTime, limitDate: DateTime, notIncludeMe: Boolean): [Favor]
     gatAllFavorsByStatus(status: FavorStatus): [Favor]
+    getCategory(name: String, id: String): Category
     getAllCategories: [Category]
+    getAllParentCategories: [Category]
     getAllPerforms: [Perform]
     getPerformsInRadios(center: [Float], radius: Float): [Perform]
     getAllUserFavorTransactionByFavorId(favorId: String!): FavorTransaction
     getAllFavorTransaction: [FavorTransaction]
     getAllUserFavorsRequestedTransaction: [PopulatedFavorTransaction]
     getAllUserFavorsWaitingForHandleTransaction: [FavorTransaction]
-    getAllOwnerFavorTransactionByStatus(status: FavorTransactionStatus): [FavorTransaction]
-    getAllExecutorFavorTransactionByStatus(status: FavorTransactionStatus): [FavorTransaction]
+    getAllOwnerFavorTransactionByStatus(status: FavorTransactionStatus): [PopulatedFavorTransaction]
+    getAllExecutorFavorTransactionByStatus(status: FavorTransactionStatus): [PopulatedFavorTransaction]
 }
 
 type Mutation {
@@ -287,7 +290,7 @@ type PopulatedFavorTransaction {
     favorId: Favor!
     favorOwnerId: User!
     handledByUserId: User!
-    ownerComment: Stringco
+    ownerComment: String
     handlerComment: String
     dateAccepted: DateTime
     dateCompleted: DateTime
