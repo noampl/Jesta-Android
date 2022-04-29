@@ -52,6 +52,7 @@
                         android:textStyle="bold" />
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardTopJestioner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -77,6 +78,7 @@
                 </LinearLayout>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardBestMedalContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -88,7 +90,7 @@
                     app:contentPadding="8dp">
 
                     <ImageView
-                        android:id="@+id/imgUserBestMedal"
+                        android:id="@+id/imgBestMedal"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:src="@drawable/medal1"
@@ -98,10 +100,10 @@
 
             </LinearLayout>
 
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider" />
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -164,10 +166,10 @@
 
             </LinearLayout>
 
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider" />
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/txtDescription"
@@ -183,10 +185,10 @@
 מזנונים, מכונות כביסה וכל מה שכבד."
                 android:textColor="@color/black" />
 
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider" />
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
                 android:layout_width="match_parent"

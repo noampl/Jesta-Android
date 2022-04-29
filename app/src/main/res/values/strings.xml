@@ -121,6 +121,7 @@
     <string name="pendig_for_execution_time">ממתינה לביצוע</string>
     <string name="executor_finish_jesta">נעשתה</string>
     <string name="ready_to_execute">מוכן לבצע</string>
+    <string name="user_details">פרטי משתמש</string>
     <string name="top_jestioner">ג\'סטיונר מוביל</string>
 
 </resources>
