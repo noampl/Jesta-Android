@@ -63,9 +63,9 @@
         tools:layout="@layout/fragment_term_of_use" />
     <fragment
         android:id="@+id/nav_podium"
-        android:name="com.example.jesta.view.fragments.PodiomFragment"
+        android:name="com.example.jesta.view.fragments.PodiumFragment"
         android:label="@string/podium"
-        tools:layout="@layout/fragment_podiom" />
+        tools:layout="@layout/fragment_podium" />
     <fragment
         android:id="@+id/nav_done_jestas"
         android:name="com.example.jesta.view.fragments.jestas.DoneJestasFragment"
@@ -159,4 +159,9 @@
             app:argType="float"
             android:defaultValue="-1" />
     </dialog>
+    <fragment
+        android:id="@+id/nav_user_profile"
+        android:name="com.example.jesta.view.fragments.utilities.UserProfileFragment"
+        android:label="@string/user_details"
+        tools:layout="@layout/fragment_user_profile" />
 </navigation>

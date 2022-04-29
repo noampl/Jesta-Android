@@ -406,7 +406,7 @@ public class GrahpqlRepository {
                             dataApolloResponse.data.getUser._id,
                             dataApolloResponse.data.getUser.firstName,
                             dataApolloResponse.data.getUser.lastName,
-                            dataApolloResponse.data.getUser.birthday.toString(),
+                            (dataApolloResponse.data.getUser.birthday != null ? dataApolloResponse.data.getUser.birthday.toString() : null),
                             dataApolloResponse.data.getUser.email,
                             dataApolloResponse.data.getUser.phone,
                             dataApolloResponse.data.getUser.role,
