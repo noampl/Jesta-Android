@@ -18,6 +18,7 @@ import com.example.jesta.CreateFavorWithImageMutation;
 import com.example.jesta.ExecutorFinishFavorMutation;
 import com.example.jesta.GetAllUserFavorTransactionByFavorIdQuery;
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
+import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.GetUserByIdQuery;
@@ -35,6 +36,7 @@ import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.type.UserUpdateInput;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -429,24 +431,29 @@ public class GrahpqlRepository {
      * @param radius The radius in KM
      */
     public void GetRemoteJestas(Optional<List<Double>> center, Optional<Double> radius){
-        ApolloCall<GetJestasInRadiusQuery.Data> getJestas = _apolloClient.query(new GetJestasInRadiusQuery(center,radius));
-        Single<ApolloResponse<GetJestasInRadiusQuery.Data>> responseSingle = Rx3Apollo.single(getJestas);
-        responseSingle.subscribe(new SingleObserver<ApolloResponse<GetJestasInRadiusQuery.Data>>() {
+        ApolloCall<GetFavorsByRadiosTimeAndDateQuery.Data> getJestas = _apolloClient.query(
+                new GetFavorsByRadiosTimeAndDateQuery(new Optional.Present<>(false),center,radius,null,null));
+        Single<ApolloResponse<GetFavorsByRadiosTimeAndDateQuery.Data>> responseSingle = Rx3Apollo.single(getJestas);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<GetFavorsByRadiosTimeAndDateQuery.Data>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
 
             }
 
             @Override
-            public void onSuccess(@NonNull ApolloResponse<GetJestasInRadiusQuery.Data> dataApolloResponse) {
+            public void onSuccess(@NonNull ApolloResponse<GetFavorsByRadiosTimeAndDateQuery.Data> dataApolloResponse) {
                 if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null){
-                    JestaRepository.getInstance().set_jestas(dataApolloResponse.data.getFavorsInRadios);
+                    JestaRepository.getInstance().set_jestas(dataApolloResponse.data.getByRadiosAndDateAndOnlyAvailable);
+                }
+                else {
+                    for (Error e : dataApolloResponse.errors)
+                        Log.e("GetRemoteJestas", e.getMessage());
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
-
+                Log.e("GetRemoteJestas", e.getMessage());
             }
         });
     }
@@ -488,8 +495,9 @@ public class GrahpqlRepository {
             @Override
             public void onSuccess(@NonNull ApolloResponse<GetAllUserFavorsRequestedTransactionQuery.Data> dataApolloResponse) {
                 if (!dataApolloResponse.hasErrors()) {
-                    NotificationRepository.getInstance().set_notificationTransaction(dataApolloResponse.data.getAllUserFavorsRequestedTransaction);
-//                            dataApolloResponse.data.getAllUserFavorsRequestedTransaction.stream().filter(t-> t.status.equals(FavorTransactionStatus.JESTA_DONE.toString())).collect(Collectors.toList()));
+                    NotificationRepository.getInstance().set_notificationTransaction(
+                            dataApolloResponse.data.getAllUserFavorsRequestedTransaction.stream().
+                                    filter(t-> !t.status.equals(FavorTransactionStatus.JESTA_DONE.toString())).collect(Collectors.toList()));
                 }
                 else {
                     for (Error e : dataApolloResponse.errors)

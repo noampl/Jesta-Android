@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
 
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
@@ -53,7 +54,7 @@ public class JestaBindingAdapters {
     @BindingAdapter("setImage")
     public static void setImage(ImageView imageView, String path){
         if (path != null && path.length() > 5 ){
-            String fullPath =Consts.SERVER_PRE_FIX + path;
+            String fullPath = Consts.SERVER_PRE_FIX + path;
             Picasso.with(imageView.getContext()).load(fullPath).fit().into(imageView);
         }
         else{
@@ -86,7 +87,7 @@ public class JestaBindingAdapters {
         if (status == null){
             return;
         }
-        int resId = 0, titleId = 0;
+        int resId = 0;
         System.out.println("peleg - set color");
         if (FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(status)) {
             resId = R.color.light_orange;
@@ -95,7 +96,9 @@ public class JestaBindingAdapters {
         } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(status)){
             resId = R.color.blue;
         }
+        cardView.setOutlineAmbientShadowColor(resId);
         cardView.setOutlineSpotShadowColor(resId);
+
     }
 
     @SuppressLint("ResourceAsColor")

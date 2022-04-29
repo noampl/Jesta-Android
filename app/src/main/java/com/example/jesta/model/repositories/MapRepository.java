@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.MyApplication;
+import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.model.services.GpsHelper;
 import com.google.android.gms.maps.GoogleMap;
@@ -36,7 +37,7 @@ public class MapRepository {
     private GoogleMap _googleMap;
     private final MutableLiveData<LatLng> _myLocation;
     private final LocationManager _locationManager;
-    private HashMap<Marker,GetJestasInRadiusQuery.GetFavorsInRadio> _markerToJesta;
+    private HashMap<Marker,GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable > _markerToJesta;
     private Geocoder _geoCoder;
     private ExecutorService _executorService;
 
@@ -84,7 +85,7 @@ public class MapRepository {
     }
 
 
-    public HashMap<Marker, GetJestasInRadiusQuery.GetFavorsInRadio> getMarkerTOJesta() {
+    public HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable > getMarkerTOJesta() {
         return _markerToJesta;
     }
 

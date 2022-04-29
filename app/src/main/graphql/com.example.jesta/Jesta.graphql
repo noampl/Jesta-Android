@@ -52,6 +52,33 @@ query GetJestasInRadius($center: [Float], $radius: Float) {
         }
         destinationAddress {
             fullAddress
+            location {
+                coordinates
+            }
         }
+    }
+}
+
+query GetFavorsByRadiosTimeAndDate($notIncludeMe: Boolean, $center: [Float], $radius: Float, $startingDate: DateTime, $limitDate: DateTime) {
+    getByRadiosAndDateAndOnlyAvailable(notIncludeMe: $notIncludeMe, center: $center, radius: $radius, startingDate: $startingDate, limitDate: $limitDate) {
+        _id
+        status
+        ownerId
+        categoryId
+        numOfPeopleNeeded
+        sourceAddress {
+            fullAddress
+            location {
+                coordinates
+            }
+        }
+        destinationAddress {
+            fullAddress
+            location {
+                coordinates
+            }
+        }
+        dateToPublish
+        dateToUnpublished
     }
 }

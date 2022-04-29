@@ -6,7 +6,7 @@
         <import type="java.util.Date"/>
         <variable
             name="jesta"
-            type="com.example.jesta.GetJestasInRadiusQuery.GetFavorsInRadio" />
+            type="com.example.jesta.GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable " />
         <variable
             name="viewModel"
             type="com.example.jesta.viewmodel.MapViewModel" />

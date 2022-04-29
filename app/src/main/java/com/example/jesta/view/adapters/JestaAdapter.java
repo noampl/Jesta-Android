@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.JestaItemBinding;
@@ -19,7 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Date;
 
-public class JestaAdapter extends ListAdapter<GetJestasInRadiusQuery.GetFavorsInRadio, JestaAdapter.JestaViewHolder> {
+public class JestaAdapter extends ListAdapter<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable, JestaAdapter.JestaViewHolder> {
 
     // region Members
 
@@ -30,14 +31,14 @@ public class JestaAdapter extends ListAdapter<GetJestasInRadiusQuery.GetFavorsIn
     // region C'tor
 
     public JestaAdapter(LifecycleOwner _lifecycleOwner, MapViewModel mapViewModel) {
-        super(new DiffUtil.ItemCallback<GetJestasInRadiusQuery.GetFavorsInRadio>() {
+        super(new DiffUtil.ItemCallback<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>() {
             @Override
-            public boolean areItemsTheSame(@NonNull GetJestasInRadiusQuery.GetFavorsInRadio oldItem, @NonNull GetJestasInRadiusQuery.GetFavorsInRadio newItem) {
+            public boolean areItemsTheSame(@NonNull GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable oldItem, @NonNull GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable newItem) {
                 return oldItem._id.equals(newItem._id);
             }
 
             @Override
-            public boolean areContentsTheSame(@NonNull GetJestasInRadiusQuery.GetFavorsInRadio oldItem, @NonNull GetJestasInRadiusQuery.GetFavorsInRadio newItem) {
+            public boolean areContentsTheSame(@NonNull GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable oldItem, @NonNull GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable newItem) {
                 return oldItem.equals(newItem);
             }
         });
@@ -79,7 +80,7 @@ public class JestaAdapter extends ListAdapter<GetJestasInRadiusQuery.GetFavorsIn
             _mapViewModel = mapViewModel;
         }
 
-        public void bind(GetJestasInRadiusQuery.GetFavorsInRadio jesta){
+        public void bind(GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable jesta){
             _binding.setJesta(jesta);
             _binding.setMyLocation(_mapViewModel.getMyLocation().getValue());
             _binding.setSrcDate(jesta.dateToPublish.toString());

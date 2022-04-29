@@ -1,5 +1,8 @@
 package com.example.jesta.view.adapters;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -18,6 +21,9 @@ import com.example.jesta.R;
 import com.example.jesta.common.enums.FavorTransactionStatus;
 import com.example.jesta.databinding.NotificationItemBinding;
 import com.example.jesta.viewmodel.NotificationViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class NotificationAdapter extends ListAdapter<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction, NotificationAdapter.NotificationViewHolder> {
@@ -88,6 +94,10 @@ public class NotificationAdapter extends ListAdapter<GetAllUserFavorsRequestedTr
                     viewModel.openRating(transaction._id);
                 } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString().equals(transaction.status)){
                  // TODO open WAZE
+                    List<String> lst = new ArrayList<>();
+                    lst.add(String.valueOf(transaction.favorId.sourceAddress.location.coordinates.get(0)));
+                    lst.add(String.valueOf(transaction.favorId.sourceAddress.location.coordinates.get(1)));
+                    viewModel.openNavigationApp(lst);
                 }
                 else{
                     Log.d("NotificationViewHolder","unrecognized status " + transaction.status);

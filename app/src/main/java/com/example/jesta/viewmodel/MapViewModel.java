@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.apollographql.apollo3.api.Optional;
+import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.common.Consts;
 import com.example.jesta.interfaces.INavigationHelper;
@@ -26,9 +27,9 @@ public class MapViewModel extends ViewModel {
 
     private GoogleMap _googleMap;
     private MutableLiveData<LatLng> _myLocation;
-    private MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> _jestas;
+    private MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> _jestas;
     private Double radiusInKm = 100D;
-    private HashMap<Marker,GetJestasInRadiusQuery.GetFavorsInRadio> _markerToJesta;
+    private HashMap<Marker,GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable > _markerToJesta;
     private INavigationHelper _navigationHelper;
 
     // endregion
@@ -70,19 +71,19 @@ public class MapViewModel extends ViewModel {
         this._myLocation.setValue(_myLocation);
     }
 
-    public MutableLiveData<List<GetJestasInRadiusQuery.GetFavorsInRadio>> get_jestas() {
+    public MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> get_jestas() {
         return _jestas;
     }
 
-    public void set_jestas(List<GetJestasInRadiusQuery.GetFavorsInRadio> _jestas) {
+    public void set_jestas(List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> _jestas) {
         this._jestas.setValue(_jestas);
     }
 
-    public HashMap<Marker, GetJestasInRadiusQuery.GetFavorsInRadio> get_markerToJesta() {
+    public HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable > get_markerToJesta() {
         return _markerToJesta;
     }
 
-    public void addMarkerAndJesta(Marker marker, GetJestasInRadiusQuery.GetFavorsInRadio jesta){
+    public void addMarkerAndJesta(Marker marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable  jesta){
         _markerToJesta.put(marker, jesta);
     }
     // endregion
