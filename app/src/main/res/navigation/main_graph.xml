@@ -63,9 +63,9 @@
         tools:layout="@layout/fragment_term_of_use" />
     <fragment
         android:id="@+id/nav_podium"
-        android:name="com.example.jesta.view.fragments.PodiomFragment"
+        android:name="com.example.jesta.view.fragments.PodiumFragment"
         android:label="@string/podium"
-        tools:layout="@layout/fragment_podiom" />
+        tools:layout="@layout/fragment_podium" />
     <fragment
         android:id="@+id/nav_done_jestas"
         android:name="com.example.jesta.view.fragments.jestas.DoneJestasFragment"
