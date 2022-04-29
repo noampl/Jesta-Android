@@ -152,7 +152,9 @@ public class MainActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.nav_profile_settings:
-                    _navController.navigate(R.id.nav_profile_settings);
+                    // TODO: alert dialog or something:
+                    _navController.navigate(R.id.nav_user_profile);
+                    //_navController.navigate(R.id.nav_profile_settings);
                     return true;
                 default:
                     System.out.println("peleg - item pressed " + item.getItemId());
