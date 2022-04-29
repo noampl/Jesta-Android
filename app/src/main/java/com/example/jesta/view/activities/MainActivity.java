@@ -26,6 +26,7 @@ import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.ActivityMainBinding;
+import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.viewmodel.NotificationViewModel;
 import com.example.jesta.workes.NotificationWorker;
 
@@ -93,18 +94,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void initObservers(){
         NotificationViewModel viewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
-        viewModel.get_notificationTransaction().observe(this, new Observer<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>>() {
+        viewModel.get_notificationTransaction().observe(this, new Observer<List<Transaction>>() {
             @Override
-            public void onChanged(List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction> transactions) {
-                if (transactions != null) {
-                    System.out.println("peleg - map size is " + transactions.size());
-                    if (transactions.size() > 0) {
-                        _notificationCard.setVisibility(View.VISIBLE);
-                    } else {
-                        _notificationCard.setVisibility(View.INVISIBLE);
-                    }
-                    _notificationNumber.setText(String.valueOf(transactions.size()));
-                }
+            public void onChanged(List<Transaction> transactions) {
+//                if (transactions != null) {
+//                    System.out.println("peleg - map size is " + transactions.size());
+//                    if (transactions.size() > 0) {
+//                        _notificationCard.setVisibility(View.VISIBLE);
+//                    } else {
+//                        _notificationCard.setVisibility(View.INVISIBLE);
+//                    }
+//                    _notificationNumber.setText(String.valueOf(transactions.size()));
+//                }
             }
         });
     }

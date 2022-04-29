@@ -25,6 +25,7 @@ import com.example.jesta.R;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.Utilities;
 import com.example.jesta.common.enums.FavorTransactionStatus;
+import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.model.enteties.User;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
@@ -63,17 +64,17 @@ public class JestaBindingAdapters {
     }
 
     @BindingAdapter("setImageNotification")
-    public static void setImage(ImageView imageView, GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction transaction){
+    public static void setImage(ImageView imageView, Transaction transaction){
         System.out.println("peleg - set image");
-        if (transaction.status == null)
+        if (transaction.getStatus() == null)
             return;
         int resId = 0;
-        if (FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(transaction.status)) {
+        if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(transaction.getStatus())) {
             resId = R.drawable.ic_baseline_waving_hand_24;
-        } else if (FavorTransactionStatus.JESTA_DONE.toString().equals(transaction.status) ||
-                FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(transaction.status)) {
+        } else if (FavorTransactionStatus.JESTA_DONE.equals(transaction.getStatus()) ||
+                FavorTransactionStatus.EXECUTOR_FINISH_JESTA.equals(transaction.getStatus())) {
             resId = R.drawable.ic_baseline_check_circle_24;
-        } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString().equals(transaction.status)) {
+        } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.equals(transaction.getStatus())) {
             resId = R.drawable.ic_baseline_handshake_24;
         } else {
             resId = R.drawable.ic_baseline_thumb_up_off_alt_24;
@@ -83,17 +84,17 @@ public class JestaBindingAdapters {
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @BindingAdapter("shadow")
-    public static void setShadow(androidx.cardview.widget.CardView cardView, String status){
+    public static void setShadow(androidx.cardview.widget.CardView cardView, FavorTransactionStatus status){
         if (status == null){
             return;
         }
         int resId = 0;
         System.out.println("peleg - set color");
-        if (FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(status)) {
+        if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(status)) {
             resId = R.color.light_orange;
-        } else if (FavorTransactionStatus.JESTA_DONE.toString().equals(status)) {
+        } else if (FavorTransactionStatus.JESTA_DONE.equals(status)) {
             resId = R.color.green;
-        } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(status)){
+        } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.equals(status)){
             resId = R.color.blue;
         }
         cardView.setOutlineAmbientShadowColor(resId);
@@ -103,22 +104,22 @@ public class JestaBindingAdapters {
 
     @SuppressLint("ResourceAsColor")
     @BindingAdapter("setColor")
-    public static void setColor(Button btn, String status){
+    public static void setColor(Button btn, FavorTransactionStatus status){
         if (status == null){
             return;
         }
         int resId = 0, titleId = 0;
         System.out.println("peleg - set color");
-        if (FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(status)) {
+        if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(status)) {
             resId = R.color.light_orange;
             titleId = R.string.accepted_by_me;
-        } else if (FavorTransactionStatus.JESTA_DONE.toString().equals(status)) {
+        } else if (FavorTransactionStatus.JESTA_DONE.equals(status)) {
             resId = R.color.green;
             titleId = R.string.view_rating;
-        } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString().equals(status)){
+        } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.equals(status)){
             resId = R.color.blue;
             titleId = R.string.navigate_now;
-        } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(status)){
+        } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.equals(status)){
             resId = R.color.green;
             titleId = R.string.write_rating;
         }
@@ -261,26 +262,26 @@ public class JestaBindingAdapters {
     }
 
     @BindingAdapter({"notificationTransaction"})
-    public static void setTitle(TextView textView, GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction transaction){
+    public static void setTitle(TextView textView, Transaction transaction){
         String title="";
-        if (transaction.status == null)
+        if (transaction.getStatus() == null)
             return;
-        if (FavorTransactionStatus.JESTA_DONE.toString().equals(transaction.status)) {
+        if (FavorTransactionStatus.JESTA_DONE.equals(transaction.getStatus())) {
             // 4
-            title = textView.getContext().getString(R.string.favor_finish, transaction.favorOwnerId.firstName);
-        } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(transaction.status)) {
+            title = textView.getContext().getString(R.string.favor_finish, transaction.getFavorOwnerId().get_firstName());
+        } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.equals(transaction.getStatus())) {
             // 3
-            title = textView.getContext().getString(R.string.executor_finish_favor,transaction.handledByUserId.firstName);
-        } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString().equals(transaction.status)) {
+            title = textView.getContext().getString(R.string.executor_finish_favor,transaction.getHandledByUserId().get_firstName());
+        } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.equals(transaction.getStatus())) {
             //2
-            title = textView.getContext().getString(R.string.favor_approved,transaction.favorOwnerId.firstName);
-        } else if (FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(transaction.status)) {
+            title = textView.getContext().getString(R.string.favor_approved,transaction.getFavorOwnerId().get_firstName());
+        } else if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(transaction.getStatus())) {
             //1
-            title = textView.getContext().getString(R.string.offer_favor, transaction.handledByUserId.firstName);
-        } else if (FavorTransactionStatus.CANCELED.toString().equals(transaction.status)) {
+            title = textView.getContext().getString(R.string.offer_favor, transaction.getHandledByUserId().get_firstName());
+        } else if (FavorTransactionStatus.CANCELED.equals(transaction.getStatus())) {
             // both
         } else{
-            Log.d("NotificationTitle", "Unrecognized status " + transaction.status);
+            Log.d("NotificationTitle", "Unrecognized status " + transaction.getStatus());
         }
         textView.setText(title);
     }

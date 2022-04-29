@@ -31,6 +31,59 @@ query GetAllUserFavorsRequestedTransaction {
     }
 }
 
+query GetAllTransactionNotifications($status: FavorTransactionStatus, $getAllOwnerFavorTransactionByStatusStatus2: FavorTransactionStatus) {
+    getAllOwnerFavorTransactionByStatus(status: $getAllOwnerFavorTransactionByStatusStatus2) {
+        _id
+        status
+        favorId {
+            _id
+            status
+            ownerId
+            sourceAddress {
+                location {
+                    coordinates
+                }
+            }
+        }
+        favorOwnerId {
+            _id
+            firstName
+            lastName
+        }
+        handledByUserId {
+            _id
+            firstName
+            lastName
+        }
+        dateLastModified
+    }
+    getAllExecutorFavorTransactionByStatus(status: $status) {
+        _id
+        status
+        favorId {
+            _id
+            status
+            ownerId
+            sourceAddress {
+                location {
+                    coordinates
+                }
+            }
+        }
+        favorOwnerId {
+            _id
+            firstName
+            lastName
+        }
+        handledByUserId {
+            _id
+            firstName
+            lastName
+        }
+        dateLastModified
+    }
+}
+
 mutation ApproveFavorSuggestion($favorTransactionId: String!, $comment: String) {
     handleFavorTransactionRequest(favorTransactionId: $favorTransactionId, comment: $comment)
 }

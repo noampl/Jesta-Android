@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.interfaces.IDeepLinkHelper;
 import com.example.jesta.interfaces.INavigationHelper;
+import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.model.repositories.GrahpqlRepository;
 import com.example.jesta.model.repositories.NotificationRepository;
 
@@ -15,7 +16,7 @@ public class NotificationViewModel extends ViewModel {
 
     // region Members
 
-    private final MutableLiveData<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>> _notificationTransaction;
+    private final MutableLiveData<List<Transaction>> _notificationTransaction;
     private INavigationHelper _iNavigationHelper;
     private INavigationHelper _ratingDialogOpener;
     private IDeepLinkHelper _deepLingHelper;
@@ -42,7 +43,7 @@ public class NotificationViewModel extends ViewModel {
         this._deepLingHelper = _deepLingHelper;
     }
 
-    public MutableLiveData<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>> get_notificationTransaction() {
+    public MutableLiveData<List<Transaction>> get_notificationTransaction() {
         return _notificationTransaction;
     }
 

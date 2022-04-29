@@ -6,7 +6,7 @@
     <data>
            <variable
             name="transaction"
-            type="com.example.jesta.GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction" />
+            type="com.example.jesta.model.enteties.Transaction" />
 
     </data>
 
@@ -56,7 +56,7 @@
             app:layout_constraintTop_toBottomOf="@id/title"
             android:layout_marginTop="@dimen/margin_vertical"
             android:layout_marginStart="@dimen/margin_side"
-            app:setColor="@{transaction.status}"
+            app:setColor="@{transaction.getStatus}"
             android:textColor="@color/white"
             />
 

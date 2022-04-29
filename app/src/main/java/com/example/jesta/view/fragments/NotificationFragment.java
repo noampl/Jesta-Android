@@ -20,6 +20,7 @@ import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentNotificationBinding;
 import com.example.jesta.interfaces.IDeepLinkHelper;
 import com.example.jesta.interfaces.INavigationHelper;
+import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.view.adapters.NotificationAdapter;
 import com.example.jesta.viewmodel.NotificationViewModel;
 
@@ -95,9 +96,9 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
 
     private void initAdapter(){
         NotificationAdapter adapter = new NotificationAdapter(_notificationViewModel);
-        _notificationViewModel.get_notificationTransaction().observe(getViewLifecycleOwner(), new Observer<List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction>>() {
+        _notificationViewModel.get_notificationTransaction().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
-            public void onChanged(List<GetAllUserFavorsRequestedTransactionQuery.GetAllUserFavorsRequestedTransaction> transactions) {
+            public void onChanged(List<Transaction> transactions) {
                 adapter.submitList(transactions); // TODO add here sort by lastDate
              }
         });
