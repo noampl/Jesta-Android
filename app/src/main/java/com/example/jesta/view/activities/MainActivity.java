@@ -1,5 +1,7 @@
 package com.example.jesta.view.activities;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -17,18 +19,24 @@ import androidx.work.WorkManager;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.ActivityMainBinding;
 import com.example.jesta.model.enteties.Transaction;
+import com.example.jesta.model.repositories.GrahpqlRepository;
 import com.example.jesta.viewmodel.NotificationViewModel;
 import com.example.jesta.workes.NotificationWorker;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         _binding.mainToolbar.setOnMenuItemClickListener(menuItemClickListener);
         initWorkers();
         initObservers();
+        initServices();
     }
 
     private void initWorkers(){
@@ -97,17 +106,33 @@ public class MainActivity extends AppCompatActivity {
         viewModel.get_notificationTransaction().observe(this, new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
-//                if (transactions != null) {
-//                    System.out.println("peleg - map size is " + transactions.size());
-//                    if (transactions.size() > 0) {
-//                        _notificationCard.setVisibility(View.VISIBLE);
-//                    } else {
-//                        _notificationCard.setVisibility(View.INVISIBLE);
-//                    }
-//                    _notificationNumber.setText(String.valueOf(transactions.size()));
-//                }
+                if (transactions != null) {
+                    if (transactions.size() > 0) {
+                        _notificationCard.setVisibility(View.VISIBLE);
+                    } else {
+                        _notificationCard.setVisibility(View.INVISIBLE);
+                    }
+                    _notificationNumber.setText(String.valueOf(transactions.size()));
+                }
             }
         });
+    }
+
+    private void initServices(){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+               @Override
+               public void onComplete(@NonNull Task<String> task) {
+                   if (!task.isSuccessful()) {
+                       Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                       return;
+                   }
+
+                   // Get new FCM registration token
+                   String token = task.getResult();
+                   GrahpqlRepository.getInstance().addUserToken(token);
+               }
+           });
     }
 
     // endregion

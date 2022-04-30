@@ -65,7 +65,6 @@ public class JestaBindingAdapters {
 
     @BindingAdapter("setImageNotification")
     public static void setImage(ImageView imageView, Transaction transaction){
-        System.out.println("peleg - set image");
         if (transaction.getStatus() == null)
             return;
         int resId = 0;
@@ -89,7 +88,6 @@ public class JestaBindingAdapters {
             return;
         }
         int resId = 0;
-        System.out.println("peleg - set color");
         if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(status)) {
             resId = R.color.light_orange;
         } else if (FavorTransactionStatus.JESTA_DONE.equals(status)) {
@@ -109,7 +107,6 @@ public class JestaBindingAdapters {
             return;
         }
         int resId = 0, titleId = 0;
-        System.out.println("peleg - set color");
         if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(status)) {
             resId = R.color.light_orange;
             titleId = R.string.accepted_by_me;
@@ -346,8 +343,9 @@ public class JestaBindingAdapters {
         String srcD="",destD="";
         try {
             srcDate = format.parse(src);
+            if (dest != null)
             dstDate = format.parse(dest);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (srcDate != null){

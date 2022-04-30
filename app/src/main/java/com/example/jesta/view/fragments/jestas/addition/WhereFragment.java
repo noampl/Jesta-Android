@@ -91,7 +91,6 @@ public class WhereFragment extends Fragment {
 
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                System.out.println("peleg - places selected " + place.getId());
                 _createJestaViewModel.set_destention(place);
                 // TODO use the places
 

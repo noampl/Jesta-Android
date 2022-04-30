@@ -45,7 +45,6 @@ public class AddJestaFragment extends Fragment implements ITabsNavigationHelper 
 
     @Override
     public void onDestroy() {
-        System.out.println("peleg - onDestroy");
         _createJestaViewModel.setNavigationHelper(null);
         super.onDestroy();
     }

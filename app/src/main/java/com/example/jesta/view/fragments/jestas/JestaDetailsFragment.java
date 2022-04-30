@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -80,7 +81,6 @@ public class JestaDetailsFragment extends Fragment {
                 _binding.setMyLocation(latLng));
 
         _jestaDetailsViewModel.get_favorTransactionStatus().observe(getViewLifecycleOwner(), status->{
-            System.out.println("peleg - status is " + status);
             _binding.setTransactionStatus(status);
         });
     }
@@ -90,7 +90,8 @@ public class JestaDetailsFragment extends Fragment {
                     if (_jestaDetailsViewModel.get_favorTransactionStatus().getValue()!= null) {
                         if (_jestaDetailsViewModel.get_favorTransactionStatus().getValue().equals(FavorTransactionStatus.CANCELED.toString())) {
                             _jestaDetailsViewModel.suggestHelp(_jestaId);
-                        } else {
+                        }
+                        else {
                             new AlertDialog.Builder(requireContext()).setMessage(R.string.disable_offer)
                                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                                 @Override
@@ -117,7 +118,7 @@ public class JestaDetailsFragment extends Fragment {
             JestaDetailsFragmentDirections.ActionJestaDetailsFragmentToOneInputDialogFragment action =
                     JestaDetailsFragmentDirections.actionJestaDetailsFragmentToOneInputDialogFragment(null,getString(R.string.send_msg),getString(R.string.send_msg));
             action.setFiledType(FiledType.NAME.ordinal());
-            Navigation.findNavController(requireActivity(),R.id.main_container).navigate(action);
+            Navigation.findNavController(requireActivity(),R.id.main_container).navigate((NavDirections) action);
         });
 
         _binding.doneBtn.setOnClickListener(v->{

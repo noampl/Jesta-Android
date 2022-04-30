@@ -28,6 +28,7 @@ type User {
     created_date: String
     mostVolunteered: Boolean
     rating: Float
+    numberOfExecutedJesta: Int
 }
 
 input UserCreateInput {
@@ -70,6 +71,7 @@ type Query {
     getAllClients: [User]
     getAllAdmins: [User]
     getUser(_id: String, firstName: String, lastName: String, email: String): User
+    getThreeMostExecutors: [User]
     getFavor(favorId: String): PopulatedFavor
     getFavorsByDate(startingDate: DateTime, limitDate: DateTime): [Favor]
     getAllFavors: [Favor]
@@ -96,6 +98,7 @@ type Mutation {
     updateUser(_id: String, email: String, updatedUser: UserUpdateInput, newImage: Upload): String
     secureEmailPasswordAccountUpdate(_id: String, email: String, password: String, updateParams: UserSecureUpdate): String
     connectUser(email: String!, password: String!): JWT
+    addUserToken(token: String): String
     createFavor(favor: FavorInput, images: [Upload]): Favor
     deleteFavor(favorId: String): String
     updateFavor(favorId: String, updatedFavor: UpdateFavorInput, newImages: [Upload]): String
@@ -134,7 +137,8 @@ type PopulatedFavor {
     paymentAmount: Float
     paymentMethod: String
     dateToPublish: DateTime
-    dateToUnpublished: DateTime
+    dateToExecute: DateTime
+    dateToFinishExecute: DateTime
     dateLockedOut: DateTime
     dateCreated: DateTime
     dateLastModified: DateTime
@@ -153,7 +157,8 @@ type Favor {
     paymentAmount: Float
     paymentMethod: String
     dateToPublish: DateTime
-    dateToUnpublished: DateTime
+    dateToExecute: DateTime
+    dateToFinishExecute: DateTime
     dateLockedOut: DateTime
     dateCreated: DateTime
     dateLastModified: DateTime
@@ -181,7 +186,8 @@ input FavorInput {
     paymentAmount: Float
     paymentMethod: PaymentType!
     dateToPublish: DateTime
-    dateToUnpublished: DateTime
+    dateToExecute: DateTime
+    dateToFinishExecute: DateTime
     dateLockedOut: DateTime
 }
 
@@ -194,7 +200,8 @@ input UpdateFavorInput {
     paymentAmount: Float
     paymentMethod: PaymentType
     dateToPublish: DateTime
-    dateToUnpublished: DateTime
+    dateToExecute: DateTime
+    dateToFinishExecute: DateTime
     dateLockedOut: DateTime
 }
 
@@ -282,6 +289,7 @@ type FavorTransaction {
     dateCompleted: DateTime
     dateCreated: DateTime
     dateLastModified: DateTime
+    rating: Float
 }
 
 type PopulatedFavorTransaction {
@@ -296,4 +304,5 @@ type PopulatedFavorTransaction {
     dateCompleted: DateTime
     dateCreated: DateTime
     dateLastModified: DateTime
+    rating: Float
 }

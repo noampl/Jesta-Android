@@ -49,9 +49,11 @@ public class NotificationRepository {
         _notificationTransaction.postValue(transactions);
     }
 
-    public void add_notificationTransaction(List<Transaction> transactions){
+    public synchronized void add_notificationTransaction(List<Transaction> transactions){
         List<Transaction> transactions1 = new ArrayList<>(Objects.requireNonNull(_notificationTransaction.getValue()));
+        System.out.println("peleg - add transaction list size before " + transactions1.size());
         transactions1.addAll(transactions);
+        System.out.println("peleg - add transaction list size after " + transactions1.size());
         set_notificationTransaction(transactions1);
     }
 

@@ -15,6 +15,7 @@ import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.JestaItemBinding;
+import com.example.jesta.model.enteties.Jesta;
 import com.example.jesta.viewmodel.MapViewModel;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -83,8 +84,10 @@ public class JestaAdapter extends ListAdapter<GetFavorsByRadiosTimeAndDateQuery.
         public void bind(GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable jesta){
             _binding.setJesta(jesta);
             _binding.setMyLocation(_mapViewModel.getMyLocation().getValue());
-            _binding.setSrcDate(jesta.dateToPublish.toString());
-            _binding.setDestDate(jesta.dateToUnpublished.toString());
+            if (jesta.dateToExecute != null)
+            _binding.setSrcDate(jesta.dateToExecute.toString());
+            if (jesta.dateToFinishExecute != null)
+            _binding.setDestDate(jesta.dateToFinishExecute.toString());
             _binding.setViewModel(_mapViewModel);
             _mapViewModel.getMyLocation().observe(_lifecycleOwner, new Observer<LatLng>() {
                 @Override

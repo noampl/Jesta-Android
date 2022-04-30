@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.Error;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Upload;
 import com.apollographql.apollo3.rx3.Rx3Apollo;
+import com.example.jesta.AddUserTokenMutation;
 import com.example.jesta.ApproveFavorSuggestionMutation;
 import com.example.jesta.CancelFavorTransactionMutation;
 import com.example.jesta.CreateFavorTransactionRequestMutation;
@@ -180,7 +181,6 @@ public class GrahpqlRepository {
 
             @Override
             public void onError(@NonNull Throwable e) {
-                System.out.println("peleg - Error");
                 _serverError.postValue(e.getMessage());
             }
         });
@@ -207,13 +207,13 @@ public class GrahpqlRepository {
                     System.out.println("peleg - createJesta");
                 }
                 else{
-                    Log.d("CreateJesta", dataApolloResponse.errors.get(0).getMessage());
+                    Log.d("peleg - CreateJesta", dataApolloResponse.errors.get(0).getMessage());
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
-                Log.e("CreateJesta", e.getMessage());
+                Log.e("peleg - CreateJesta", e.getMessage());
             }
         });
     }
@@ -386,6 +386,61 @@ public class GrahpqlRepository {
         });
     }
 
+    /**
+     * Cancel Transaction
+     * @param favorId The id of the favorId connect to the transaction cancel
+     */
+    public void cancelFavorTransaction(String favorId){
+        _executorService.execute(()->{
+            GetAllUserFavorTransactionByFavorIdQuery.GetAllUserFavorTransactionByFavorId transaction = synchronizeGetTransaction(favorId);
+            if (transaction != null){
+                ApolloCall<CancelFavorTransactionMutation.Data> mutaion = _apolloClient.mutation(new CancelFavorTransactionMutation(transaction._id));
+                Single<ApolloResponse<CancelFavorTransactionMutation.Data>> responseSingle = Rx3Apollo.single(mutaion);
+                ApolloResponse<CancelFavorTransactionMutation.Data> dataApolloResponse = responseSingle.blockingGet();
+
+                if (dataApolloResponse.hasErrors()){
+                    for (Error e : dataApolloResponse.errors)
+                        Log.e("cancelFavorTransaction", e.getMessage());
+                }
+                else{
+                    Log.d("cancelFavorTransaction", "Cancel transaction " + transaction._id);
+                    JestaRepository.getInstance().set_favorTransactionStatus(FavorTransactionStatus.CANCELED.toString());
+                }
+            }
+        });
+
+    }
+
+    /**
+     * Send the server the firebase token
+     * @param token the firebase token
+     */
+    public void addUserToken(String token) {
+        ApolloCall<AddUserTokenMutation.Data> mutation = _apolloClient.mutation(new AddUserTokenMutation(new Optional.Present<>(token)));
+        Single<ApolloResponse<AddUserTokenMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<AddUserTokenMutation.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<AddUserTokenMutation.Data> dataApolloResponse) {
+                if (!dataApolloResponse.hasErrors()){
+                    Log.d("addUserToken", "Seccess");
+                }
+                else{
+                    Log.d("addUserToken", dataApolloResponse.errors.get(0).getMessage());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("addUserToken",e.getMessage());
+            }
+        });
+    }
+
     // endregion
 
     // region Queries
@@ -491,41 +546,24 @@ public class GrahpqlRepository {
     /**
      * Gets all favorTransaction - AKA as notification of jesta
      */
-    public void getFavorTransaction(){
+    public synchronized void getFavorTransaction(){
         if (_apolloClient == null)
             return;
+        System.out.println("peleg - transactions size before clear " + NotificationRepository.getInstance().get_notificationTransaction().getValue().size());
+        NotificationRepository.getInstance().get_notificationTransaction().getValue().clear();
         NotificationRepository.getInstance().set_notificationTransaction(new ArrayList<>());
+        System.out.println("peleg - transactions size after clear " + NotificationRepository.getInstance().get_notificationTransaction().getValue().size());
 
+        System.out.println("peleg - PENDING_FOR_OWNER + WAITING_FOR_JESTA_EXECUTION_TIME");
         getFavorTransaction(com.example.jesta.type.FavorTransactionStatus.PENDING_FOR_OWNER,
                 com.example.jesta.type.FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME);
+        System.out.println("peleg - EXECUTOR_FINISH_JESTA + CANCELED");
         getFavorTransaction(com.example.jesta.type.FavorTransactionStatus.EXECUTOR_FINISH_JESTA,
                 com.example.jesta.type.FavorTransactionStatus.CANCELED);
-        getFavorTransaction(com.example.jesta.type.FavorTransactionStatus.JESTA_DONE,
+        System.out.println("peleg - JESTA_DONE + JESTA_DONE");
+        getFavorTransaction(com.example.jesta.type.FavorTransactionStatus.CANCELED,
                 com.example.jesta.type.FavorTransactionStatus.JESTA_DONE);
-    }
-
-    /**
-     * Cancel Transaction
-     * @param favorId The id of the favorId connect to the transaction cancel
-     */
-    public void cancelFavorTransaction(String favorId){
-        _executorService.execute(()->{
-            GetAllUserFavorTransactionByFavorIdQuery.GetAllUserFavorTransactionByFavorId transaction = synchronizeGetTransaction(favorId);
-            if (transaction != null){
-                ApolloCall<CancelFavorTransactionMutation.Data> mutaion = _apolloClient.mutation(new CancelFavorTransactionMutation(transaction._id));
-                Single<ApolloResponse<CancelFavorTransactionMutation.Data>> responseSingle = Rx3Apollo.single(mutaion);
-                ApolloResponse<CancelFavorTransactionMutation.Data> dataApolloResponse = responseSingle.blockingGet();
-
-                if (dataApolloResponse.hasErrors()){
-                    for (Error e : dataApolloResponse.errors)
-                        Log.e("cancelFavorTransaction", e.getMessage());
-                }
-                else{
-                    Log.d("cancelFavorTransaction", "Cancel transaction " + transaction._id);
-                    JestaRepository.getInstance().set_favorTransactionStatus(FavorTransactionStatus.CANCELED.toString());
-                }
-            }
-        });
+        System.out.println("peleg - transaction size end " + NotificationRepository.getInstance().get_notificationTransaction().getValue().size());
 
     }
 
@@ -558,19 +596,19 @@ public class GrahpqlRepository {
                                 t.favorId.ownerId,new Address(t.favorId.sourceAddress.location.coordinates)),
                                 new User(t.favorOwnerId._id, t.favorOwnerId.firstName, t.favorOwnerId.lastName),
                                 new User(t.handledByUserId._id, t.handledByUserId.firstName, t.handledByUserId.lastName),
-                                t.dateLastModified.toString()));
+                                t.dateLastModified.toString(), t.rating != null ? t.rating : 0));
                     });
                     dataApolloResponse.data.getAllOwnerFavorTransactionByStatus.forEach(t ->{
                         transactions.add(new Transaction(t._id, FavorTransactionStatus.valueOf(t.status),new Jesta(t.favorId._id, t.favorId.status,
                                 t.favorId.ownerId,new Address(t.favorId.sourceAddress.location.coordinates)),
                                 new User(t.favorOwnerId._id, t.favorOwnerId.firstName, t.favorOwnerId.lastName),
                                 new User(t.handledByUserId._id, t.handledByUserId.firstName, t.handledByUserId.lastName),
-                                t.dateLastModified.toString()));
+                                t.dateLastModified.toString(), t.rating != null ? t.rating : 0));
                     });
 
                     NotificationRepository.getInstance().add_notificationTransaction(
                             transactions.stream().
-                                    filter(t-> !t.getStatus().equals(FavorTransactionStatus.JESTA_DONE)).collect(Collectors.toList()));
+                                    filter(t-> !t.getStatus().equals(FavorTransactionStatus.CANCELED)).collect(Collectors.toList()));
                 }
                 else {
                     for (Error e : dataApolloResponse.errors)

@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.R;
+import com.example.jesta.common.CustomLeanerManager;
 import com.example.jesta.databinding.FragmentNotificationBinding;
 import com.example.jesta.interfaces.IDeepLinkHelper;
 import com.example.jesta.interfaces.INavigationHelper;
@@ -37,7 +39,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         public void navigate(String arg) {
             NotificationFragmentDirections.ActionNavNotificationToRatingDialogFragment action =
             NotificationFragmentDirections.actionNavNotificationToRatingDialogFragment(arg);
-            Navigation.findNavController(requireActivity(),R.id.main_container).navigate(action);
+            Navigation.findNavController(requireActivity(),R.id.main_container).navigate((NavDirections) action);
         }
     };
     private final IDeepLinkHelper _deepLinkHelper = new IDeepLinkHelper() {
@@ -76,6 +78,12 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        _notificationViewModel.fetchTransaction();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         _notificationViewModel.set_iNavigationHelper(null);
@@ -89,7 +97,6 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     // region Private Methods
 
     private void init(){
-        _notificationViewModel.fetchTransaction();
         initAdapter();
         initSwiper();
     }
@@ -103,6 +110,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
              }
         });
         _binding.notificationLst.setAdapter(adapter);
+        _binding.notificationLst.setLayoutManager(new CustomLeanerManager(requireContext()));
     }
 
     private void initSwiper(){
@@ -114,7 +122,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     public void navigate(String arg) {
         NotificationFragmentDirections.ActionNavNotificationToJestaDetailsFragment action =
                 NotificationFragmentDirections.actionNavNotificationToJestaDetailsFragment(arg);
-        Navigation.findNavController(requireActivity(),R.id.main_container).navigate(action);
+        Navigation.findNavController(requireActivity(),R.id.main_container).navigate((NavDirections) action);
     }
 
     // endregion
