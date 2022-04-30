@@ -89,12 +89,11 @@ public class NotificationAdapter extends ListAdapter<Transaction, NotificationAd
                 if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(transaction.getStatus())) {
                     viewModel.approveSuggestion(transaction.get_id());
                 } else if (FavorTransactionStatus.JESTA_DONE.equals(transaction.getStatus())) {
-                // TODO Remove from notification
+                    System.out.println("peleg - rating is " + transaction.getRating());
+                // TODO show rating
                 } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.equals(transaction.getStatus())) {
-                // TODO write a comment about the jestionar
                     viewModel.openRating(transaction.get_id());
                 } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.equals(transaction.getStatus())){
-                 // TODO open WAZE
                     List<String> lst = new ArrayList<>();
                     lst.add(String.valueOf(transaction.getFavorId().getSourceAddress().getCoordinates().get(0)));
                     lst.add(String.valueOf(transaction.getFavorId().getSourceAddress().getCoordinates().get(1)));
@@ -103,6 +102,7 @@ public class NotificationAdapter extends ListAdapter<Transaction, NotificationAd
                 else{
                     Log.d("NotificationViewHolder","unrecognized status " + transaction.getStatus());
                 }
+                viewModel.fetchTransaction();
             });
 
             _binding.detailsBtn.setOnClickListener(v->viewModel.openDetails(transaction.getFavorId().get_id()));

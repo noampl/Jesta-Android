@@ -31,7 +31,6 @@ public class GpsHelper implements LocationListener {
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        System.out.println("peleg - onLocationChanged " + " " + location.toString());
         _myLocation.setValue(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 

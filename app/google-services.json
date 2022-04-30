@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "486279944707",
+    "project_id": "jesta-b3688",
+    "storage_bucket": "jesta-b3688.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486279944707:android:3723409b74cd585fdb0c36",
+        "android_client_info": {
+          "package_name": "com.example.jesta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "486279944707-p28thni3e7vd6sgokh8955f1htshgpc3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQultYhBKVgDomXSz9mOesznAYuKe8ATo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "486279944707-p28thni3e7vd6sgokh8955f1htshgpc3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

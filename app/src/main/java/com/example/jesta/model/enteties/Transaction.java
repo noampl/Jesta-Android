@@ -16,21 +16,31 @@ public class Transaction {
     private User favorOwnerId;
     private User handledByUserId;
     private String dateLastModified;
+    private double rating;
 
     // endregion
 
-    public Transaction(String _id, FavorTransactionStatus status, Jesta favorId, User favorOwnerId, User handledByUserId, String dateLastModified) {
+    public Transaction(String _id, FavorTransactionStatus status, Jesta favorId, User favorOwnerId, User handledByUserId, String dateLastModified, double rating) {
         this._id = _id;
         this.status = status;
         this.favorId = favorId;
         this.favorOwnerId = favorOwnerId;
         this.handledByUserId = handledByUserId;
         this.dateLastModified = dateLastModified;
+        this.rating = rating;
     }
 
     // endregion
 
     //region Properties
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
 
     public String get_id() {
         return _id;

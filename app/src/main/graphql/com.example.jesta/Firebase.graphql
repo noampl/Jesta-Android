@@ -1,0 +1,4 @@
+mutation addUserToken($token: String) {
+    addUserToken(token: $token)
+}
+

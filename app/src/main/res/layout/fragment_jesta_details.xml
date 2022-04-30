@@ -82,8 +82,8 @@
                 app:layout_constraintTop_toBottomOf="@id/description"
                 app:layout_constraintStart_toStartOf="@id/description"
                 android:layout_marginTop="@dimen/margin_vertical"
-                sourceDate="@{jestaDetails.dateToPublish}"
-                destDate="@{jestaDetails.dateToUnpublished}"
+                sourceDate="@{jestaDetails.dateToExecute}"
+                destDate="@{jestaDetails.dateToFinishExecute}"
                 />
 
             <com.google.android.material.divider.MaterialDivider
@@ -327,7 +327,7 @@
                 app:layout_constraintEnd_toStartOf="@id/rating_icon"
                 app:layout_constraintTop_toTopOf="@id/rating_icon"
                 app:layout_constraintBottom_toBottomOf="@id/rating_icon"
-                android:text="8.3"
+                android:text="@{String.valueOf(jestaDetails.ownerId.rating)}"
                 android:textColor="@color/black"
                 android:layout_marginEnd="@dimen/side_mini_margin"
                 />

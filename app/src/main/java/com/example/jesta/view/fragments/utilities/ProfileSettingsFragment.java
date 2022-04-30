@@ -206,7 +206,6 @@ public class ProfileSettingsFragment extends Fragment {
 
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                System.out.println("peleg - places selected " + place.getName());
                 _usersViewModel.get_myUser().getValue().set_fullAddress(place.getAddress());
                 _usersViewModel.updateUser();
             }

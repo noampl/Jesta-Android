@@ -7,6 +7,7 @@ query GetJesta($favorId: String) {
             firstName
             lastName
             imagePath
+            rating
         }
         categoryId {
             name
@@ -29,8 +30,8 @@ query GetJesta($favorId: String) {
         imagesPath
         paymentAmount
         paymentMethod
-        dateToPublish
-        dateToUnpublished
+        dateToExecute
+        dateToFinishExecute
         status
     }
 }
@@ -42,8 +43,8 @@ query GetJestasInRadius($center: [Float], $radius: Float) {
         ownerId
         categoryId
         numOfPeopleNeeded
-        dateToPublish
-        dateToUnpublished
+        dateToExecute
+        dateToFinishExecute
         sourceAddress {
             fullAddress
             location {
@@ -78,7 +79,7 @@ query GetFavorsByRadiosTimeAndDate($notIncludeMe: Boolean, $center: [Float], $ra
                 coordinates
             }
         }
-        dateToPublish
-        dateToUnpublished
+        dateToExecute
+        dateToFinishExecute
     }
 }

@@ -330,8 +330,8 @@ public class CreateJestaViewModel extends ViewModel {
                                addressConverter(get_source().getValue()),
                                new Optional.Present<>(addressConverter(get_destention().getValue())),
                                new Optional.Present<>(get_description().getValue()),new Optional.Present<Double>(Double.valueOf(get_amount().getValue())),
-                               get_paymentType().getValue(), new Optional.Present<>(concatDateAndTime(get_startDate().getValue(),get_startTime().getValue())),
-                               new Optional.Present<>(concatDateAndTime(get_endDate().getValue(), get_endTime().getValue())),null));
+                               get_paymentType().getValue(),new Optional.Present<>(null) , new Optional.Present<>(concatDateAndTime(get_startDate().getValue(),get_startTime().getValue())),
+                               new Optional.Present<>(concatDateAndTime(get_endDate().getValue(), get_endTime().getValue())),new Optional.Present<>(null)));
     }
 
     /**
@@ -384,7 +384,20 @@ public class CreateJestaViewModel extends ViewModel {
     }
 
     public void clearData() {
-        // TODO delete all the data
+        navigationHelper = null;
+        set_description("");
+        _images.clear();
+        _startDate.setValue(null);
+        _endDate.setValue(null);
+        _startTime.setValue(null);
+        _endTime.setValue(null);
+        _isRepeatedly.setValue(false);
+        _source.setValue(null);
+        _destention.setValue(null);
+        _paymentType.setValue(PaymentType.FREE);
+        _category.setValue(0);
+        _numOfPeople.setValue(0);
+        _amount.setValue(0);
     }
 
     // endregion
