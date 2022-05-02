@@ -47,7 +47,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
         public void onMapReady(GoogleMap googleMap) {
             LatLng sydney = _mapViewModel.getMyLocation().getValue();
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,9));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 9));
             _mapViewModel.setGoogleMap(googleMap);
             if (ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -99,18 +99,18 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     // region Private Methods
 
-    private void init(){
+    private void init() {
         _mapViewModel.getRemoteJestas();
         _mapViewModel.set_navigationHelper(this);
         initObservers();
         initListeners();
     }
 
-    private void initObservers(){
+    private void initObservers() {
         JestaAdapter adapter = new JestaAdapter(getViewLifecycleOwner(), _mapViewModel);
-        _mapViewModel.getMyLocation().observe(getViewLifecycleOwner(), (ltlg)->{
+        _mapViewModel.getMyLocation().observe(getViewLifecycleOwner(), (ltlg) -> {
             if (_mapViewModel.getGoogleMap() != null) {
-                _mapViewModel.moveCamera(ltlg,10);
+                _mapViewModel.moveCamera(ltlg, 10);
             }
         });
         _mapViewModel.get_jestas().observe(getViewLifecycleOwner(), new Observer<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>>() {
@@ -119,16 +119,18 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             public void onChanged(List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> jestas) {
                 adapter.submitList(jestas);
                 adapter.notifyDataSetChanged();
-                if (_mapViewModel.getGoogleMap() != null){
+                if (_mapViewModel.getGoogleMap() != null) {
                     _mapViewModel.getGoogleMap().clear();
-                    _mapViewModel.get_markerToJesta().clear();
-                    jestas.forEach(j->{
+                    if (_mapViewModel.get_markerToJesta() != null) {
+                        _mapViewModel.get_markerToJesta().clear();
+                    }
+                    jestas.forEach(j -> {
                         Marker marker = _mapViewModel.getGoogleMap().addMarker(
                                 new MarkerOptions()
                                         .position(new LatLng(j.sourceAddress.location.coordinates.get(0),
                                                 j.sourceAddress.location.coordinates.get(1)))
                         );
-                        _mapViewModel.addMarkerAndJesta(marker,j);
+                        _mapViewModel.addMarkerAndJesta(marker, j);
                     });
                 }
             }
@@ -136,8 +138,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         _binding.jestaLst.setAdapter(adapter);
     }
 
-    private void initListeners(){
-        _binding.plusBtn.setOnClickListener((v)->
+    private void initListeners() {
+        _binding.plusBtn.setOnClickListener((v) ->
                 Navigation.findNavController(requireActivity(), R.id.main_container).navigate(R.id.action_nav_map_to_addJestaFragment));
     }
 
@@ -164,10 +166,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     // region Private Methods
 
-    private void openJestaDetails(String id){
+    private void openJestaDetails(String id) {
         MapFragmentDirections.ActionNavMapToJestaDetailsFragment action =
                 MapFragmentDirections.actionNavMapToJestaDetailsFragment(id);
-        Navigation.findNavController(requireActivity(),R.id.main_container).navigate(action);
+        Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
     }
 
     // endregion
