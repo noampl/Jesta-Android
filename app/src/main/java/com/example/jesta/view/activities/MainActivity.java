@@ -3,6 +3,7 @@ package com.example.jesta.view.activities;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -10,6 +11,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -36,13 +38,14 @@ import com.example.jesta.viewmodel.NotificationViewModel;
 import com.example.jesta.workes.NotificationWorker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavController.OnDestinationChangedListener {
 
     // region Members
 
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        _binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        _binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         // make sure the window is RTL
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         _notificationNumber = findViewById(R.id.notification_number);
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
     // region Private Methods
 
-    private void init(){
+    private void init() {
         setSupportActionBar(_binding.mainToolbar);
         NavHostFragment navigationHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.main_container);
         _navController = navigationHost.getNavController();
@@ -80,10 +83,11 @@ public class MainActivity extends AppCompatActivity {
         _appBarConfiguration =
                 new AppBarConfiguration.Builder(R.id.nav_map, R.id.nav_request_jestas,
                         R.id.nav_todo_jestas, R.id.nav_waiting_jestas, R.id.nav_done_jestas, R.id.nav_jesta_settings,
-                        R.id.nav_help,R.id.nav_contact , R.id.nav_about, R.id.nav_privacy, R.id.nav_terms)
+                        R.id.nav_help, R.id.nav_contact, R.id.nav_about, R.id.nav_privacy, R.id.nav_terms)
                         .setOpenableLayout(_binding.drawerLayout)
                         .build();
 
+        _navController.addOnDestinationChangedListener(this);
         NavigationUI.setupActionBarWithNavController(this, _navController, _appBarConfiguration);
         NavigationUI.setupWithNavController(_binding.navView, _navController);
 
@@ -94,14 +98,14 @@ public class MainActivity extends AppCompatActivity {
         initServices();
     }
 
-    private void initWorkers(){
-        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class,1, TimeUnit.MINUTES)
+    private void initWorkers() {
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1, TimeUnit.MINUTES)
                 .addTag("Notification")
                 .build();
         WorkManager.getInstance(this).enqueue(periodicWorkRequest);
     }
 
-    private void initObservers(){
+    private void initObservers() {
         NotificationViewModel viewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
         viewModel.get_notificationTransaction().observe(this, new Observer<List<Transaction>>() {
             @Override
@@ -118,22 +122,31 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void initServices(){
+    private void initServices() {
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
-               @Override
-               public void onComplete(@NonNull Task<String> task) {
-                   if (!task.isSuccessful()) {
-                       Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                       return;
-                   }
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
 
-                   // Get new FCM registration token
-                   String token = task.getResult();
-                   GrahpqlRepository.getInstance().addUserToken(token);
-               }
-           });
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        GrahpqlRepository.getInstance().addUserToken(token);
+                    }
+                });
     }
+
+    private void updateToolbarByNavScreen(int id) {
+        if (id == R.id.nav_map || id == R.id.nav_podium) {
+            _binding.frameToolbarLogo.setVisibility(View.VISIBLE);
+        } else {
+            _binding.frameToolbarLogo.setVisibility(View.GONE);
+        }
+    }
+
 
     // endregion
 
@@ -161,6 +174,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
+        this.updateToolbarByNavScreen(navDestination.getId());
+    }
+
     // endregion
 
     // region Listener
@@ -169,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         @SuppressLint("NonConstantResourceId")
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            switch (item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.nav_notification:
                     _navController.navigate(R.id.nav_notification);
                     return true;
