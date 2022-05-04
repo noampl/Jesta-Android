@@ -1,66 +1,123 @@
 package com.example.jesta.view.fragments.jestas;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.jesta.R;
+import com.example.jesta.databinding.FragmentGenericJestasListBinding;
+import com.example.jesta.model.enteties.Jesta;
+import com.example.jesta.view.adapters.JestaAdapter;
+import com.example.jesta.viewmodel.WaitingJestasViewModel;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link WaitingJestasFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.List;
+
 public class WaitingJestasFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private FragmentGenericJestasListBinding _binding;
+    private WaitingJestasViewModel _viewModel;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-    public WaitingJestasFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment WaitingJestasFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static WaitingJestasFragment newInstance(String param1, String param2) {
-        WaitingJestasFragment fragment = new WaitingJestasFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        _viewModel = new ViewModelProvider(this).get(WaitingJestasViewModel.class);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        _binding = FragmentGenericJestasListBinding.inflate(inflater, container, false);
+
+        RecyclerView rvList = _binding.rvList;
+        rvList.setHasFixedSize(true);
+        rvList.setLayoutManager(new LinearLayoutManager(getContext()));
+        JestaAdapter adapter = null; // new JestaAdapter(_viewModel.getUserWaitingJestas())
+//        adapter.setOnItemClickListener(new JestaAdapter.OnItemClickListener() {
+//            @Override
+//            public void onClick(Jesta jesta, View view) {
+//                // Navigates to the details fragment of the jesta:
+//                Navigation.findNavController(view).navigate(WaitingJestasFragmentDirections.actionNavWaitingJestasToJestaDetailsFragment(jesta));
+//            }
+//        });
+//        rvList.setAdapter(adapter);
+
+        _binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshList();
+            }
+        });
+
+        // Listens to data changes (while the fragment is alive):
+        _viewModel.getUserWaitingJestas().observe(getViewLifecycleOwner(), new Observer<List<Jesta>>() {
+            @Override
+            public void onChanged(List<Jesta> jestas) {
+                adapter.notifyDataSetChanged();
+                if (jestas.size() < 1) {
+                    _binding.rvList.setVisibility(View.GONE);
+                    _binding.llNotFound.setVisibility(View.VISIBLE);
+                } else {
+                    _binding.llNotFound.setVisibility(View.GONE);
+                    _binding.rvList.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        return _binding.getRoot();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_waiting_jestas, container, false);
+    public void onStart() {
+        super.onStart();
+
+        // Loads the data:
+        this.refreshList();
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        _binding = null;
+    }
+
+    //region Private Methods
+
+    private void refreshList() {
+        _binding.swipeRefreshLayout.setRefreshing(true);
+//        User user = UsersModel.getInstance().getCurrentUser().getValue();
+//        if (user == null) {
+//            throw new IllegalStateException("User cannot be null in UserRemediesFragment");
+//        }
+//        JestasModel.getInstance().refreshGetAllByUser(user.getId(), new OnCompleteListener() {
+//            @Override
+//            public void onSuccess() {
+//                if (_binding != null) {
+//                    _binding.swipeRefreshLayout.setRefreshing(false);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure() {
+//                if (_binding != null) {
+//                    _binding.swipeRefreshLayout.setRefreshing(false);
+//                    Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+    }
+
+    //endregion
+
 }

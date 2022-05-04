@@ -33,7 +33,11 @@
         android:id="@+id/nav_request_jestas"
         android:name="com.example.jesta.view.fragments.jestas.RequestedJestasFragment"
         android:label="@string/requested_jestas"
-        tools:layout="@layout/fragment_requested_jestas" />
+        tools:layout="@layout/fragment_requested_jestas" >
+        <action
+            android:id="@+id/action_nav_request_jestas_to_jestaDetailsFragment"
+            app:destination="@id/jestaDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/nav_jesta_settings"
         android:name="com.example.jesta.view.fragments.JestionerSettingsFragment"
@@ -70,17 +74,29 @@
         android:id="@+id/nav_done_jestas"
         android:name="com.example.jesta.view.fragments.jestas.DoneJestasFragment"
         android:label="@string/done_jestas"
-        tools:layout="@layout/fragment_done_jestas" />
+        tools:layout="@layout/fragment_done_jestas" >
+        <action
+            android:id="@+id/action_nav_done_jestas_to_jestaDetailsFragment"
+            app:destination="@id/jestaDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/nav_todo_jestas"
         android:name="com.example.jesta.view.fragments.jestas.TodoJestaFragment"
         android:label="@string/todo_jestas"
-        tools:layout="@layout/fragment_todo_jesta" />
+        tools:layout="@layout/fragment_todo_jesta" >
+        <action
+            android:id="@+id/action_nav_todo_jestas_to_jestaDetailsFragment"
+            app:destination="@id/jestaDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/nav_waiting_jestas"
         android:name="com.example.jesta.view.fragments.jestas.WaitingJestasFragment"
         android:label="@string/waiting_jestas"
-        tools:layout="@layout/fragment_waiting_jestas" />
+        tools:layout="@layout/fragment_waiting_jestas" >
+        <action
+            android:id="@+id/action_nav_waiting_jestas_to_jestaDetailsFragment"
+            app:destination="@id/jestaDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/nav_about"
         android:name="com.example.jesta.view.fragments.utilities.AboutFragment"
