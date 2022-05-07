@@ -16,6 +16,7 @@ public class User {
     private String _role;
     private String _imagePath;
     private GetUserQuery.Address _address;
+    private double _rating;
 
     // endregion
 
@@ -37,6 +38,14 @@ public class User {
         this._id = _id;
         this._firstName = firstName;
         this._lastName = lastName;
+    }
+
+    public User(String _id, String firstName, String lastName, double _rating, String _imagePath){
+        this._id = _id;
+        this._firstName = firstName;
+        this._lastName = lastName;
+        this._rating = _rating;
+        this._imagePath = _imagePath;
     }
 
     // endregion
@@ -115,5 +124,17 @@ public class User {
         this._address.fullAddress = _address;
     }
 
+    public double get_rating() {
+        return _rating;
+    }
+
+    public void set_rating(double _rating) {
+        this._rating = _rating;
+    }
+
     // endregion
+
+    public String getFullName(){
+        return _firstName + " " + _lastName;
+    }
 }

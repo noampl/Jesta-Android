@@ -105,7 +105,7 @@ public class NotificationAdapter extends ListAdapter<Transaction, NotificationAd
                 viewModel.fetchTransaction();
             });
 
-            _binding.detailsBtn.setOnClickListener(v->viewModel.openDetails(transaction.getFavorId().get_id()));
+            _binding.detailsBtn.setOnClickListener(v->viewModel.openDetails(transaction.getFavorId().get_id(), transaction.get_id()));
         }
     }
 }

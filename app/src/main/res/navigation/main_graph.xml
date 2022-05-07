@@ -158,6 +158,11 @@
         <action
             android:id="@+id/action_jestaDetailsFragment_to_oneInputDialogFragment"
             app:destination="@id/oneInputDialogFragment" />
+        <argument
+            android:name="transactionId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="1" />
     </fragment>
     <dialog
         android:id="@+id/ratingDialogFragment"

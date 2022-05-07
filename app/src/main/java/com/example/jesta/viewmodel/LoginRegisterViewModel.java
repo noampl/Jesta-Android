@@ -1,8 +1,6 @@
 package com.example.jesta.viewmodel;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 
@@ -11,27 +9,19 @@ import androidx.lifecycle.ViewModel;
 
 import com.apollographql.apollo3.ApolloClient;
 import com.apollographql.apollo3.api.DefaultUpload;
-import com.apollographql.apollo3.api.FileUpload;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Upload;
 import com.example.MyApplication;
 import com.example.jesta.type.UserCreateInput;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
-import com.example.jesta.model.repositories.GrahpqlRepository;
+import com.example.jesta.model.repositories.GraphqlRepository;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.regex.Pattern;
 
-import okio.Buffer;
-import okio.BufferedSource;
 import okio.Okio;
 import okio.Source;
 
@@ -49,9 +39,9 @@ public class LoginRegisterViewModel extends ViewModel {
     // region C'tor
 
     public LoginRegisterViewModel() {
-        this._apolloClient = GrahpqlRepository.getInstance().getApolloClient();
-        isLoggedIn = GrahpqlRepository.getInstance().getIsLoggedIn();
-        _serverErrorMsg = GrahpqlRepository.getInstance().getServerErrorMsg();
+        this._apolloClient = GraphqlRepository.getInstance().getApolloClient();
+        isLoggedIn = GraphqlRepository.getInstance().getIsLoggedIn();
+        _serverErrorMsg = GraphqlRepository.getInstance().getServerErrorMsg();
     }
 
     // endregion
@@ -84,7 +74,7 @@ public class LoginRegisterViewModel extends ViewModel {
     public void initLogin(){
         try {
             ShardPreferencesHelper.init();
-            GrahpqlRepository.getInstance().login(ShardPreferencesHelper.readEmail(), ShardPreferencesHelper.readPassword());
+            GraphqlRepository.getInstance().login(ShardPreferencesHelper.readEmail(), ShardPreferencesHelper.readPassword());
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
             isLoggedIn.setValue(false);
@@ -114,7 +104,7 @@ public class LoginRegisterViewModel extends ViewModel {
             ShardPreferencesHelper.writePassword(password);
         }
         if (res)
-            GrahpqlRepository.getInstance().login(email,password);
+            GraphqlRepository.getInstance().login(email,password);
         return res;
     }
 
@@ -132,7 +122,7 @@ public class LoginRegisterViewModel extends ViewModel {
                 email, password, new Optional.Present<>(phone),new Optional.Present<>(address),new Optional.Present<>(lng),
                 new Optional.Present<>(lat));
 
-        GrahpqlRepository.getInstance().register(userCreateInput, optionalFile);
+        GraphqlRepository.getInstance().register(userCreateInput, optionalFile);
     }
 
     /**

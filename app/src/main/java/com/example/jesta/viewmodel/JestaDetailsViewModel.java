@@ -4,11 +4,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.apollographql.apollo3.api.Optional;
-import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetJestaQuery;
+import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.interfaces.IDialogConsumerHelper;
 import com.example.jesta.interfaces.INavigationHelper;
-import com.example.jesta.model.repositories.GrahpqlRepository;
+import com.example.jesta.model.enteties.Transaction;
+import com.example.jesta.model.repositories.GraphqlRepository;
 import com.example.jesta.model.repositories.JestaRepository;
 import com.example.jesta.model.repositories.MapRepository;
 import com.example.jesta.model.repositories.UsersRepository;
@@ -25,7 +26,8 @@ public class JestaDetailsViewModel extends ViewModel {
     private IDialogConsumerHelper _dialogConsumerHelper;
     private String _comment;
     private INavigationHelper _navigationHelper;
-
+    private String _userId;
+    private final MutableLiveData<Transaction> _detailsTransaction;
     // endregion
 
     // region C'Tor
@@ -36,7 +38,9 @@ public class JestaDetailsViewModel extends ViewModel {
         this._dialogConsumerHelper = UsersRepository.getInstance().get_dialogConsumerHelper();
         this._comment = JestaRepository.getInstance().get_comment();
         this._isSuggestHelp =JestaRepository.getInstance().get_isSuggestHelp();
-        this._favorTransactionStatus = JestaRepository.getInstance().get_favorTransaction();
+        this._favorTransactionStatus = JestaRepository.getInstance().get_favorTransactionStatus();
+        this._userId = ShardPreferencesHelper.readId();
+        this._detailsTransaction = JestaRepository.getInstance().get_detailsTransaction();
     }
 
     // endregion
@@ -95,6 +99,18 @@ public class JestaDetailsViewModel extends ViewModel {
         _isSuggestHelp.setValue(bool);
     }
 
+    public String get_userId() {
+        return _userId;
+    }
+
+    public MutableLiveData<Transaction> get_detailsTransaction() {
+        return _detailsTransaction;
+    }
+
+    public void set_detailsTransaction(Transaction transaction){
+        _detailsTransaction.setValue(transaction);
+    }
+
     // endregion
 
     // region Public Methods
@@ -104,27 +120,33 @@ public class JestaDetailsViewModel extends ViewModel {
      * @param id The Id
      */
     public void getDetails(String id){
-        GrahpqlRepository.getInstance().getJestaDetails(id);
+        GraphqlRepository.getInstance().getJestaDetails(id);
     }
 
     public void suggestHelp(String favorId) {
-        GrahpqlRepository.getInstance().suggestHelp(favorId, new Optional.Present<>(_comment));
+        GraphqlRepository.getInstance().suggestHelp(favorId, new Optional.Present<>(_comment));
     }
 
     public void cancelTransaction(String favorId) {
-        GrahpqlRepository.getInstance().cancelFavorTransaction(favorId);
+        GraphqlRepository.getInstance().cancelFavorTransaction(favorId);
     }
 
     public void notifyExcuterFinish(String jestaId) {
-        GrahpqlRepository.getInstance().executorFinishFavor(jestaId);
+        GraphqlRepository.getInstance().executorFinishFavor(jestaId);
     }
 
     public void ownerFinishFavor(String transactionId, float rating) {
-        GrahpqlRepository.getInstance().ownerFinishFavor(transactionId, (int) rating);
+        GraphqlRepository.getInstance().ownerFinishFavor(transactionId, (int) rating);
         _navigationHelper.navigate(null);
     }
 
-
+    /**
+     * Get Transaction By Id
+     * @param transactionId the transaction ID
+     */
+    public void getTransaction(String transactionId) {
+        GraphqlRepository.getInstance().getTransactionById(transactionId);
+    }
 
     // endregion
 

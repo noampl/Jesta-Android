@@ -128,15 +128,17 @@ public class JestaBindingAdapters {
         btn.setBackgroundResource(resId);
     }
 
-    @BindingAdapter("layoutVisibility")
-    public static void setVisibility(View view, String status){
+    @BindingAdapter({"layoutVisibility", "currentUser", "ownerId"})
+    public static void setVisibility(View view, String status, String currentUser, String ownerId){
         if (status == null){
             view.setVisibility(View.GONE);
             return;
         }
 
         if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString().equals(status) ||
-                FavorTransactionStatus.JESTA_DONE.toString().equals(status)){
+                FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(status) ||
+                (FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(status) && currentUser.equals(ownerId)))
+        {
             view.setVisibility(View.VISIBLE);
         }
         else{
@@ -177,12 +179,29 @@ public class JestaBindingAdapters {
         }
     }
 
-    @BindingAdapter("status")
-    public static void setStatus(TextView textView, String status){
+    @BindingAdapter({"visibilityUserId", "visibilityOwnerId"})
+    public static void setIconVisibility(View view, String userId, String ownerId){
+        if (ownerId == null)
+            return;
+        if (ownerId.equals(userId)){
+            view.setVisibility(View.VISIBLE);
+        }
+        else{
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    @BindingAdapter({"status", "userId", "transaction"})
+    public static void setStatus(TextView textView, String status, String currentId, Transaction transaction){
         if (status == null)
             return;
         if (FavorTransactionStatus.JESTA_DONE.toString().equals(status)){
             textView.setText(R.string.finished);
+        }
+        else if (transaction!= null && FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(status) &&
+                currentId.equals(transaction.getFavorOwnerId().get_id())){
+            String title = transaction.getHandledByUserId().getFullName();
+            textView.setText(title);
         }
         else if(FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(status)){
             textView.setText(R.string.pending_for_owner);
@@ -203,6 +222,18 @@ public class JestaBindingAdapters {
         }
     }
 
+    @BindingAdapter({"userId" , "transaction"})
+    public static void setButtonVisibility(AppCompatButton button, String userId, Transaction transaction){
+        if (transaction != null &&
+                FavorTransactionStatus.PENDING_FOR_OWNER == transaction.getStatus() &&
+                userId.equals(transaction.getFavorOwnerId().get_id())){
+            button.setVisibility(View.VISIBLE);
+        }
+        else{
+            button.setVisibility(View.GONE);
+        }
+    }
+
     @BindingAdapter({"setText","defaultText"})
     public static void setText(TextView view, String text, int resId){
         if (text != null && !text.equals("") && !text.equals(Consts.INVALID_STRING)){
@@ -210,6 +241,18 @@ public class JestaBindingAdapters {
         }
         else {
             view.setText(view.getContext().getText(resId));
+        }
+    }
+
+    @BindingAdapter({"OwnerId", "userId"})
+    public static void setStatusTitle(TextView textView, String ownerId, String userID){
+        if (ownerId == null)
+            return;
+        if (ownerId.equals(userID)){
+            textView.setText(R.string.got_offer_from);
+        }
+        else{
+            textView.setText(R.string.status);
         }
     }
 

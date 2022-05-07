@@ -19,6 +19,8 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
+import java.util.Calendar;
+
 
 public class WhenFragment extends Fragment {
 
@@ -85,7 +87,11 @@ public class WhenFragment extends Fragment {
                                                               .build();
             picker.addOnPositiveButtonClickListener(view -> {
                _binding.startTime.setText(_createJestaViewModel.convertTimeToText(picker.getHour(), picker.getMinute()));
-//               _createJestaViewModel.set_startTime(picker); TODO
+                Calendar calendar = Calendar.getInstance();
+                calendar.clear();
+                calendar.set(Calendar.HOUR, picker.getHour());
+                calendar.set(Calendar.MINUTE, picker.getMinute());
+               _createJestaViewModel.set_startTime(calendar.getTimeInMillis());
             });
             picker.show(getParentFragmentManager(), getString(R.string.start_time));
         });
@@ -98,7 +104,11 @@ public class WhenFragment extends Fragment {
                     .build();
             picker.addOnPositiveButtonClickListener(view -> {
                 _binding.endTime.setText(_createJestaViewModel.convertTimeToText(picker.getHour(), picker.getMinute()));
-                //_createJestaViewModel.set_endTime(picker); TODO
+                Calendar calendar = Calendar.getInstance();
+                calendar.clear();
+                calendar.set(Calendar.HOUR, picker.getHour());
+                calendar.set(Calendar.MINUTE, picker.getMinute());
+                _createJestaViewModel.set_endTime(calendar.getTimeInMillis());
 
             });
             picker.show(getParentFragmentManager(), getString(R.string.end_time));

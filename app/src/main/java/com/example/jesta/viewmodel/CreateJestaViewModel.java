@@ -14,7 +14,7 @@ import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Upload;
 import com.example.jesta.common.Consts;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
-import com.example.jesta.model.repositories.GrahpqlRepository;
+import com.example.jesta.model.repositories.GraphqlRepository;
 import com.example.jesta.model.repositories.JestaRepository;
 import com.example.jesta.model.repositories.UsersRepository;
 import com.example.jesta.type.AddressInput;
@@ -310,7 +310,7 @@ public class CreateJestaViewModel extends ViewModel {
         if (get_category() == null || get_category().getValue() == 0){
             return false;
         }
-        GrahpqlRepository.getInstance().createJesta(jestaConverter(),new Optional.Present<>(_images));
+        GraphqlRepository.getInstance().createJesta(jestaConverter(),new Optional.Present<>(_images));
         return true;
     }
 

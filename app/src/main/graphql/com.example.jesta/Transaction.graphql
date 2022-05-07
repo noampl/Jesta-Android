@@ -31,8 +31,9 @@ query GetAllUserFavorsRequestedTransaction {
     }
 }
 
-query GetAllTransactionNotifications($status: FavorTransactionStatus, $getAllOwnerFavorTransactionByStatusStatus2: FavorTransactionStatus) {
-    getAllOwnerFavorTransactionByStatus(status: $getAllOwnerFavorTransactionByStatusStatus2) {
+query GetAllTransactionNotifications($status: FavorTransactionStatus, $getAllOwnerFavorTransactionByStatusStatus2: FavorTransactionStatus,
+     $fromDate: DateTime) {
+    getAllOwnerFavorTransactionByStatus(status: $getAllOwnerFavorTransactionByStatusStatus2, fromDate: $fromDate) {
         _id
         status
         favorId {
@@ -58,7 +59,7 @@ query GetAllTransactionNotifications($status: FavorTransactionStatus, $getAllOwn
         dateLastModified
         rating
     }
-    getAllExecutorFavorTransactionByStatus(status: $status) {
+    getAllExecutorFavorTransactionByStatus(status: $status, fromDate: $fromDate) {
         _id
         status
         favorId {
@@ -99,6 +100,8 @@ query GetAllUserFavorTransactionByFavorId($favorId: String!) {
         _id
         status
         favorId
+        favorOwnerId
+        handledByUserId
     }
 }
 
@@ -108,4 +111,115 @@ mutation ExecutorFinishFavor($favorTransactionId: String!) {
 
 mutation OwnerFinishFavor($favorTransactionId: String!, $rate: Int) {
     ownerNotifyJestaHasBeenDone(favorTransactionId: $favorTransactionId, rate: $rate)
+}
+
+query GetAllOwnerFavorTransactionByStatus($status: FavorTransactionStatus) {
+    getAllOwnerFavorTransactionByStatus(status: $status) {
+        _id
+        favorId {
+            _id
+            status
+            ownerId
+            categoryId
+            numOfPeopleNeeded
+            sourceAddress {
+                fullAddress
+                location {
+                    coordinates
+                }
+            }
+            destinationAddress {
+                fullAddress
+                location {
+                    coordinates
+                }
+            }
+            description
+            dateToExecute
+            dateToFinishExecute
+            mostVolunteeredOwner
+        }
+        status
+        favorOwnerId {
+            _id
+            firstName
+            lastName
+        }
+        handledByUserId {
+            _id
+            firstName
+            lastName
+        }
+        dateLastModified
+        rating
+    }
+}
+
+query GetAllExecutorFavorTransactionByStatus($status: FavorTransactionStatus) {
+    getAllExecutorFavorTransactionByStatus(status: $status) {
+        _id
+        favorId {
+            _id
+            status
+            ownerId
+            categoryId
+            numOfPeopleNeeded
+            sourceAddress {
+                fullAddress
+                location {
+                    coordinates
+                }
+            }
+            destinationAddress {
+                fullAddress
+                location {
+                    coordinates
+                }
+            }
+            description
+            dateToExecute
+            dateToFinishExecute
+            mostVolunteeredOwner
+        }
+        status
+        favorOwnerId {
+            _id
+            firstName
+            lastName
+        }
+        handledByUserId {
+            _id
+            firstName
+            lastName
+        }
+        dateLastModified
+        rating
+
+    }
+}
+
+query GetTransactionById($getTransactionByIdId: String) {
+    getTransactionById(id: $getTransactionByIdId) {
+        _id
+        status
+        favorId {
+            _id
+            status
+            ownerId
+        }
+        favorOwnerId {
+            _id
+            firstName
+            lastName
+        }
+        handledByUserId {
+            _id
+            firstName
+            lastName
+            imagePath
+            rating
+        }
+        rating
+    dateLastModified
+    }
 }

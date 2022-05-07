@@ -32,7 +32,7 @@ public class RatingDialogFragment extends DialogFragment {
     private JestaDetailsViewModel _JestaDetailsViewModel;
     private final INavigationHelper navigationHelper = new INavigationHelper() {
         @Override
-        public void navigate(String arg) {
+        public void navigate(String[] arg) {
             Navigation.findNavController(requireActivity(),R.id.main_container).navigateUp();
         }
     };

@@ -13,7 +13,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,6 +25,7 @@ import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentMapBinding;
 import com.example.jesta.interfaces.INavigationHelper;
+import com.example.jesta.model.enteties.Address;
 import com.example.jesta.model.enteties.Jesta;
 import com.example.jesta.view.adapters.JestaAdapter;
 import com.example.jesta.viewmodel.MapViewModel;
@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener, INavigationHelper {
@@ -117,7 +118,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onChanged(List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> jestas) {
-                adapter.submitList(jestas);
+                List<Jesta> jestaList = new ArrayList<>();
+                jestas.forEach(j->jestaList.add(new Jesta(j._id, j.status, j.ownerId,
+                        new Address(j.sourceAddress.fullAddress, j.sourceAddress.location.coordinates),
+                        j.numOfPeopleNeeded, j.dateToExecute != null ? j.dateToExecute.toString(): null
+                        , j.dateToFinishExecute != null ? j.dateToFinishExecute.toString() : null)));
+                adapter.submitList(jestaList);
                 adapter.notifyDataSetChanged();
                 if (_mapViewModel.getGoogleMap() != null) {
                     _mapViewModel.getGoogleMap().clear();
@@ -158,8 +164,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     // region NavigationHelper
 
     @Override
-    public void navigate(String arg) {
-        openJestaDetails(arg);
+    public void navigate(String[] arg) {
+        openJestaDetails(arg[0]);
     }
 
     // endregion

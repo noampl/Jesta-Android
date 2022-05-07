@@ -1,7 +1,6 @@
 package com.example.jesta.viewmodel;
 
 import android.annotation.SuppressLint;
-import android.hardware.usb.UsbDevice;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,7 +9,7 @@ import com.apollographql.apollo3.api.Optional;
 import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.interfaces.IDialogConsumerHelper;
 import com.example.jesta.model.enteties.User;
-import com.example.jesta.model.repositories.GrahpqlRepository;
+import com.example.jesta.model.repositories.GraphqlRepository;
 import com.example.jesta.model.repositories.UsersRepository;
 import com.example.jesta.type.UserUpdateInput;
 
@@ -94,17 +93,17 @@ public class UsersViewModel extends ViewModel {
                 new Optional.Present<>(myUser.get_birthday()), new Optional.Present<>(myUser.get_email()),
                 null, new Optional.Present<>(myUser.get_phone()),
                 new Optional.Present<>(myUser.get_address().fullAddress),null,null);
-        GrahpqlRepository.getInstance().UpdateUser(new Optional.Present<>(userUpdateInput));
+        GraphqlRepository.getInstance().UpdateUser(new Optional.Present<>(userUpdateInput));
     }
 
     public void updateRemotePassword(String password){
         UserUpdateInput userUpdateInput = new UserUpdateInput(null,null,null,
                 null,new Optional.Present<>(password),null,null,null,null);
-        GrahpqlRepository.getInstance().UpdateUser(new Optional.Present<>(userUpdateInput));
+        GraphqlRepository.getInstance().UpdateUser(new Optional.Present<>(userUpdateInput));
     }
 
     public void logout() {
-        GrahpqlRepository.getInstance().getIsLoggedIn().setValue(false);
+        GraphqlRepository.getInstance().getIsLoggedIn().setValue(false);
         ShardPreferencesHelper.logout();
     }
 

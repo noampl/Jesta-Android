@@ -3,11 +3,10 @@ package com.example.jesta.viewmodel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.interfaces.IDeepLinkHelper;
 import com.example.jesta.interfaces.INavigationHelper;
 import com.example.jesta.model.enteties.Transaction;
-import com.example.jesta.model.repositories.GrahpqlRepository;
+import com.example.jesta.model.repositories.GraphqlRepository;
 import com.example.jesta.model.repositories.NotificationRepository;
 
 import java.util.List;
@@ -72,25 +71,31 @@ public class NotificationViewModel extends ViewModel {
     // region Public Methods
 
     public void fetchTransaction() {
-        GrahpqlRepository.getInstance().getFavorTransaction();
+        GraphqlRepository.getInstance().getAllFavorTransaction();
     }
 
     public void approveSuggestion(String id) {
-        GrahpqlRepository.getInstance().approveFavorSuggestion(id, null);
+        GraphqlRepository.getInstance().approveFavorSuggestion(id, null);
     }
 
-    public void openDetails(String id) {
-        _iNavigationHelper.navigate(id);
+    public void openDetails(String id, String transactionId) {
+        String[] args = {id, transactionId};
+        _iNavigationHelper.navigate(args);
     }
 
     public void suggestHelp(String favorId) {
-        GrahpqlRepository.getInstance().suggestHelp(favorId, null);
+        GraphqlRepository.getInstance().suggestHelp(favorId, null);
     }
 
     public void openRating(String id) {
         if (_ratingDialogOpener != null){
-            _ratingDialogOpener.navigate(id);
+            String[] args = {id};
+            _ratingDialogOpener.navigate(args);
         }
+    }
+
+    public void cancelSuggetstion(String transactionId){
+        GraphqlRepository.getInstance().cancelTransaction(transactionId);
     }
 
     public void openNavigationApp(List<String> lst) {

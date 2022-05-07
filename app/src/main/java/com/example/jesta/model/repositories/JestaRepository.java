@@ -6,11 +6,10 @@ import android.net.Uri;
 import androidx.core.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestaQuery;
-import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
+import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.type.PaymentType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
@@ -49,7 +48,8 @@ public class JestaRepository {
     private ITabsNavigationHelper _tabsNavigationHelper;
     private ExecutorService _executorService;
     private final MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> _jestas;
-    private final MutableLiveData<String> _favorTransaction;
+    private final MutableLiveData<String> _favorTransactionStatus;
+    private final MutableLiveData<Transaction> _detailsTransaction;
 
     // endregion
 
@@ -85,15 +85,20 @@ public class JestaRepository {
         _executorService = Executors.newSingleThreadExecutor();
         _comment = "";
         _isSuggestHelp = new MutableLiveData<>(false);
-        _favorTransaction = new MutableLiveData<>();
+        _favorTransactionStatus = new MutableLiveData<>();
+        _detailsTransaction = new MutableLiveData<>();
     }
 
     // endregion
 
     // region Properties
 
-    public MutableLiveData<String> get_favorTransaction() {
-        return _favorTransaction;
+    public MutableLiveData<Transaction> get_detailsTransaction() {
+        return _detailsTransaction;
+    }
+
+    public MutableLiveData<String> get_favorTransactionStatus() {
+        return _favorTransactionStatus;
     }
 
     public MutableLiveData<Boolean> get_isSuggestHelp() {
@@ -191,8 +196,7 @@ public class JestaRepository {
     }
 
     public void set_favorTransactionStatus(String status){
-        System.out.println("peleg - set_favorTransaction");
-        _favorTransaction.postValue(status);
+        _favorTransactionStatus.postValue(status);
     }
 
     // endregion
@@ -206,6 +210,10 @@ public class JestaRepository {
             _source.postValue(Place.builder().setAddress(address.getAddressLine(0))
                     .setLatLng(new LatLng(address.getLatitude(), address.getLongitude())).build());
         });
+    }
+
+    public void setTransaction(Transaction transaction) {
+        _detailsTransaction.postValue(transaction);
     }
 
     // ednregion

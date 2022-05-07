@@ -1,9 +1,12 @@
 package com.example.jesta.view.fragments.jestas;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,106 +21,107 @@ import android.view.ViewGroup;
 
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentGenericJestasListBinding;
+import com.example.jesta.databinding.FragmentWaitingJestasBinding;
+import com.example.jesta.interfaces.INavigationHelper;
+import com.example.jesta.model.enteties.Address;
 import com.example.jesta.model.enteties.Jesta;
+import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.view.adapters.JestaAdapter;
+import com.example.jesta.viewmodel.JestasListsViewModel;
+import com.example.jesta.viewmodel.MapViewModel;
 import com.example.jesta.viewmodel.WaitingJestasViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WaitingJestasFragment extends Fragment {
 
-    private FragmentGenericJestasListBinding _binding;
-    private WaitingJestasViewModel _viewModel;
+    // region Members
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
+    private FragmentWaitingJestasBinding _binding;
+    private JestasListsViewModel _jestasListsViewModel;
+    private MapViewModel _mapViewModel;
+    private final INavigationHelper navigationHelper = new INavigationHelper() {
+        @Override
+        public void navigate(String[] args) {
+            WaitingJestasFragmentDirections.ActionNavWaitingJestasToJestaDetailsFragment action =
+            WaitingJestasFragmentDirections.actionNavWaitingJestasToJestaDetailsFragment(args[0]);
+            Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
+        }
+    };
 
-        _viewModel = new ViewModelProvider(this).get(WaitingJestasViewModel.class);
-    }
+    // endregion
+
+    // region LifeCycle
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        _binding = FragmentGenericJestasListBinding.inflate(inflater, container, false);
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_waiting_jestas, container, false);
+        _jestasListsViewModel = new ViewModelProvider(this).get(JestasListsViewModel.class);
+        _mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
+        _mapViewModel.set_navigationHelper(navigationHelper);
 
-        RecyclerView rvList = _binding.rvList;
-        rvList.setHasFixedSize(true);
-        rvList.setLayoutManager(new LinearLayoutManager(getContext()));
-        JestaAdapter adapter = null; // new JestaAdapter(_viewModel.getUserWaitingJestas())
-//        adapter.setOnItemClickListener(new JestaAdapter.OnItemClickListener() {
-//            @Override
-//            public void onClick(Jesta jesta, View view) {
-//                // Navigates to the details fragment of the jesta:
-//                Navigation.findNavController(view).navigate(WaitingJestasFragmentDirections.actionNavWaitingJestasToJestaDetailsFragment(jesta));
-//            }
-//        });
-//        rvList.setAdapter(adapter);
-
-        _binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshList();
-            }
-        });
-
-        // Listens to data changes (while the fragment is alive):
-        _viewModel.getUserWaitingJestas().observe(getViewLifecycleOwner(), new Observer<List<Jesta>>() {
-            @Override
-            public void onChanged(List<Jesta> jestas) {
-                adapter.notifyDataSetChanged();
-                if (jestas.size() < 1) {
-                    _binding.rvList.setVisibility(View.GONE);
-                    _binding.llNotFound.setVisibility(View.VISIBLE);
-                } else {
-                    _binding.llNotFound.setVisibility(View.GONE);
-                    _binding.rvList.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
+        init();
         return _binding.getRoot();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // Loads the data:
-        this.refreshList();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        _binding = null;
+        _mapViewModel.set_navigationHelper(null);
+        _jestasListsViewModel.set_transactions(null);
+
     }
 
-    //region Private Methods
+    // endregion
 
-    private void refreshList() {
-        _binding.swipeRefreshLayout.setRefreshing(true);
-//        User user = UsersModel.getInstance().getCurrentUser().getValue();
-//        if (user == null) {
-//            throw new IllegalStateException("User cannot be null in UserRemediesFragment");
-//        }
-//        JestasModel.getInstance().refreshGetAllByUser(user.getId(), new OnCompleteListener() {
-//            @Override
-//            public void onSuccess() {
-//                if (_binding != null) {
-//                    _binding.swipeRefreshLayout.setRefreshing(false);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure() {
-//                if (_binding != null) {
-//                    _binding.swipeRefreshLayout.setRefreshing(false);
-//                    Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
+    // region Private Methods
+
+    private void init(){
+        _jestasListsViewModel.fetchWatingJestas();
+        initObservers();
+        initListeners();
     }
 
-    //endregion
+    private void initObservers(){
+        JestaAdapter adapter = new JestaAdapter(getViewLifecycleOwner(), _mapViewModel);
+        _jestasListsViewModel.get_transactions().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onChanged(List<Transaction> transactions) {
+                if (transactions == null)
+                    return;
+                List<Jesta> jestas = new ArrayList<>();
+                List<String> transactionId = new ArrayList<>();
+                transactions.forEach(t-> {jestas.add(new Jesta(t.getFavorId().get_id(),
+                        t.getFavorId().getStatus(), t.getFavorId().getOwnerId(),
+                        new Address(t.getFavorId().getSourceAddress().getFullAddress(), t.getFavorId().getSourceAddress().getCoordinates()),
+                        t.getFavorId().getNumOfPeople(), t.getFavorId().getDateToExecute(),t.getFavorId().getDateToFinishExecute()));
+                transactionId.add(t.get_id());
+                });
+
+                adapter.submitList(jestas);
+                adapter.setTransactionId(transactionId);
+                adapter.notifyDataSetChanged();
+                _binding.genericList.swiper.setRefreshing(false);
+            }
+        });
+        _binding.genericList.list.setAdapter(adapter);
+    }
+
+    private void initListeners(){
+        // TODO Implement this
+        _binding.genericList.filter.setOnClickListener(v->{});
+        _binding.genericList.clock.setOnClickListener(v->{});
+        _binding.genericList.sort.setOnClickListener(v->{});
+        _binding.genericList.swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                _jestasListsViewModel.fetchWatingJestas();
+            }
+        });
+    }
+
+//    // endregion
 
 }
