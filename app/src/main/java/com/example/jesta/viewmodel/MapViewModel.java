@@ -5,10 +5,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.apollographql.apollo3.api.Optional;
 import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
-import com.example.jesta.GetJestasInRadiusQuery;
-import com.example.jesta.common.Consts;
 import com.example.jesta.interfaces.INavigationHelper;
-import com.example.jesta.model.repositories.GrahpqlRepository;
+import com.example.jesta.model.repositories.GraphqlRepository;
 import com.example.jesta.model.repositories.JestaRepository;
 import com.example.jesta.model.repositories.MapRepository;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -122,11 +120,13 @@ public class MapViewModel extends ViewModel {
         List<Double> coordinates = new ArrayList<>();
         coordinates.add(_myLocation.getValue().latitude);
         coordinates.add(_myLocation.getValue().longitude);
-        GrahpqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates),new Optional.Present<Double>(radiusInKm));
+        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates),new Optional.Present<Double>(radiusInKm));
     }
 
-    public void markerClicked(String jestaId){
-        _navigationHelper.navigate(jestaId);
+    public void markerClicked(String jestaId, String transactionId){
+        System.out.println("peleg - mapview model navigate transactionId " + transactionId);
+        String[] args = {jestaId, transactionId};
+        _navigationHelper.navigate(args);
     }
 
     // endregion

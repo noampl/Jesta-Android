@@ -21,7 +21,9 @@ import com.example.jesta.common.enums.FavorTransactionStatus;
 import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentJestaDetailsBinding;
 import com.example.jesta.interfaces.IDialogConsumerHelper;
+import com.example.jesta.model.enteties.User;
 import com.example.jesta.viewmodel.JestaDetailsViewModel;
+import com.example.jesta.viewmodel.NotificationViewModel;
 
 
 public class JestaDetailsFragment extends Fragment {
@@ -30,7 +32,9 @@ public class JestaDetailsFragment extends Fragment {
 
     private FragmentJestaDetailsBinding _binding;
     private JestaDetailsViewModel _jestaDetailsViewModel;
+    private NotificationViewModel _notificationViewModel;
     private String _jestaId;
+    private String _transactionId;
     private final IDialogConsumerHelper messageConsumer = new IDialogConsumerHelper() {
         @Override
         public void consume(String val) {
@@ -47,9 +51,14 @@ public class JestaDetailsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         _binding = DataBindingUtil.inflate(inflater,R.layout.fragment_jesta_details,container,false);
-        _jestaDetailsViewModel = new ViewModelProvider(this).get(JestaDetailsViewModel.class);
+        initVm();
+
         _jestaId = JestaDetailsFragmentArgs.fromBundle(getArguments()).getJestaId();
         _jestaDetailsViewModel.getDetails(_jestaId);
+        _transactionId = JestaDetailsFragmentArgs.fromBundle(getArguments()).getTransactionId();
+        if (_transactionId != null && _transactionId.length() > 3){
+            _jestaDetailsViewModel.getTransaction(_transactionId);
+        }
         init();
 
         return _binding.getRoot();
@@ -60,6 +69,7 @@ public class JestaDetailsFragment extends Fragment {
         super.onDestroy();
         _jestaDetailsViewModel.set_jestaDetails(null);
         _jestaDetailsViewModel.set_favorTransactionStatus(null);
+        _jestaDetailsViewModel.set_detailsTransaction(null);
     }
 
     // endregion
@@ -69,19 +79,37 @@ public class JestaDetailsFragment extends Fragment {
     private void init(){
         initObserver();
         initListeners();
+        _binding.setUserId(_jestaDetailsViewModel.get_userId());
         _binding.setIsSuggestHelp(_jestaDetailsViewModel.get_isSuggestHelp());
         _binding.setLifecycleOwner(getViewLifecycleOwner());
+    }
+
+    private void initVm(){
+        _jestaDetailsViewModel = new ViewModelProvider(this).get(JestaDetailsViewModel.class);
+        _notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
     }
 
     private void initObserver(){
         _jestaDetailsViewModel.get_jestaDetails().observe(getViewLifecycleOwner(),favor ->{
             _binding.setJestaDetails(favor);
+            if (favor != null && favor.ownerId != null) {
+                User user = new User(favor.ownerId._id, favor.ownerId.firstName, favor.ownerId.lastName);
+                user.set_rating(favor.ownerId.rating);
+                _binding.setOwner(user);
+            }
         });
         _jestaDetailsViewModel.get_myLocation().observe(getViewLifecycleOwner(), latLng ->
                 _binding.setMyLocation(latLng));
 
         _jestaDetailsViewModel.get_favorTransactionStatus().observe(getViewLifecycleOwner(), status->{
             _binding.setTransactionStatus(status);
+            System.out.println("peleg - set TransactionStatus " + status);
+        });
+
+        _jestaDetailsViewModel.get_detailsTransaction().observe(getViewLifecycleOwner(), transaction ->{
+                _binding.setTransaction(transaction);
+                _binding.setTransactionStatus(transaction.getStatus().toString());
+                System.out.println("peleg - set status " + transaction.getStatus().toString());
         });
     }
 
@@ -123,6 +151,24 @@ public class JestaDetailsFragment extends Fragment {
 
         _binding.doneBtn.setOnClickListener(v->{
             _jestaDetailsViewModel.notifyExcuterFinish(_jestaId);
+        });
+
+        _binding.statusLayout.setOnClickListener(v->{
+            if (_binding.getTransaction()!=null){
+                if(_jestaDetailsViewModel.get_userId().equals(_binding.getTransaction().getFavorOwnerId().get_id())){
+                // TODO Navigation to user profile with handeld ID
+                }
+            }
+        });
+
+        _binding.approve.setOnClickListener(v->{
+            _notificationViewModel.approveSuggestion(_transactionId);
+            Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
+        });
+
+        _binding.reject.setOnClickListener(v->{
+            _notificationViewModel.cancelSuggetstion(_transactionId);
+            Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
         });
     }
 

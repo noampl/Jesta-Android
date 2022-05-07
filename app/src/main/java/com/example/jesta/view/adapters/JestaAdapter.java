@@ -20,26 +20,29 @@ import com.example.jesta.viewmodel.MapViewModel;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Date;
+import java.util.List;
 
-public class JestaAdapter extends ListAdapter<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable, JestaAdapter.JestaViewHolder> {
+public class JestaAdapter extends ListAdapter<Jesta, JestaAdapter.JestaViewHolder> {
 
     // region Members
 
     private final LifecycleOwner _lifecycleOwner;
     private final MapViewModel _mapViewModel;
+    private List<String> _transactionId;
+
     // endregion
 
     // region C'tor
 
     public JestaAdapter(LifecycleOwner _lifecycleOwner, MapViewModel mapViewModel) {
-        super(new DiffUtil.ItemCallback<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>() {
+        super(new DiffUtil.ItemCallback<Jesta>() {
             @Override
-            public boolean areItemsTheSame(@NonNull GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable oldItem, @NonNull GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable newItem) {
-                return oldItem._id.equals(newItem._id);
+            public boolean areItemsTheSame(@NonNull Jesta oldItem, @NonNull Jesta newItem) {
+                return oldItem.get_id().equals(newItem.get_id());
             }
 
             @Override
-            public boolean areContentsTheSame(@NonNull GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable oldItem, @NonNull GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable newItem) {
+            public boolean areContentsTheSame(@NonNull Jesta oldItem, @NonNull Jesta newItem) {
                 return oldItem.equals(newItem);
             }
         });
@@ -62,6 +65,13 @@ public class JestaAdapter extends ListAdapter<GetFavorsByRadiosTimeAndDateQuery.
     @Override
     public void onBindViewHolder(@NonNull JestaViewHolder holder, int position) {
         holder.bind(getItem(position));
+        System.out.println("peleg - is transactionid null " + (_transactionId == null));
+        if (_transactionId != null)
+            holder.setTransactioId(_transactionId.get(position));
+    }
+
+    public void setTransactionId(List<String> transactionId) {
+        _transactionId = transactionId;
     }
 
     // endregion
@@ -81,13 +91,13 @@ public class JestaAdapter extends ListAdapter<GetFavorsByRadiosTimeAndDateQuery.
             _mapViewModel = mapViewModel;
         }
 
-        public void bind(GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable jesta){
+        public void bind(Jesta jesta){
             _binding.setJesta(jesta);
             _binding.setMyLocation(_mapViewModel.getMyLocation().getValue());
-            if (jesta.dateToExecute != null)
-            _binding.setSrcDate(jesta.dateToExecute.toString());
-            if (jesta.dateToFinishExecute != null)
-            _binding.setDestDate(jesta.dateToFinishExecute.toString());
+            if (jesta.getDateToExecute() != null)
+            _binding.setSrcDate(jesta.getDateToExecute().toString());
+            if (jesta.getDateToFinishExecute() != null)
+            _binding.setDestDate(jesta.getDateToFinishExecute().toString());
             _binding.setViewModel(_mapViewModel);
             _mapViewModel.getMyLocation().observe(_lifecycleOwner, new Observer<LatLng>() {
                 @Override
@@ -95,6 +105,11 @@ public class JestaAdapter extends ListAdapter<GetFavorsByRadiosTimeAndDateQuery.
                     _binding.setMyLocation(latLng);
                 }
             });
+            _binding.executePendingBindings();
+        }
+
+        public void setTransactioId(String transactioId) {
+            _binding.setTransactionId(transactioId);
             _binding.executePendingBindings();
         }
     }

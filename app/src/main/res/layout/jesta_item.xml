@@ -5,8 +5,12 @@
     <data>
         <import type="java.util.Date"/>
         <variable
+            name="transactionId"
+            type="String" />
+
+        <variable
             name="jesta"
-            type="com.example.jesta.GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable " />
+            type="com.example.jesta.model.enteties.Jesta" />
         <variable
             name="viewModel"
             type="com.example.jesta.viewmodel.MapViewModel" />
@@ -25,7 +29,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{()->viewModel.markerClicked(jesta._id)}"
+        android:onClick="@{()->viewModel.markerClicked(jesta._id, transactionId)}"
         >
 
         <TextView
@@ -48,7 +52,7 @@
             app:layout_constraintTop_toTopOf="@id/title"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/margin_side"
-            app:jestaLocation="@{jesta.sourceAddress.location.coordinates}"
+            app:jestaLocation="@{jesta.sourceAddress.coordinates}"
             app:myLocation="@{myLocation}"
             />
 
@@ -101,7 +105,7 @@
             app:layout_constraintEnd_toStartOf="@id/amount_icon"
             app:layout_constraintTop_toTopOf="@id/amount_icon"
             app:layout_constraintBottom_toBottomOf="@id/amount_icon"
-            android:text="@{String.valueOf(jesta.numOfPeopleNeeded)}"
+            android:text="@{String.valueOf(jesta.numOfPeople)}"
             android:layout_marginEnd="2dp"
             />
 
@@ -113,10 +117,6 @@
             android:layout_marginTop="@dimen/margin_vertical"
             app:layout_constraintTop_toBottomOf="@id/location_icon"
             />
-
-
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

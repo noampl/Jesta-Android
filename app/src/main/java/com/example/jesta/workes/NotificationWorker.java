@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.example.jesta.model.repositories.GrahpqlRepository;
+import com.example.jesta.model.repositories.GraphqlRepository;
 
 /**
  * Worker for getting the notification in the app
@@ -20,7 +20,7 @@ public class NotificationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        GrahpqlRepository.getInstance().getFavorTransaction();
+        GraphqlRepository.getInstance().getAllFavorTransaction();
         return Result.success();
     }
 }

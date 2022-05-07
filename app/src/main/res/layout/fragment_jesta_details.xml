@@ -13,6 +13,10 @@
             type="com.example.jesta.GetJestaQuery.GetFavor" />
 
         <variable
+            name="transaction"
+            type="com.example.jesta.model.enteties.Transaction" />
+
+        <variable
             name="transactionStatus"
             type="String" />
 
@@ -23,6 +27,14 @@
         <variable
             name="isSuggestHelp"
             type="androidx.lifecycle.MutableLiveData&lt;Boolean&gt;" />
+
+        <variable
+            name="userId"
+            type="String" />
+
+        <variable
+            name="owner"
+            type="com.example.jesta.model.enteties.User" />
 
     </data>
 
@@ -348,6 +360,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:btnStatus="@{transactionStatus}"
+            android:clickable="@{transaction == null}"
             android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/status_layout"
             app:layout_constraintStart_toEndOf="@+id/half_guidline"
@@ -360,6 +373,7 @@
             android:background="@color/white"
             android:textColor="@color/black"
             android:text="@string/send_msg"
+            android:clickable="@{transaction == null}"
             app:layout_constraintBottom_toTopOf="@+id/status_layout"
             app:layout_constraintEnd_toStartOf="@+id/half_guidline"
             app:layout_constraintStart_toStartOf="parent"
@@ -369,55 +383,136 @@
             android:id="@+id/status_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:currentUser="@{userId}"
             app:layoutVisibility="@{transactionStatus}"
-            >
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:ownerId="@{jestaDetails.ownerId._id}">
 
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/status_divider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/status_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/status"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/status_val"
                 android:layout_marginBottom="@dimen/margin_vertical"
+                android:text="@string/status"
                 android:textStyle="bold"
+                app:userId="@{userId}"
+                app:OwnerId="@{jestaDetails.ownerId._id}"
+                app:layout_constraintBottom_toTopOf="@id/status_val"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/handler_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="@dimen/margin_side"
+                android:backgroundTint="@color/black"
+                app:setImage="@{transaction.handledByUserId._imagePath}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/status_val"
+                app:layout_constraintBottom_toBottomOf="@id/status_val"
+                app:visibilityUserId="@{userId}"
+                app:visibilityOwnerId="@{jestaDetails.ownerId._id}"
                 />
 
             <TextView
                 android:id="@+id/status_val"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp"
+                android:clickable="@{jestaDetails.ownerId._id.equals(userId)}"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="50dp"
-                app:status="@{transactionStatus}"
                 app:layout_constraintBottom_toTopOf="@id/done_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:transaction="@{transaction}"
+                app:status="@{transactionStatus}"
+                app:userId="@{userId}" />
+
+
+            <ImageView
+                android:id="@+id/handler_rating_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/status_val"
+                app:layout_constraintBottom_toBottomOf="@id/status_val"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/margin_side"
+                android:background="@drawable/ic_baseline_star_rate_24"
+                app:visibilityUserId="@{userId}"
+                app:visibilityOwnerId="@{jestaDetails.ownerId._id}"
+                />
+
+            <TextView
+                android:id="@+id/val"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@id/handler_rating_icon"
+                app:layout_constraintTop_toTopOf="@id/handler_rating_icon"
+                app:layout_constraintBottom_toBottomOf="@id/handler_rating_icon"
+                android:text="@{String.valueOf(transaction.handledByUserId.get_rating)}"
+                android:textColor="@color/black"
+                android:layout_marginEnd="@dimen/side_mini_margin"
+                app:visibilityUserId="@{userId}"
+                app:visibilityOwnerId="@{jestaDetails.ownerId._id}"
+                />
+
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/done_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/done"
                 android:background="@color/black"
+                android:text="@string/done"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/approve"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:text="@string/approve"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/half_guidline2"
+                app:userId="@{userId}"
+                app:transaction="@{transaction}"
+                />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/reject"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:text="@string/reject"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                 />
+                app:layout_constraintEnd_toStartOf="@id/half_guidline2"
+                app:userId="@{userId}"
+                app:transaction="@{transaction}"
+                />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/half_guidline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

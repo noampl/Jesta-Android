@@ -36,9 +36,9 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     private NotificationViewModel _notificationViewModel;
     private final INavigationHelper _ratingDialogOpener = new INavigationHelper() {
         @Override
-        public void navigate(String arg) {
+        public void navigate(String[] args) {
             NotificationFragmentDirections.ActionNavNotificationToRatingDialogFragment action =
-            NotificationFragmentDirections.actionNavNotificationToRatingDialogFragment(arg);
+            NotificationFragmentDirections.actionNavNotificationToRatingDialogFragment(args[0]);
             Navigation.findNavController(requireActivity(),R.id.main_container).navigate((NavDirections) action);
         }
     };
@@ -119,9 +119,10 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     }
 
     @Override
-    public void navigate(String arg) {
+    public void navigate(String[] args) {
         NotificationFragmentDirections.ActionNavNotificationToJestaDetailsFragment action =
-                NotificationFragmentDirections.actionNavNotificationToJestaDetailsFragment(arg);
+                NotificationFragmentDirections.actionNavNotificationToJestaDetailsFragment(args[0]);
+        action.setTransactionId(args[1]);
         Navigation.findNavController(requireActivity(),R.id.main_container).navigate((NavDirections) action);
     }
 

@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -26,22 +25,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
-import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.ActivityMainBinding;
 import com.example.jesta.model.enteties.Transaction;
-import com.example.jesta.model.repositories.GrahpqlRepository;
+import com.example.jesta.model.repositories.GraphqlRepository;
 import com.example.jesta.viewmodel.NotificationViewModel;
 import com.example.jesta.workes.NotificationWorker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -134,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
 
                         // Get new FCM registration token
                         String token = task.getResult();
-                        GrahpqlRepository.getInstance().addUserToken(token);
+                        GraphqlRepository.getInstance().addUserToken(token);
                     }
                 });
     }

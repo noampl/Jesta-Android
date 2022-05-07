@@ -136,5 +136,8 @@
     <string name="help_p4_title">האם אוכל להשתמש בפרויקט באופן מסחרי?</string>
     <string name="help_p4">קוד המקור פתוח לצפייה וגלוי לכולם. עם זאת, עבדנו הרבה על הפרויקט הזה, ולכן איננו מאפשרים שימוש מסחרי בפרויקט שלנו.</string>
     <string name="favors_not_found">לא נמצאו ג\'סטות</string>
+    <string name="reject">דחה</string>
+    <string name="approve">אשר</string>
+    <string name="got_offer_from">התקבלה הצעה מ</string>
 
 </resources>

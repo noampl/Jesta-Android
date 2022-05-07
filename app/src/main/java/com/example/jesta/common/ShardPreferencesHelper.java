@@ -64,6 +64,8 @@ public class ShardPreferencesHelper {
         return readItem(Consts.PASSWORD);
     }
 
+    public static String readId(){return  readItem(Consts.ID);}
+
     // endregion
 
 
