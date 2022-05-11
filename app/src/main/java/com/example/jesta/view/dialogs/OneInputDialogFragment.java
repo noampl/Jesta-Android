@@ -49,9 +49,8 @@ public class OneInputDialogFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_one_input_dialog, container,false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_one_input_dialog, container, false);
         _userViewModel = new ViewModelProvider(this).get(UsersViewModel.class);
 
         init();
@@ -62,7 +61,7 @@ public class OneInputDialogFragment extends DialogFragment {
 
     // region Private Methods
 
-    private void init(){
+    private void init() {
         _hint = OneInputDialogFragmentArgs.fromBundle(getArguments()).getHint();
         _filedType = FiledType.values()[OneInputDialogFragmentArgs.fromBundle(getArguments()).getFiledType()];
         _title = OneInputDialogFragmentArgs.fromBundle(getArguments()).getTitle();
@@ -73,7 +72,7 @@ public class OneInputDialogFragment extends DialogFragment {
     private void initDialog() {
         _binding.submit.setOnClickListener(view -> {
             String newVal = _binding.inputEditTxt.getText().toString();
-            if (!newVal.equals("")){
+            if (!newVal.equals("")) {
                 _userViewModel.get_dialogConsumerHelper().consume(newVal);
                 _dialog.dismiss();
             }
@@ -83,12 +82,12 @@ public class OneInputDialogFragment extends DialogFragment {
 
     }
 
-    private void initBinding(){
+    private void initBinding() {
         _binding.setHint(_hint);
         _binding.setTitle(_title);
         int type = 0;
 
-        switch (_filedType){
+        switch (_filedType) {
             case PHONE:
                 type = InputType.TYPE_NUMBER_VARIATION_NORMAL;
                 break;
@@ -96,6 +95,7 @@ public class OneInputDialogFragment extends DialogFragment {
                 type = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
                 break;
             case NAME:
+            case DESCRIPTION:
             default:
                 type = InputType.TYPE_TEXT_VARIATION_PERSON_NAME;
                 break;

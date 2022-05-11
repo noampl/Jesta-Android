@@ -79,6 +79,13 @@ public class ProfileSettingsFragment extends Fragment {
             _usersViewModel.updateUser();
         }
     };
+    private final IDialogConsumerHelper descriptionConsumer = new IDialogConsumerHelper() {
+        @Override
+        public void consume(String val) {
+            _usersViewModel.get_myUser().getValue().setDescription(val);
+            _usersViewModel.updateUser();
+        }
+    };
 
     // endregion
 
@@ -125,6 +132,10 @@ public class ProfileSettingsFragment extends Fragment {
         });
         _binding.birthdayCard.setOnClickListener(view -> {
             dateDialog();
+        });
+        _binding.descriptionCard.setOnClickListener(view -> {
+            showDialog(R.string.short_description_about_yourself, _binding.descriptionTitle.getText().toString(), FiledType.DESCRIPTION,
+                    _binding.descriptionTxt.getText().toString(), phoneConsumer);
         });
         _binding.imageCard.setOnClickListener(view -> {
             Intent pickPhoto = new Intent(Intent.ACTION_PICK);
