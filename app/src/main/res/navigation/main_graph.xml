@@ -16,6 +16,14 @@
         <action
             android:id="@+id/action_nav_map_to_jestaDetailsFragment"
             app:destination="@id/jestaDetailsFragment" />
+        <action
+            android:id="@+id/action_nav_map_to_nav_profile_settings"
+            app:destination="@id/nav_profile_settings"
+            app:launchSingleTop="true" />
+        <action
+            android:id="@+id/action_nav_map_to_nav_user_profile"
+            app:destination="@id/nav_user_profile"
+            app:launchSingleTop="true" />
     </fragment>
 
     <fragment
