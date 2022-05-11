@@ -27,7 +27,7 @@ public class MapViewModel extends ViewModel {
     private MutableLiveData<LatLng> _myLocation;
     private MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> _jestas;
     private Double radiusInKm = 100D;
-    private HashMap<Marker,GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable > _markerToJesta;
+    private HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> _markerToJesta;
     private INavigationHelper _navigationHelper;
 
     // endregion
@@ -77,12 +77,14 @@ public class MapViewModel extends ViewModel {
         this._jestas.setValue(_jestas);
     }
 
-    public HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable > get_markerToJesta() {
+    public HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> get_markerToJesta() {
         return _markerToJesta;
     }
 
-    public void addMarkerAndJesta(Marker marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable  jesta){
-        _markerToJesta.put(marker, jesta);
+    public void addMarkerAndJesta(Marker marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable jesta) {
+        if (_markerToJesta != null) {
+            _markerToJesta.put(marker, jesta);
+        }
     }
     // endregion
 
@@ -90,9 +92,10 @@ public class MapViewModel extends ViewModel {
 
     /**
      * Moves the google maps camera to the position
+     *
      * @param latLng The new position
      */
-    public void moveCamera(LatLng latLng){
+    public void moveCamera(LatLng latLng) {
         _googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
     }
 
@@ -100,9 +103,9 @@ public class MapViewModel extends ViewModel {
      * Moves the google maps camera to position with a specific zoom
      *
      * @param latLng The Position
-     * @param zoom The Zoom
+     * @param zoom   The Zoom
      */
-    public void moveCamera(LatLng latLng, int zoom){
+    public void moveCamera(LatLng latLng, int zoom) {
         _googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
@@ -110,20 +113,20 @@ public class MapViewModel extends ViewModel {
      * Add Marker to the map
      *
      * @param position The position of the marker
-     * @param title The title of the marker
+     * @param title    The title of the marker
      */
-    public void AddMarker(LatLng position, String title){
+    public void AddMarker(LatLng position, String title) {
         _googleMap.addMarker(new MarkerOptions().position(position).title(title));
     }
 
-    public void getRemoteJestas(){
+    public void getRemoteJestas() {
         List<Double> coordinates = new ArrayList<>();
         coordinates.add(_myLocation.getValue().latitude);
         coordinates.add(_myLocation.getValue().longitude);
-        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates),new Optional.Present<Double>(radiusInKm));
+        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), new Optional.Present<Double>(radiusInKm));
     }
 
-    public void markerClicked(String jestaId, String transactionId){
+    public void markerClicked(String jestaId, String transactionId) {
         System.out.println("peleg - mapview model navigate transactionId " + transactionId);
         String[] args = {jestaId, transactionId};
         _navigationHelper.navigate(args);
