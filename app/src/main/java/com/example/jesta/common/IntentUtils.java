@@ -2,6 +2,7 @@ package com.example.jesta.common;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.provider.MediaStore;
 
 public class IntentUtils {
@@ -35,6 +36,15 @@ public class IntentUtils {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Gets the gmail intent, to let the user send an email.
+     *
+     * @return Returns the Camera intent if found in the device, otherwise null.
+     */
+    public static Intent gmail(Context context, String mailTo) {
+        return new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + mailTo));
     }
 
 }

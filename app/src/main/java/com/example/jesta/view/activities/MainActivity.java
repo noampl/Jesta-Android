@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,8 +27,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jesta.R;
+import com.example.jesta.common.IntentUtils;
 import com.example.jesta.databinding.ActivityMainBinding;
 import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.model.repositories.GraphqlRepository;
@@ -35,13 +38,14 @@ import com.example.jesta.viewmodel.NotificationViewModel;
 import com.example.jesta.workes.NotificationWorker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements NavController.OnDestinationChangedListener {
+public class MainActivity extends AppCompatActivity implements NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 
     // region Members
 
@@ -86,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         _navController.addOnDestinationChangedListener(this);
         NavigationUI.setupActionBarWithNavController(this, _navController, _appBarConfiguration);
         NavigationUI.setupWithNavController(_binding.navView, _navController);
+        _binding.navView.setNavigationItemSelectedListener(this);
 
         // listen to toolbar items click
         _binding.mainToolbar.setOnMenuItemClickListener(menuItemClickListener);
@@ -143,6 +148,11 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         }
     }
 
+    private void contactUs() {
+        Intent mailIntent = IntentUtils.gmail(this, getString(R.string.jesta_mail));
+        startActivity(mailIntent);
+    }
+
     // endregion
 
     // region Override
@@ -172,6 +182,21 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
     @Override
     public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
         this.updateToolbarByNavScreen(navDestination.getId());
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // In order to be able to listen on item selections, we need to override the Navigation Drawer item selection behavior:
+        int id = item.getItemId();
+        if (id == R.id.nav_contact) {
+            this.contactUs();
+        }
+        // This is for maintaining the behavior of the Navigation Drawer:
+        NavigationUI.onNavDestinationSelected(item, _navController);
+        if (_binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            _binding.drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        return true;
     }
 
     // endregion

@@ -148,5 +148,6 @@
     <string name="user_menu">תפריט משתמש</string>
     <string name="account_settings">הגדרות</string>
     <string name="short_description_about_yourself">תיאור קצר על עצמך</string>
+    <string name="jesta_mail">jesta.app.mail@gmail.com</string>
 
 </resources>
