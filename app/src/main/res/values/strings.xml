@@ -149,5 +149,6 @@
     <string name="account_settings">הגדרות</string>
     <string name="short_description_about_yourself">תיאור קצר על עצמך</string>
     <string name="jesta_mail">jesta.app.mail@gmail.com</string>
+    <string name="are_you_sure_to_exist">האם בטוח לצאת?</string>
 
 </resources>

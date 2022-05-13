@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -20,6 +21,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jesta.R;
+import com.example.jesta.common.AlertDialogRtlHelper;
 import com.example.jesta.common.IntentUtils;
 import com.example.jesta.databinding.ActivityMainBinding;
 import com.example.jesta.model.enteties.Transaction;
@@ -68,6 +71,25 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         _notificationNumber = findViewById(R.id.notification_number);
         _notificationCard = findViewById(R.id.notification_container);
         init();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // If current fragment is the main screen (the map) then confirms exit:
+        if (_navController.getCurrentDestination().getId() == R.id.nav_map) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.are_you_sure_to_exist);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    MainActivity.this.finish();
+                }
+            });
+            builder.setNegativeButton(R.string.no, null);
+            AlertDialogRtlHelper.make(builder).show();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     // endregion
