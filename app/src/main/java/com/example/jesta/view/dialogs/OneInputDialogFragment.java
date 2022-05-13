@@ -95,7 +95,6 @@ public class OneInputDialogFragment extends DialogFragment {
                 type = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
                 break;
             case NAME:
-            case DESCRIPTION:
             default:
                 type = InputType.TYPE_TEXT_VARIATION_PERSON_NAME;
                 break;
