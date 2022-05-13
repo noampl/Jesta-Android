@@ -3,6 +3,7 @@ package com.example.jesta.view.fragments.jestas;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,8 +16,11 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.jesta.R;
+import com.example.jesta.common.AlertDialogRtlHelper;
+import com.example.jesta.common.IntentUtils;
 import com.example.jesta.common.enums.FavorTransactionStatus;
 import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentJestaDetailsBinding;
@@ -24,6 +28,7 @@ import com.example.jesta.interfaces.IDialogConsumerHelper;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.viewmodel.JestaDetailsViewModel;
 import com.example.jesta.viewmodel.NotificationViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 
 public class JestaDetailsFragment extends Fragment {
@@ -144,11 +149,7 @@ public class JestaDetailsFragment extends Fragment {
         });
 
         _binding.sendMsg.setOnClickListener(v -> {
-            _jestaDetailsViewModel.set_dialogConsumerHelper(messageConsumer);
-            JestaDetailsFragmentDirections.ActionJestaDetailsFragmentToOneInputDialogFragment action =
-                    JestaDetailsFragmentDirections.actionJestaDetailsFragmentToOneInputDialogFragment(null, getString(R.string.send_msg), getString(R.string.send_msg));
-            action.setFiledType(FiledType.NAME.ordinal());
-            Navigation.findNavController(requireActivity(), R.id.main_container).navigate((NavDirections) action);
+            this.openSendMessageOptionsDialog();
         });
 
         _binding.doneBtn.setOnClickListener(v -> {
@@ -172,6 +173,35 @@ public class JestaDetailsFragment extends Fragment {
             _notificationViewModel.cancelSuggetstion(_transactionId);
             Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
         });
+    }
+
+    /**
+     * Opens the "Send Message" options dialog.
+     */
+    private void openSendMessageOptionsDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
+        builder.setTitle(R.string.send_msg);
+        String[] imageOptions = new String[]{getString(R.string.through_sms), getString(R.string.through_whatsapp)};
+        builder.setItems(imageOptions, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int index) {
+                switch (index) {
+                    // SMS:
+                    case 0:
+                        Intent smsIntent = IntentUtils.sms("0541234567"); // TODO: Grab phone from server
+                        startActivity(smsIntent);
+                        break;
+                    // WhatsApp:
+                    case 1:
+                        Intent whatsappIntent = IntentUtils.whatsApp("0541234567"); // TODO: Grab phone from server
+                        startActivity(whatsappIntent);
+                        break;
+                    default:
+                        throw new IndexOutOfBoundsException("The option index is not implemented in the Send Message options dialog.");
+                }
+            }
+        });
+        AlertDialogRtlHelper.make(builder).show();
     }
 
     // endregion

@@ -107,8 +107,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         init();
     }
 
-
-
     // endregion
 
     // region Private Methods
