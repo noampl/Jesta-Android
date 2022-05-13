@@ -45,6 +45,12 @@
     <string name="require_jesta">מה הג\'סטה המבוקשת?</string>
     <string name="cont">המשך</string>
     <string name="image_upload">העלאת תמונה</string>
+    <string name="image_change">שינוי תמונה</string>
+    <string name="camera">מצלמה</string>
+    <string name="gallery">גלריה</string>
+    <string name="gallery_intent_not_found">לא נמצאה אפליקציית גלריה במכשיר</string>
+    <string name="camera_intent_not_found">לא נמצאה אפליקציית מצלמה במכשיר</string>
+    <string name="delete_image">מחיקת תמונה</string>
     <string name="when_need_to_be_done">מתי נדרש לבצע זאת?</string>
     <string name="starting_day">תאריך התחלה</string>
     <string name="end_date">תאריך סיום</string>
@@ -139,5 +145,8 @@
     <string name="reject">דחה</string>
     <string name="approve">אשר</string>
     <string name="got_offer_from">התקבלה הצעה מ</string>
+    <string name="user_menu">תפריט משתמש</string>
+    <string name="account_settings">הגדרות</string>
+    <string name="short_description_about_yourself">תיאור קצר על עצמך</string>
 
 </resources>

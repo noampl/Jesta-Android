@@ -30,6 +30,7 @@
                     app:contentInsetStart="4dp"
                     app:contentInsetStartWithNavigation="0dp"
                     app:menu="@menu/main_menu"
+                    app:popupTheme="@style/Theme.PopupOverlay.Menu"
                     app:title="@string/app_name"
                     app:titleMarginStart="4dp">
 

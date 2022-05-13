@@ -15,6 +15,7 @@ public class User {
     private String _phone;
     private String _role;
     private String _imagePath;
+    private String _description;
     private GetUserQuery.Address _address;
     private double _rating;
 
@@ -34,13 +35,13 @@ public class User {
         this._address = _address;
     }
 
-    public User(String _id, String firstName, String lastName){
+    public User(String _id, String firstName, String lastName) {
         this._id = _id;
         this._firstName = firstName;
         this._lastName = lastName;
     }
 
-    public User(String _id, String firstName, String lastName, double _rating, String _imagePath){
+    public User(String _id, String firstName, String lastName, double _rating, String _imagePath) {
         this._id = _id;
         this._firstName = firstName;
         this._lastName = lastName;
@@ -132,9 +133,17 @@ public class User {
         this._rating = _rating;
     }
 
+    public void setDescription(String description) {
+        _description = description;
+    }
+
+    public String getDescription() {
+        return _description;
+    }
+
     // endregion
 
-    public String getFullName(){
+    public String getFullName() {
         return _firstName + " " + _lastName;
     }
 }

@@ -19,6 +19,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -34,6 +35,7 @@ import com.example.jesta.viewmodel.NotificationViewModel;
 import com.example.jesta.workes.NotificationWorker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
@@ -141,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         }
     }
 
-
     // endregion
 
     // region Override
@@ -188,11 +189,11 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
                 case R.id.nav_podium:
                     _navController.navigate(R.id.nav_podium);
                     return true;
-
-                case R.id.nav_profile_settings:
-                    // TODO: alert dialog or something:
+                case R.id.nav_user_profile:
                     _navController.navigate(R.id.nav_user_profile);
-                    //_navController.navigate(R.id.nav_profile_settings);
+                    return true;
+                case R.id.nav_user_settings:
+                    _navController.navigate(R.id.nav_profile_settings);
                     return true;
                 default:
                     System.out.println("peleg - item pressed " + item.getItemId());
