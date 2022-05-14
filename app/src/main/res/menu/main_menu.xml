@@ -7,7 +7,6 @@
         android:icon="@drawable/ic_outline_bar_chart_24"
         android:title="@string/podium"
         app:showAsAction="ifRoom" />
-
     <item
         android:id="@+id/nav_notification"
         android:title="@string/notification"

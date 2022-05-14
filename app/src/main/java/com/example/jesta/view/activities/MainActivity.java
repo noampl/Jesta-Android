@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         initWorkers();
         initObservers();
         initServices();
-        initListeners();
+//        initListeners();
     }
 
     private void initWorkers() {
@@ -130,10 +130,9 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         WorkManager.getInstance(this).enqueue(periodicWorkRequest);
     }
 
-    private void initListeners(){
-        _binding.belllll.bellContainer.setOnClickListener(v->_navController.navigate(R.id.nav_notification));
-    }
-
+//    private void initListeners(){
+//        _binding.belllll.bellContainer.setOnClickListener(v->_navController.navigate(R.id.nav_notification));
+//    }
 
     private void initObservers() {
         NotificationViewModel viewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
@@ -143,19 +142,17 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
                 System.out.println("peleg - transacions null ? " + (transactions == null) + " thread is " + Thread.currentThread());
                 System.out.println("peleg - start is card visible " + _notificationCard.getVisibility());
                 if (transactions != null) {
-                        _binding.belllll.setVisibility(transactions.size() > 0);
-                        _binding.belllll.setIndex(transactions.size());
-//                    if (transactions.size() > 0) {
-//                        _notificationCard.setVisibility(View.VISIBLE);
-//                        System.out.println("peleg - set card visible");
-//                    } else {
-//                        _notificationCard.setVisibility(View.INVISIBLE);
-//                        System.out.println("peleg - set card invisible");
-//                    }
-//                    _notificationNumber.setText(String.valueOf(transactions.size()));
-//                    System.out.println("peleg - transactionsize " + transactions.size());
-//                    System.out.println("peleg - end is card visible " + _notificationCard.getVisibility());
-////                    _binding.mainToolbar.getMenu().findItem(R.id.nav_notification)
+                    if (transactions.size() > 0) {
+                        _notificationCard.setVisibility(View.VISIBLE);
+                        System.out.println("peleg - set card visible");
+                    } else {
+                        _notificationCard.setVisibility(View.INVISIBLE);
+                        System.out.println("peleg - set card invisible");
+                    }
+                    _notificationNumber.setText(String.valueOf(transactions.size()));
+                    System.out.println("peleg - transactionsize " + transactions.size());
+                    System.out.println("peleg - end is card visible " + _notificationCard.getVisibility());
+                    _binding.mainToolbar.getMenu().findItem(R.id.nav_notification);
                 }
             }
         });
@@ -205,15 +202,15 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
         // THis is a patch for getting the action view clickes
-//        final Menu m = menu;
-//        final MenuItem item = menu.findItem(R.id.nav_notification);
-//        item.getActionView().setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                m.performIdentifierAction(item.getItemId(), 0);בם
-//            }
-//        });
+        final Menu m = menu;
+        final MenuItem item = menu.findItem(R.id.nav_notification);
+        item.getActionView().setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                m.performIdentifierAction(item.getItemId(), 0);
+            }
+        });
         return true;
     }
 
