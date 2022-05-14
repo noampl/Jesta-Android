@@ -434,7 +434,8 @@ public class JestaBindingAdapters {
 
     @BindingAdapter("registeredSince")
     public static void registeredSince(TextView textView, String date) {
-        textView.setText("כיום");
+        // TODO: implement method
+        textView.setText("כיום"); // TODO: use strings here
     }
 
     // region Private methods
