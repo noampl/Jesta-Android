@@ -165,6 +165,9 @@
             app:argType="string"
             app:nullable="true"
             android:defaultValue="1" />
+        <action
+            android:id="@+id/action_jestaDetailsFragment_to_nav_user_profile"
+            app:destination="@id/nav_user_profile" />
     </fragment>
     <dialog
         android:id="@+id/ratingDialogFragment"
@@ -186,5 +189,9 @@
         android:id="@+id/nav_user_profile"
         android:name="com.example.jesta.view.fragments.utilities.UserProfileFragment"
         android:label="@string/user_details"
-        tools:layout="@layout/fragment_user_profile" />
+        tools:layout="@layout/fragment_user_profile" >
+        <argument
+            android:name="UserId"
+            app:argType="string" />
+    </fragment>
 </navigation>

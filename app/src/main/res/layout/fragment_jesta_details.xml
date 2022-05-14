@@ -69,6 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_side"
                     android:layout_marginTop="@dimen/margin_vertical"
+                    android:paddingTop="16dp"
                     android:text="הובלות טלויזיה"
                     android:textColor="@color/black"
                     android:textSize="18sp"
@@ -204,9 +205,7 @@
                     android:visibility="@{jestaDetails.destinationAddress != null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@id/dst_location_icon"
                     app:layout_constraintStart_toEndOf="@id/dst_location_icon"
-                    app:layout_constraintTop_toTopOf="@id/dst_location_icon"
-
-                    />
+                    app:layout_constraintTop_toTopOf="@id/dst_location_icon" />
 
                 <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/location_divider"
@@ -264,6 +263,7 @@
                     android:layout_marginStart="@dimen/side_mini_margin"
                     android:text="@{String.valueOf(jestaDetails.paymentAmount)}"
                     android:textColor="@color/black"
+                    android:visibility="@{jestaDetails.paymentAmount > 0 ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@id/nis_ic"
                     app:layout_constraintStart_toEndOf="@id/nis_ic" />
 
@@ -272,6 +272,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_vertical"
+                    android:visibility="@{jestaDetails.paymentAmount > 0 ? View.VISIBLE : View.GONE}"
                     app:layout_constraintTop_toBottomOf="@id/nis_ic" />
 
                 <ImageView

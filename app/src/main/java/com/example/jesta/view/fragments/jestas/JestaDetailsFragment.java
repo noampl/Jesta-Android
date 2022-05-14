@@ -53,8 +53,7 @@ public class JestaDetailsFragment extends Fragment {
     // region LifeCycle
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_jesta_details, container, false);
         initVm();
 
@@ -134,8 +133,6 @@ public class JestaDetailsFragment extends Fragment {
                                             _jestaDetailsViewModel.cancelTransaction(_jestaId);
                                             dialogInterface.dismiss();
                                         }
-
-                                        ;
                                     }
                             ).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                         @Override
@@ -174,6 +171,16 @@ public class JestaDetailsFragment extends Fragment {
             _notificationViewModel.cancelSuggetstion(_transactionId);
             Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
         });
+
+        _binding.userName.setOnClickListener(v -> {
+            NavDirections action = JestaDetailsFragmentDirections.actionJestaDetailsFragmentToNavUserProfile(_jestaDetailsViewModel.get_userId());
+            Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
+        });
+
+        _binding.userIcon.setOnClickListener(v -> {
+            NavDirections action = JestaDetailsFragmentDirections.actionJestaDetailsFragmentToNavUserProfile(_jestaDetailsViewModel.get_userId());
+            Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
+        });
     }
 
     /**
@@ -189,12 +196,12 @@ public class JestaDetailsFragment extends Fragment {
                 switch (index) {
                     // SMS:
                     case 0:
-                        Intent smsIntent = IntentUtils.sms(_binding.getOwner().get_phone()); // TODO: Grab phone from server
+                        Intent smsIntent = IntentUtils.sms(_binding.getOwner().get_phone());
                         startActivity(smsIntent);
                         break;
                     // WhatsApp:
                     case 1:
-                        Intent whatsappIntent = IntentUtils.whatsApp(_binding.getOwner().get_phone()); // TODO: Grab phone from server
+                        Intent whatsappIntent = IntentUtils.whatsApp(_binding.getOwner().get_phone());
                         startActivity(whatsappIntent);
                         break;
                     default:

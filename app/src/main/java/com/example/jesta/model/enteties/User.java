@@ -18,6 +18,9 @@ public class User {
     private String _description;
     private GetUserQuery.Address _address;
     private double _rating;
+    private String _dateRegistered;
+    private int _numOfJestasDone;
+    private boolean _isTopJestioner;
 
     // endregion
 
@@ -139,6 +142,30 @@ public class User {
 
     public String getDescription() {
         return _description;
+    }
+
+    public void setDateRegistered(String dateRegistered) {
+        _dateRegistered = dateRegistered;
+    }
+
+    public String getDateRegistered() {
+        return _dateRegistered;
+    }
+
+    public int get_numOfJestasDone() {
+        return _numOfJestasDone;
+    }
+
+    public void set_numOfJestasDone(int _numOfJestasDone) {
+        this._numOfJestasDone = _numOfJestasDone;
+    }
+
+    public boolean is_isTopJestioner() {
+        return _isTopJestioner;
+    }
+
+    public void set_isTopJestioner(boolean _isTopJestioner) {
+        this._isTopJestioner = _isTopJestioner;
     }
 
     // endregion

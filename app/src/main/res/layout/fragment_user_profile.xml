@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragments.utilities.UserProfileFragment">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="userDetails"
+            type="com.example.jesta.model.enteties.User" />
+    </data>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layoutDirection="rtl"
-        android:textDirection="rtl"
-        tools:context=".view.fragments.utilities.UserProfileFragment">
+        android:layoutDirection="rtl">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,7 +54,7 @@
                         android:id="@+id/txtUserFullName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="ישראל ישראלי"
+                        android:text="@{userDetails._firstName + ' ' + userDetails._lastName}"
                         android:textColor="@color/black"
                         android:textSize="17sp"
                         android:textStyle="bold" />
@@ -58,6 +66,7 @@
                         android:layout_marginTop="4dp"
                         android:layout_marginEnd="8dp"
                         android:background="@color/white"
+                        android:visibility="@{userDetails._isTopJestioner ? View.VISIBLE : View.GONE}"
                         app:cardBackgroundColor="@color/red"
                         app:cardCornerRadius="8dp"
                         app:cardElevation="4dp">
@@ -76,27 +85,6 @@
                     </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardBestMedalContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="0"
-                    android:background="@color/white"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="100dp"
-                    app:cardElevation="8dp"
-                    app:contentPadding="8dp">
-
-                    <ImageView
-                        android:id="@+id/imgBestMedal"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/medal1"
-                        app:tint="@color/orange" />
-
-                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 
@@ -129,9 +117,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:padding="8dp"
-                    android:text="כשנה"
                     android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    app:registeredSince="@{userDetails.dateRegistered}" />
 
                 <ImageView
                     android:layout_width="24dp"
@@ -145,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:padding="4dp"
-                    android:text="56"
+                    android:text="@{String.valueOf(userDetails._numOfJestasDone)}"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
 
@@ -160,7 +148,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
-                    android:text="8.3"
+                    android:text="@{String.valueOf(userDetails._rating)}"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
 
@@ -179,15 +167,14 @@
                 android:paddingTop="24dp"
                 android:paddingEnd="32dp"
                 android:paddingBottom="24dp"
-                android:text="אהלן, אני ישראל מתל אביב, מוכן לתת יד בכל מה
-שקשור להובלות כבדות, יש לי טנדר עם תא מטען
-גדול יכול להוביל בכיף מקררים, ספות, טלוויזיות,
-מזנונים, מכונות כביסה וכל מה שכבד."
-                android:textColor="@color/black" />
+                android:text="@{userDetails.description}"
+                android:textColor="@color/black"
+                android:visibility="@{userDetails.description != null ? View.VISIBLE : View.GONE}" />
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="@{userDetails.description != null ? View.VISIBLE : View.GONE}"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
@@ -196,84 +183,6 @@
                 android:orientation="vertical"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp">
-
-                <LinearLayout
-                    android:id="@+id/btnRequests"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="28dp"
-                    android:paddingEnd="28dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_weight="0"
-                        android:layoutDirection="ltr"
-                        android:src="@drawable/outline_chat_24"
-                        app:tint="@color/black" />
-
-                    <TextView
-                        android:id="@+id/txtRequestsButtonLabel"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="16dp"
-                        android:text="בקשות (36)"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_weight="0"
-                        android:src="@drawable/ic_baseline_arrow_back_ios_24"
-                        app:tint="@color/black" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/btnPerforms"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="28dp"
-                    android:paddingEnd="28dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_weight="0"
-                        android:layoutDirection="ltr"
-                        android:src="@drawable/baseline_textsms_24"
-                        app:tint="@color/black" />
-
-                    <TextView
-                        android:id="@+id/txtPerformsButtonLabel"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="16dp"
-                        android:text="ביצועים (89)"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_weight="0"
-                        android:src="@drawable/ic_baseline_arrow_back_ios_24"
-                        app:tint="@color/black" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/btnReviews"
@@ -301,7 +210,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:padding="16dp"
-                        android:text="חוות דעת (50)"
+                        android:text="@string/reviews"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -340,7 +249,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:padding="16dp"
-                        android:text="מדליות (3)"
+                        android:text="@string/medals"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />

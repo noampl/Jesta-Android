@@ -152,5 +152,7 @@
     <string name="are_you_sure_to_exist">האם בטוח לצאת?</string>
     <string name="through_sms">דרך SMS</string>
     <string name="through_whatsapp">דרך WhatsApp</string>
+    <string name="medals">מדליות</string>
+    <string name="reviews">חוות דעת</string>
 
 </resources>
