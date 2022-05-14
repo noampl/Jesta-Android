@@ -4,9 +4,11 @@ import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,14 +21,19 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jesta.R;
+import com.example.jesta.common.AlertDialogRtlHelper;
+import com.example.jesta.common.IntentUtils;
 import com.example.jesta.databinding.ActivityMainBinding;
 import com.example.jesta.databinding.BellBinding;
 import com.example.jesta.model.enteties.Transaction;
@@ -35,12 +42,14 @@ import com.example.jesta.viewmodel.NotificationViewModel;
 import com.example.jesta.workes.NotificationWorker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements NavController.OnDestinationChangedListener {
+public class MainActivity extends AppCompatActivity implements NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 
     // region Members
 
@@ -65,6 +74,25 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         init();
     }
 
+    @Override
+    public void onBackPressed() {
+        // If current fragment is the main screen (the map) then confirms exit:
+        if (_navController.getCurrentDestination().getId() == R.id.nav_map) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.are_you_sure_to_exist);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    MainActivity.this.finish();
+                }
+            });
+            builder.setNegativeButton(R.string.no, null);
+            AlertDialogRtlHelper.make(builder).show();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     // endregion
 
     // region Private Methods
@@ -85,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         _navController.addOnDestinationChangedListener(this);
         NavigationUI.setupActionBarWithNavController(this, _navController, _appBarConfiguration);
         NavigationUI.setupWithNavController(_binding.navView, _navController);
+        _binding.navView.setNavigationItemSelectedListener(this);
 
         // listen to toolbar items click
         _binding.mainToolbar.setOnMenuItemClickListener(menuItemClickListener);
@@ -157,6 +186,10 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         }
     }
 
+    private void contactUs() {
+        Intent mailIntent = IntentUtils.gmail(this, getString(R.string.jesta_mail));
+        startActivity(mailIntent);
+    }
 
     // endregion
 
@@ -189,6 +222,21 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         this.updateToolbarByNavScreen(navDestination.getId());
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // In order to be able to listen on item selections, we need to override the Navigation Drawer item selection behavior:
+        int id = item.getItemId();
+        if (id == R.id.nav_contact) {
+            this.contactUs();
+        }
+        // This is for maintaining the behavior of the Navigation Drawer:
+        NavigationUI.onNavDestinationSelected(item, _navController);
+        if (_binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            _binding.drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        return true;
+    }
+
     // endregion
 
     // region Listener
@@ -204,11 +252,11 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
                 case R.id.nav_podium:
                     _navController.navigate(R.id.nav_podium);
                     return true;
-
-                case R.id.nav_profile_settings:
-                    // TODO: alert dialog or something:
+                case R.id.nav_user_profile:
                     _navController.navigate(R.id.nav_user_profile);
-                    //_navController.navigate(R.id.nav_profile_settings);
+                    return true;
+                case R.id.nav_user_settings:
+                    _navController.navigate(R.id.nav_profile_settings);
                     return true;
                 default:
                     Log.e("onMenuItemClick", "unrecognized item pressed " + item.getItemId());

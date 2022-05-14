@@ -4,20 +4,32 @@
 
     <item
         android:id="@+id/nav_podium"
-        android:title="@string/podium"
         android:icon="@drawable/ic_outline_bar_chart_24"
-        app:showAsAction="ifRoom"
-        />
-<!--    <item-->
-<!--        android:id="@+id/nav_notification"-->
-<!--        android:title="@string/notification"-->
-<!--        app:actionLayout="@layout/bell"-->
-<!--        app:showAsAction="always"-->
-<!--        />-->
+        android:title="@string/podium"
+        app:showAsAction="ifRoom" />
+
     <item
-        android:id="@+id/nav_profile_settings"
-        android:title="@string/profile"
+        android:id="@+id/nav_notification"
+        android:title="@string/notification"
+        app:actionLayout="@layout/bell"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/nav_user_menu"
         android:icon="@drawable/ic_baseline_account_circle_24"
-        app:showAsAction="ifRoom"
-        />
+        android:title="@string/user_menu"
+        app:showAsAction="ifRoom">
+
+        <!-- User Menu Submenu: -->
+        <menu>
+            <item
+                android:id="@+id/nav_user_profile"
+                android:title="@string/profile" />
+
+            <item
+                android:id="@+id/nav_user_settings"
+                android:title="@string/account_settings" />
+        </menu>
+    </item>
+
 </menu>

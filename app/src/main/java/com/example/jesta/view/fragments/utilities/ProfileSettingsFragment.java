@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -25,6 +27,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.jesta.R;
+import com.example.jesta.common.AlertDialogRtlHelper;
+import com.example.jesta.common.IntentUtils;
 import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentProfileSettingsBinding;
 import com.example.jesta.interfaces.IDialogConsumerHelper;
@@ -37,6 +41,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -56,8 +61,8 @@ public class ProfileSettingsFragment extends Fragment {
         @Override
         public void consume(String val) {
             String[] names = val.split(" ");
-            String lastName ="";
-            for (int index= 1 ; index < names.length; index++) {
+            String lastName = "";
+            for (int index = 1; index < names.length; index++) {
                 lastName += lastName + " " + names[index];
             }
             _usersViewModel.get_myUser().getValue().set_firstName(names[0]);
@@ -79,15 +84,52 @@ public class ProfileSettingsFragment extends Fragment {
             _usersViewModel.updateUser();
         }
     };
+    private final IDialogConsumerHelper descriptionConsumer = new IDialogConsumerHelper() {
+        @Override
+        public void consume(String val) {
+            _usersViewModel.get_myUser().getValue().setDescription(val);
+            _usersViewModel.updateUser();
+        }
+    };
 
     // endregion
+
+    //region Activity Result Launchers
+
+    private final ActivityResultLauncher<Intent> _cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                Bundle extras = result.getData().getExtras();
+                Bitmap bitmap = (Bitmap) extras.get("data");
+                // TODO: save bitmap to server
+            }
+        }
+    });
+
+    private final ActivityResultLauncher<Intent> _galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                try {
+                    Uri imageUri = result.getData().getData();
+                    InputStream imageStream = requireActivity().getContentResolver().openInputStream(imageUri);
+                    Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+                    // TODO: save bitmap to server
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    });
+
+    //endregion
 
     // region Lifecycle
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        _binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile_settings, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile_settings, container, false);
         _usersViewModel = new ViewModelProvider(this).get(UsersViewModel.class);
 
         init();
@@ -98,38 +140,40 @@ public class ProfileSettingsFragment extends Fragment {
 
     // region Private Methods
 
-    private void init(){
+    private void init() {
         initBinding();
         initListeners();
         initObservers();
         initAutoComplete();
     }
 
-    private void initBinding(){
+    private void initBinding() {
         _binding.setUser(_usersViewModel.get_myUser().getValue());
         _binding.setLifecycleOwner(getViewLifecycleOwner());
     }
 
-    private void initListeners(){
+    private void initListeners() {
         _binding.nameCard.setOnClickListener(view -> {
-            showDialog(R.string.full_name,_binding.nameTitle.getText().toString(), FiledType.NAME,
+            showDialog(R.string.full_name, _binding.nameTitle.getText().toString(), FiledType.NAME,
                     _binding.nameTxt.getText().toString(), nameConsumer);
         });
         _binding.emailCard.setOnClickListener(view -> {
-            showDialog(R.string.email,_binding.emailTitle.getText().toString(), FiledType.EMAIL,
+            showDialog(R.string.email, _binding.emailTitle.getText().toString(), FiledType.EMAIL,
                     _binding.emailTxt.getText().toString(), emailConsumer);
         });
         _binding.phoneCard.setOnClickListener(view -> {
-            showDialog(R.string.phone,_binding.phoneTitle.getText().toString(), FiledType.NAME,
+            showDialog(R.string.phone, _binding.phoneTitle.getText().toString(), FiledType.NAME,
                     _binding.phoneTxt.getText().toString(), phoneConsumer);
         });
         _binding.birthdayCard.setOnClickListener(view -> {
             dateDialog();
         });
+        _binding.descriptionCard.setOnClickListener(view -> {
+            showDialog(R.string.short_description_about_yourself, _binding.descriptionTitle.getText().toString(), FiledType.DESCRIPTION,
+                    _binding.descriptionTxt.getText().toString(), phoneConsumer);
+        });
         _binding.imageCard.setOnClickListener(view -> {
-            Intent pickPhoto = new Intent(Intent.ACTION_PICK);
-            pickPhoto.setType("image/*");
-            pickPhotoResultLauncher.launch(pickPhoto);
+            this.openImageOptionsDialog();
         });
         _binding.passwordCard.setOnClickListener(view -> {
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(R.id.action_nav_profile_settings_to_changePasswordDialogFragment);
@@ -155,7 +199,7 @@ public class ProfileSettingsFragment extends Fragment {
             dialog.show();
         });
 
-        _binding.logoutCard.setOnClickListener(v ->{
+        _binding.logoutCard.setOnClickListener(v -> {
             AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
                     .setMessage(R.string.are_u_sure_logout_user)
                     .setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
@@ -163,7 +207,7 @@ public class ProfileSettingsFragment extends Fragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             _usersViewModel.logout();
                             dialogInterface.dismiss();
-                            Intent intent = new Intent(requireActivity(),LoginRegisterActivity.class);
+                            Intent intent = new Intent(requireActivity(), LoginRegisterActivity.class);
                             startActivity(intent);
                             requireActivity().finish();
                         }
@@ -179,22 +223,22 @@ public class ProfileSettingsFragment extends Fragment {
         });
     }
 
-    private void initObservers(){
-        _usersViewModel.get_myUser().observe(getViewLifecycleOwner(), u-> {
-            _binding.setUser(u);});
+    private void initObservers() {
+        _usersViewModel.get_myUser().observe(getViewLifecycleOwner(), u -> {
+            _binding.setUser(u);
+        });
         // Check is user is update my our changes
-        _usersViewModel.get_isUserUpdated().observe(getViewLifecycleOwner(), isUpdated->{
+        _usersViewModel.get_isUserUpdated().observe(getViewLifecycleOwner(), isUpdated -> {
             if (isUpdated)
                 _binding.setUser(_usersViewModel.get_myUser().getValue());
         });
     }
 
-    private void initAutoComplete(){
+    private void initAutoComplete() {
         AutocompleteSupportFragment autoCompleteSrcAddr = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.addr_autocomplete_fragment);
         autoCompleteSrcAddr.setHint(getString(R.string.address));
-        if (_usersViewModel.get_myUser().getValue() != null &&
-                _usersViewModel.get_myUser().getValue().get_address().fullAddress != null){
+        if (_usersViewModel.get_myUser().getValue() != null && _usersViewModel.get_myUser().getValue().get_address() != null) {
             autoCompleteSrcAddr.setText(_usersViewModel.get_myUser().getValue().get_address().fullAddress);
         }
         autoCompleteSrcAddr.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS));
@@ -216,11 +260,11 @@ public class ProfileSettingsFragment extends Fragment {
      * Show custom dialog for change paramater settings
      *
      * @param title The title of the dialog
-     * @param hint The hint of the input text
-     * @param type The type of the dialog
+     * @param hint  The hint of the input text
+     * @param type  The type of the dialog
      * @param text
      */
-    private void showDialog(int title, String hint, FiledType type, String text, IDialogConsumerHelper dialogConsumerHelper){
+    private void showDialog(int title, String hint, FiledType type, String text, IDialogConsumerHelper dialogConsumerHelper) {
         _usersViewModel.set_dialogConsumerHelper(dialogConsumerHelper);
         ProfileSettingsFragmentDirections.ActionNavProfileSettingsToOneInputDialogFragment action =
                 ProfileSettingsFragmentDirections.actionNavProfileSettingsToOneInputDialogFragment(text, hint, getString(title));
@@ -231,7 +275,7 @@ public class ProfileSettingsFragment extends Fragment {
     /**
      * Opens date picker dialog
      */
-    private void dateDialog(){
+    private void dateDialog() {
         MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker().
                 setTitleText(R.string.birthday).setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .build();
@@ -240,34 +284,54 @@ public class ProfileSettingsFragment extends Fragment {
             _binding.birthdayTxt.setText(date);
             _usersViewModel.get_myUser().getValue().set_birthday(date);
         });
-        datePicker.show(getParentFragmentManager(),getString(R.string.birthday));
+        datePicker.show(getParentFragmentManager(), getString(R.string.birthday));
     }
 
-    private final ActivityResultLauncher<Intent> pickPhotoResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if(result.getResultCode() == Activity.RESULT_OK){
-                        Intent data = result.getData();
-                        Uri uri = data != null ? data.getData() : null;
-                        updatePhoto(uri);
-                    }
+    /**
+     * Opens the image options dialog.
+     */
+    private void openImageOptionsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        String[] imageOptions;
+        if (_usersViewModel.get_myUser().getValue().get_imagePath() != null) {
+            builder.setTitle(R.string.image_change);
+            imageOptions = new String[]{getString(R.string.camera), getString(R.string.gallery), getString(R.string.delete_image)};
+        } else {
+            builder.setTitle(R.string.image_upload);
+            imageOptions = new String[]{getString(R.string.camera), getString(R.string.gallery)};
+        }
+        builder.setItems(imageOptions, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int index) {
+                switch (index) {
+                    // Camera:
+                    case 0:
+                        Intent cameraIntent = IntentUtils.camera(requireContext());
+                        if (cameraIntent != null) {
+                            _cameraLauncher.launch(cameraIntent);
+                        } else {
+                            Snackbar.make(requireView(), R.string.camera_intent_not_found, Snackbar.LENGTH_SHORT).show();
+                        }
+                        break;
+                    // Gallery:
+                    case 1:
+                        Intent galleryIntent = IntentUtils.gallery(requireContext());
+                        if (galleryIntent != null) {
+                            _galleryLauncher.launch(galleryIntent);
+                        } else {
+                            Snackbar.make(requireView(), R.string.gallery_intent_not_found, Snackbar.LENGTH_SHORT).show();
+                        }
+                        break;
+                    // Delete Image:
+                    case 2:
+                        // TODO: remove image
+                        break;
+                    default:
+                        throw new IndexOutOfBoundsException("The option index is not implemented in the image options dialog.");
                 }
             }
-    );
-
-    private void updatePhoto(Uri filePath){
-        if (filePath == null)
-            return;
-        InputStream inputStream = null;
-        Source source = null;
-        try {
-            inputStream = getContext().getContentResolver().openInputStream(filePath);
-            source = Okio.source(inputStream);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        });
+        AlertDialogRtlHelper.make(builder).show();
     }
 
     // endregion
