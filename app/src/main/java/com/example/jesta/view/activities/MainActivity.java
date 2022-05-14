@@ -35,6 +35,7 @@ import com.example.jesta.R;
 import com.example.jesta.common.AlertDialogRtlHelper;
 import com.example.jesta.common.IntentUtils;
 import com.example.jesta.databinding.ActivityMainBinding;
+import com.example.jesta.databinding.BellBinding;
 import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.model.repositories.GraphqlRepository;
 import com.example.jesta.viewmodel.NotificationViewModel;
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         _binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        // make sure the window is RTL
+//         make sure the window is RTL
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         _notificationNumber = findViewById(R.id.notification_number);
         _notificationCard = findViewById(R.id.notification_container);
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
 
         // init NavBar and pass all the drawer items
         _appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.nav_map, R.id.nav_request_jestas,
+                new AppBarConfiguration.Builder(R.id.nav_map, R.id.nav_requested_jestas,
                         R.id.nav_todo_jestas, R.id.nav_waiting_jestas, R.id.nav_done_jestas, R.id.nav_jesta_settings,
                         R.id.nav_help, R.id.nav_contact, R.id.nav_about, R.id.nav_privacy, R.id.nav_terms)
                         .setOpenableLayout(_binding.drawerLayout)
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         initWorkers();
         initObservers();
         initServices();
+//        initListeners();
     }
 
     private void initWorkers() {
@@ -128,18 +130,29 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         WorkManager.getInstance(this).enqueue(periodicWorkRequest);
     }
 
+//    private void initListeners(){
+//        _binding.belllll.bellContainer.setOnClickListener(v->_navController.navigate(R.id.nav_notification));
+//    }
+
     private void initObservers() {
         NotificationViewModel viewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
         viewModel.get_notificationTransaction().observe(this, new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
+                System.out.println("peleg - transacions null ? " + (transactions == null) + " thread is " + Thread.currentThread());
+                System.out.println("peleg - start is card visible " + _notificationCard.getVisibility());
                 if (transactions != null) {
                     if (transactions.size() > 0) {
                         _notificationCard.setVisibility(View.VISIBLE);
+                        System.out.println("peleg - set card visible");
                     } else {
                         _notificationCard.setVisibility(View.INVISIBLE);
+                        System.out.println("peleg - set card invisible");
                     }
                     _notificationNumber.setText(String.valueOf(transactions.size()));
+                    System.out.println("peleg - transactionsize " + transactions.size());
+                    System.out.println("peleg - end is card visible " + _notificationCard.getVisibility());
+                    _binding.mainToolbar.getMenu().findItem(R.id.nav_notification);
                 }
             }
         });
@@ -243,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
                     _navController.navigate(R.id.nav_profile_settings);
                     return true;
                 default:
-                    System.out.println("peleg - item pressed " + item.getItemId());
+                    Log.e("onMenuItemClick", "unrecognized item pressed " + item.getItemId());
                     break;
             }
             return false;

@@ -112,12 +112,12 @@ public class JestaDetailsFragment extends Fragment {
             System.out.println("peleg - set TransactionStatus " + status);
         });
 
-        _jestaDetailsViewModel.get_detailsTransaction().observe(getViewLifecycleOwner(), transaction -> {
-            if (transaction != null) {
-                _binding.setTransaction(transaction);
-                _binding.setTransactionStatus(transaction.getStatus().toString());
-                System.out.println("peleg - set status " + transaction.getStatus().toString());
-            }
+        _jestaDetailsViewModel.get_detailsTransaction().observe(getViewLifecycleOwner(), transaction ->{
+                if (transaction != null){
+                    _binding.setTransaction(transaction);
+                    _binding.setTransactionStatus(transaction.getStatus().toString());
+                    System.out.println("peleg - set status " + transaction.getStatus().toString());
+                }
         });
     }
 
