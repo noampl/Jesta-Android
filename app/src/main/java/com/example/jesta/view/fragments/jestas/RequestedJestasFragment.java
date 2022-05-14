@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +24,13 @@ import com.example.jesta.model.enteties.Address;
 import com.example.jesta.model.enteties.Jesta;
 import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.view.adapters.JestaAdapter;
+import com.example.jesta.view.adapters.MyRequestedJestaAdapter;
 import com.example.jesta.viewmodel.JestasListsViewModel;
 import com.example.jesta.viewmodel.MapViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RequestedJestasFragment extends Fragment {
 
@@ -39,8 +42,8 @@ public class RequestedJestasFragment extends Fragment {
     private final INavigationHelper navigationHelper = new INavigationHelper() {
         @Override
         public void navigate(String[] args) {
-            WaitingJestasFragmentDirections.ActionNavWaitingJestasToJestaDetailsFragment action =
-                    WaitingJestasFragmentDirections.actionNavWaitingJestasToJestaDetailsFragment(args[0]);
+            RequestedJestasFragmentDirections.ActionNavRequestJestasToJestaDetailsFragment action =
+                    RequestedJestasFragmentDirections.actionNavRequestJestasToJestaDetailsFragment(args[0]);
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
         }
     };
@@ -78,14 +81,16 @@ public class RequestedJestasFragment extends Fragment {
     }
 
     private void initObservers(){
-        JestaAdapter adapter = new JestaAdapter(getViewLifecycleOwner(), _mapViewModel);
-        _jestasListsViewModel.get_jestas().observe(getViewLifecycleOwner(), new Observer<List<Jesta>>() {
+        MyRequestedJestaAdapter adapter = new MyRequestedJestaAdapter(getViewLifecycleOwner(),_mapViewModel);
+        _jestasListsViewModel.get_jestasMap().observe(getViewLifecycleOwner(), new Observer<Map<Jesta, List<Transaction>>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onChanged(List<Jesta> jestas) {
-                if (jestas == null)
+            public void onChanged(Map<Jesta, List<Transaction>> transactions) {
+                if (transactions == null)
                     return;
-                adapter.submitList(jestas);
+                List<Pair<Jesta, List<Transaction>>> pairs = new ArrayList<>();
+                transactions.forEach((k,v) -> pairs.add(new Pair<>(k,v)));
+                adapter.submitList(pairs);
                 adapter.notifyDataSetChanged();
                 _binding.genericList.swiper.setRefreshing(false);
             }

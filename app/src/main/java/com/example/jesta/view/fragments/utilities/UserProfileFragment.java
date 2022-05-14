@@ -24,7 +24,7 @@ public class UserProfileFragment extends Fragment {
 
     private FragmentUserProfileBinding _binding;
     private UserProfileViewModel _userProfileViewModel;
-    private String _userId;
+    private String _userId = null;
 
     //endregion
 
@@ -44,7 +44,6 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        _userProfileViewModel.set_userDetails(null);
     }
 
     // endregion

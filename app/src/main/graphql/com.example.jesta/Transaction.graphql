@@ -104,6 +104,8 @@ query GetAllUserFavorTransactionByFavorId($favorId: String!) {
         favorId
         favorOwnerId
         handledByUserId
+        rating
+        dateLastModified
     }
 }
 
@@ -238,6 +240,38 @@ query GetAllFavorTransaction {
         dateAccepted
         dateCompleted
         dateCreated
+        dateLastModified
+        rating
+    }
+}
+
+query GetAllFavorTransactionByFavorIdWhenOwner($favorId: String!) {
+    getAllFavorTransactionByFavorIdWhenOwner(favorId: $favorId) {
+        _id
+        status
+        favorId{
+            _id
+            status
+            ownerId
+            sourceAddress {
+                fullAddress
+                location {
+                    coordinates
+                }
+            }
+        }
+        favorOwnerId {
+            _id
+            firstName
+            lastName
+        }
+        handledByUserId {
+            _id
+            firstName
+            lastName
+            imagePath
+            rating
+        }
         dateLastModified
         rating
     }

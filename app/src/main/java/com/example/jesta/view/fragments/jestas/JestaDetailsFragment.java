@@ -62,6 +62,7 @@ public class JestaDetailsFragment extends Fragment {
         _transactionId = JestaDetailsFragmentArgs.fromBundle(getArguments()).getTransactionId();
         if (_transactionId != null && _transactionId.length() > 3) {
             _jestaDetailsViewModel.getTransaction(_transactionId);
+            System.out.println("peleg - get transactionID");
         }
         init();
 
@@ -173,12 +174,16 @@ public class JestaDetailsFragment extends Fragment {
         });
 
         _binding.userName.setOnClickListener(v -> {
-            NavDirections action = JestaDetailsFragmentDirections.actionJestaDetailsFragmentToNavUserProfile(_jestaDetailsViewModel.get_userId());
+            JestaDetailsFragmentDirections.ActionJestaDetailsFragmentToNavUserProfile action =
+                    JestaDetailsFragmentDirections.actionJestaDetailsFragmentToNavUserProfile();
+            action.setUserId(_binding.getOwner().get_id());
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
         });
 
         _binding.userIcon.setOnClickListener(v -> {
-            NavDirections action = JestaDetailsFragmentDirections.actionJestaDetailsFragmentToNavUserProfile(_jestaDetailsViewModel.get_userId());
+            JestaDetailsFragmentDirections.ActionJestaDetailsFragmentToNavUserProfile action =
+                    JestaDetailsFragmentDirections.actionJestaDetailsFragmentToNavUserProfile();
+            action.setUserId(_binding.getOwner().get_id());
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
         });
     }

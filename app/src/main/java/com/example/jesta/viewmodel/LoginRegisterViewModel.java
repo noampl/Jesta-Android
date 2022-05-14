@@ -109,7 +109,8 @@ public class LoginRegisterViewModel extends ViewModel {
     }
 
     public void register(String firstName, String lastName, String birthday , String email,
-                         String password, String phone, String address, Source filePath, double lng, double lat){
+                         String password, String phone, String address, Source filePath, double lng, double lat,
+                        String description){
         Optional<Upload> optionalFile = null;
         if (filePath != null && !filePath.toString().equals(Consts.INVALID_STRING)){
             DefaultUpload upload = new DefaultUpload.Builder()
@@ -120,7 +121,7 @@ public class LoginRegisterViewModel extends ViewModel {
         }
         UserCreateInput userCreateInput = new UserCreateInput(firstName, lastName, new Optional.Present<>(birthday),
                 email, password, new Optional.Present<>(phone),new Optional.Present<>(address),new Optional.Present<>(lng),
-                new Optional.Present<>(lat));
+                new Optional.Present<>(lat), new Optional.Present<>(description));
 
         GraphqlRepository.getInstance().register(userCreateInput, optionalFile);
     }

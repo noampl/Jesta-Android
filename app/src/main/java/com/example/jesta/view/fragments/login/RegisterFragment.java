@@ -164,7 +164,7 @@ public class RegisterFragment extends Fragment {
 
         _loginRegisterViewModel.register(names[0], lastName,null, _binding.emailEditTxt.getText().toString(),
                 _binding.passwordEditTxt.getText().toString(),null,null, source,
-                Consts.INVALID_INTEGER,Consts.INVALID_INTEGER);
+                Consts.INVALID_INTEGER,Consts.INVALID_INTEGER,null);
     }
 
     /**

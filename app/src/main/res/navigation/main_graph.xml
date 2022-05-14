@@ -191,7 +191,8 @@
         android:label="@string/user_details"
         tools:layout="@layout/fragment_user_profile" >
         <argument
-            android:name="UserId"
-            app:argType="string" />
+            android:name="userId"
+            app:argType="string"
+            android:defaultValue="1"/>
     </fragment>
 </navigation>
