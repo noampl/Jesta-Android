@@ -1,5 +1,7 @@
 package com.example.jesta.view.fragments;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -36,6 +38,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,15 +53,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             LatLng sydney = _mapViewModel.getMyLocation().getValue();
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 9));
             _mapViewModel.setGoogleMap(googleMap);
-            if (ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                locationPermissionRequest.launch(new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                });
                 return;
             }
             googleMap.setMyLocationEnabled(true);
@@ -69,6 +69,21 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private MapViewModel _mapViewModel;
     private FragmentMapBinding _binding;
     private GoogleMap.OnMarkerClickListener _markerClickListener;
+
+    ActivityResultLauncher<String[]> locationPermissionRequest =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+                        Boolean fineLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
+                        Boolean coarseLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false);
+                        if (fineLocationGranted != null && fineLocationGranted) {
+                            // Precise location access granted.
+                        } else if (coarseLocationGranted != null && coarseLocationGranted) {
+                            // Only approximate location access granted.
+                        } else {
+                            // No location access granted.
+                            Snackbar.make(_binding.getRoot(), "יש לאפשר הרשאת מיקום.", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+            );
 
     // endregion
 
@@ -119,9 +134,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             @Override
             public void onChanged(List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> jestas) {
                 List<Jesta> jestaList = new ArrayList<>();
-                jestas.forEach(j->jestaList.add(new Jesta(j._id, j.status, j.ownerId,
+                jestas.forEach(j -> jestaList.add(new Jesta(j._id, j.status, j.ownerId,
                         new Address(j.sourceAddress.fullAddress, j.sourceAddress.location.coordinates),
-                        j.numOfPeopleNeeded, j.dateToExecute != null ? j.dateToExecute.toString(): null
+                        j.numOfPeopleNeeded, j.dateToExecute != null ? j.dateToExecute.toString() : null
                         , j.dateToFinishExecute != null ? j.dateToFinishExecute.toString() : null)));
                 adapter.submitList(jestaList);
                 adapter.notifyDataSetChanged();
