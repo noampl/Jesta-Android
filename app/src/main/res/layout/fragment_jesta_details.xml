@@ -69,9 +69,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_side"
                     android:layout_marginTop="@dimen/margin_vertical"
+                    android:paddingTop="16dp"
                     android:text="הובלות טלויזיה"
                     android:textColor="@color/black"
-                    android:paddingTop="16dp"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -205,9 +205,7 @@
                     android:visibility="@{jestaDetails.destinationAddress != null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@id/dst_location_icon"
                     app:layout_constraintStart_toEndOf="@id/dst_location_icon"
-                    app:layout_constraintTop_toTopOf="@id/dst_location_icon"
-
-                    />
+                    app:layout_constraintTop_toTopOf="@id/dst_location_icon" />
 
                 <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/location_divider"
