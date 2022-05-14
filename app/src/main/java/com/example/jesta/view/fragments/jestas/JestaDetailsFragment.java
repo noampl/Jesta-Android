@@ -100,6 +100,7 @@ public class JestaDetailsFragment extends Fragment {
             if (favor != null && favor.ownerId != null) {
                 User user = new User(favor.ownerId._id, favor.ownerId.firstName, favor.ownerId.lastName);
                 user.set_rating(favor.ownerId.rating);
+                user.set_phone(favor.ownerId.phone);
                 _binding.setOwner(user);
             }
         });
@@ -188,12 +189,12 @@ public class JestaDetailsFragment extends Fragment {
                 switch (index) {
                     // SMS:
                     case 0:
-                        Intent smsIntent = IntentUtils.sms("0541234567"); // TODO: Grab phone from server
+                        Intent smsIntent = IntentUtils.sms(_binding.getOwner().get_phone()); // TODO: Grab phone from server
                         startActivity(smsIntent);
                         break;
                     // WhatsApp:
                     case 1:
-                        Intent whatsappIntent = IntentUtils.whatsApp("0541234567"); // TODO: Grab phone from server
+                        Intent whatsappIntent = IntentUtils.whatsApp(_binding.getOwner().get_phone()); // TODO: Grab phone from server
                         startActivity(whatsappIntent);
                         break;
                     default:
