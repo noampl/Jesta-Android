@@ -214,6 +214,7 @@ public class JestaRepository {
 
     public void setTransaction(Transaction transaction) {
         _detailsTransaction.postValue(transaction);
+//        set_favorTransactionStatus(transaction.getStatus().toString());
     }
 
     // ednregion

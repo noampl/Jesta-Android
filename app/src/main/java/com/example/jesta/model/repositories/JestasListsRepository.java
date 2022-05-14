@@ -6,13 +6,14 @@ import com.example.jesta.model.enteties.Jesta;
 import com.example.jesta.model.enteties.Transaction;
 
 import java.util.List;
+import java.util.Map;
 
 public class JestasListsRepository {
 
     // region Members
 
     private final MutableLiveData<List<Transaction>> _transactions;
-    private final MutableLiveData<List<Jesta>> _jestas;
+    private final MutableLiveData<Map<Jesta,List<Transaction>>> _jestasMap;
 
     // ednregion
 
@@ -22,7 +23,7 @@ public class JestasListsRepository {
 
     private JestasListsRepository(){
         _transactions = new MutableLiveData<>();
-        _jestas = new MutableLiveData<>();
+        _jestasMap = new MutableLiveData<>();
     }
 
     public static JestasListsRepository getInstance(){
@@ -44,12 +45,13 @@ public class JestasListsRepository {
         _transactions.postValue(transactions);
     }
 
-    public MutableLiveData<List<Jesta>> get_jestas() {
-       return _jestas;
+    public MutableLiveData<Map<Jesta, List<Transaction>>> get_jestasMap() {
+        return _jestasMap;
     }
 
-    public void setJestas(List<Jesta> jestas){
-        _jestas.postValue(jestas);
+    public void set_jestasMap(Map<Jesta, List<Transaction>> jestaListMap){
+        _jestasMap.postValue(jestaListMap);
     }
+
     // endregion
 }

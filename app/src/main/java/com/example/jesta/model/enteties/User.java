@@ -26,6 +26,10 @@ public class User {
 
     // region C'tor
 
+    public User(String _id){
+        this._id = _id;
+    }
+
     public User(String _id, String _firstName, String _lastName, String _birthday, String _email, String _phone, String _role, String _imagePath, GetUserQuery.Address _address) {
         this._id = _id;
         this._firstName = _firstName;

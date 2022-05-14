@@ -29,6 +29,7 @@ type User {
     mostVolunteered: Boolean
     rating: Float
     numberOfExecutedJesta: Int
+    description: String
 }
 
 input UserCreateInput {
@@ -41,6 +42,7 @@ input UserCreateInput {
     fullAddress: String
     longitude: Float
     altitude: Float
+    description: String
 }
 
 input UserSecureUpdate {
@@ -59,6 +61,7 @@ input UserUpdateInput {
     fullAddress: String
     longitude: Float
     altitude: Float
+    description: String
 }
 
 type JWT {
@@ -87,6 +90,7 @@ type Query {
     getAllSubCategoriesByParentCategory(parentCategoryId: String): [Category]
     getAllPerforms: [Perform]
     getPerformsInRadios(center: [Float], radius: Float): [Perform]
+    getAllFavorTransactionByFavorIdWhenOwner(favorId: String!): [PopulatedFavorTransaction]
     getAllUserFavorTransactionByFavorId(favorId: String!): FavorTransaction
     getAllFavorTransaction: [FavorTransaction]
     getAllUserFavorsRequestedTransaction: [PopulatedFavorTransaction]
@@ -96,6 +100,8 @@ type Query {
     getNumberOfOnProgressJesta: Int
     getNumberOfExecutedJesta: Int
     getTransactionById(id: String): PopulatedFavorTransaction
+    getUsersRegistrationLastMonth: GraphData
+    getJestaRegistrationLastMonth: GraphData
 }
 
 type Mutation {
@@ -312,4 +318,9 @@ type PopulatedFavorTransaction {
     dateCreated: DateTime
     dateLastModified: DateTime
     rating: Float
+}
+
+type GraphData {
+    labels: [String]
+    dataSets: [Int]
 }

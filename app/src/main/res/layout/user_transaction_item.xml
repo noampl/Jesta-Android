@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="transation"
+            type="com.example.jesta.model.enteties.Transaction" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/user_img"
+            setImage="@{transation.handledByUserId._imagePath}"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/margin_side"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/ic_baseline_account_circle_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{transation.handledByUserId.fullName}"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/user_img" />
+
+        <ImageView
+            android:id="@+id/handler_rating_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:background="@drawable/ic_baseline_star_rate_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/user_img" />
+
+        <TextView
+            android:id="@+id/val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/side_mini_margin"
+            android:text="@{String.valueOf(transation.rating)}"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/handler_rating_icon"
+            app:layout_constraintEnd_toStartOf="@id/handler_rating_icon"
+            app:layout_constraintTop_toTopOf="@id/handler_rating_icon" />
+
+        <TextView
+            android:id="@+id/status_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/side_mini_margin"
+            android:text="@string/status"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toStartOf="@id/half_guidline"
+            app:layout_constraintTop_toBottomOf="@id/user_name" />
+
+        <TextView
+            android:id="@+id/status_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/side_mini_margin"
+            android:text="מאושר"
+            app:layout_constraintStart_toEndOf="@id/half_guidline"
+            app:layout_constraintTop_toTopOf="@id/status_title" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/status_title" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/half_guidline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

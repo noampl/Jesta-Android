@@ -4,6 +4,7 @@
 
     <data>
         <import type="java.util.Date"/>
+        <import type="android.view.View"/>
         <variable
             name="transactionId"
             type="String" />
@@ -22,6 +23,9 @@
         <variable
             name="destDate"
             type="String" />
+        <variable
+            name="isMyRequestedJestas"
+            type="boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -108,6 +112,19 @@
             android:layout_marginEnd="2dp"
             />
 
+        <ImageView
+            android:id="@+id/side_icon_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/amount_icon"
+            app:layout_constraintTop_toBottomOf="@+id/distance_title"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:background="@drawable/ic_baseline_arrow_right_24"
+            android:backgroundTint="@color/black"
+            android:visibility="@{isMyRequestedJestas ? View.VISIBLE : View.INVISIBLE}"
+            />
+
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/bottom_dvider"
@@ -115,6 +132,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vertical"
             app:layout_constraintTop_toBottomOf="@id/location_icon"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/inner_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/bottom_dvider"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:visibility="gone"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

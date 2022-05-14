@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.jesta.GetJestaQuery;
+import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.model.repositories.GraphqlRepository;
 import com.example.jesta.model.repositories.UsersRepository;
@@ -44,7 +45,12 @@ public class UserProfileViewModel extends ViewModel {
      * @param id The Id
      */
     public void getUser(String id) {
-        UsersRepository.getInstance().get_myUser(); // TODO: replace with an ID
+        if (id.equals("1") || id.length() < 5){
+            GraphqlRepository.getInstance().getUserDetails(ShardPreferencesHelper.readId());
+        }
+        else{
+            GraphqlRepository.getInstance().getUserDetails(id);
+        }
     }
 
     //endregion

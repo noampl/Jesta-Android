@@ -54,7 +54,7 @@
                         android:id="@+id/txtUserFullName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{userDetails._firstName + ' ' + userDetails._lastName}"
+                        android:text="@{userDetails.fullName}"
                         android:textColor="@color/black"
                         android:textSize="17sp"
                         android:textStyle="bold" />

@@ -10,19 +10,20 @@ import com.example.jesta.model.repositories.JestasListsRepository;
 import com.example.jesta.type.FavorTransactionStatus;
 
 import java.util.List;
+import java.util.Map;
 
 public class JestasListsViewModel extends ViewModel {
 
     // region Members
 
     private final MutableLiveData<List<Transaction>> _transactions;
-    private final MutableLiveData<List<Jesta>> _jestas;
+    private final MutableLiveData<Map<Jesta,List<Transaction>>> _jestasMap;
 
     // endregion
 
     public JestasListsViewModel(){
         _transactions = JestasListsRepository.getInstance().get_transactions();
-        _jestas = JestasListsRepository.getInstance().get_jestas();
+        _jestasMap = JestasListsRepository.getInstance().get_jestasMap();
     }
 
     // region Properties
@@ -35,8 +36,8 @@ public class JestasListsViewModel extends ViewModel {
         _transactions.setValue(transactions);
     }
 
-    public MutableLiveData<List<Jesta>> get_jestas() {
-        return _jestas;
+    public MutableLiveData<Map<Jesta, List<Transaction>>> get_jestasMap() {
+        return _jestasMap;
     }
 
     // endregion

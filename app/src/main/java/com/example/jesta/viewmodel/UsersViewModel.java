@@ -92,13 +92,14 @@ public class UsersViewModel extends ViewModel {
                 new Optional.Present<>(myUser.get_firstName()), new Optional.Present<>(myUser.get_lastName()),
                 new Optional.Present<>(myUser.get_birthday()), new Optional.Present<>(myUser.get_email()),
                 null, new Optional.Present<>(myUser.get_phone()),
-                new Optional.Present<>(myUser.get_address().fullAddress),null,null);
+                new Optional.Present<>(myUser.get_address().fullAddress),null,null,
+                new Optional.Present<>(myUser.getDescription()));
         GraphqlRepository.getInstance().UpdateUser(new Optional.Present<>(userUpdateInput));
     }
 
     public void updateRemotePassword(String password){
         UserUpdateInput userUpdateInput = new UserUpdateInput(null,null,null,
-                null,new Optional.Present<>(password),null,null,null,null);
+                null,new Optional.Present<>(password),null,null,null,null, null);
         GraphqlRepository.getInstance().UpdateUser(new Optional.Present<>(userUpdateInput));
     }
 
