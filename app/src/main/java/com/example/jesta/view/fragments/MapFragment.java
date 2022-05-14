@@ -53,8 +53,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             LatLng sydney = _mapViewModel.getMyLocation().getValue();
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 9));
             _mapViewModel.setGoogleMap(googleMap);
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 locationPermissionRequest.launch(new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION
                 });
                 return;
@@ -72,7 +74,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
                         Boolean fineLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
                         Boolean coarseLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false);
-                        if (coarseLocationGranted != null && coarseLocationGranted) {
+                        if (fineLocationGranted != null && fineLocationGranted) {
+                            // Precise location access granted.
+                        } else if (coarseLocationGranted != null && coarseLocationGranted) {
                             // Only approximate location access granted.
                         } else {
                             // No location access granted.
