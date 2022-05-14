@@ -7,7 +7,6 @@
         <variable
             name="transactionId"
             type="String" />
-
         <variable
             name="jesta"
             type="com.example.jesta.model.enteties.Jesta" />

@@ -18,9 +18,11 @@ import com.example.jesta.CreateFavorTransactionRequestMutation;
 import com.example.jesta.CreateFavorWithImageMutation;
 import com.example.jesta.ExecutorFinishFavorMutation;
 import com.example.jesta.GetAllExecutorFavorTransactionByStatusQuery;
+import com.example.jesta.GetAllFavorTransactionQuery;
 import com.example.jesta.GetAllOwnerFavorTransactionByStatusQuery;
 import com.example.jesta.GetAllTransactionNotificationsQuery;
 import com.example.jesta.GetAllUserFavorTransactionByFavorIdQuery;
+import com.example.jesta.GetAllUserFavorsQuery;
 import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetTransactionByIdQuery;
@@ -40,6 +42,7 @@ import com.example.jesta.type.UserCreateInput;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.type.UserUpdateInput;
+import com.google.android.gms.common.SignInButton;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -467,6 +470,43 @@ public class GraphqlRepository {
     // region Queries
 
     /**
+     * Gets all the requested jestas of the logged in user
+     */
+    public void GetAllUserFavors(){
+        ApolloCall<GetAllUserFavorsQuery.Data> query = _apolloClient.query(new GetAllUserFavorsQuery());
+        Single<ApolloResponse<GetAllUserFavorsQuery.Data>> responseSingle = Rx3Apollo.single(query);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<GetAllUserFavorsQuery.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<GetAllUserFavorsQuery.Data> dataApolloResponse) {
+                if (!dataApolloResponse.hasErrors()){
+                    List<Jesta> jestas = new ArrayList<>();
+                    dataApolloResponse.data.getAllUserFavors.forEach(j -> jestas.add(new Jesta(j._id,
+                            j.status, j.ownerId, new Address(j.sourceAddress.fullAddress, j.sourceAddress.location.coordinates),
+                            j.numOfPeopleNeeded, j.dateToExecute != null ? j.dateToExecute.toString() : null,
+                            j.dateToFinishExecute != null ? j.dateToFinishExecute.toString() : null)));
+                    JestasListsRepository.getInstance().setJestas(jestas);
+                }
+                else{
+                    for (Error e : dataApolloResponse.errors){
+                        Log.e("GetAllUserFavors", e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("GetAllUserFavors", e.getMessage());
+
+            }
+        });
+    }
+
+    /**
      * Gets User Information by email
      *
      * @param email The user email
@@ -687,6 +727,27 @@ public class GraphqlRepository {
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.e("getTransactionById", e.getMessage());
+            }
+        });
+    }
+
+    public void getMyFavorTransaction(){
+        ApolloCall<GetAllFavorTransactionQuery.Data> query = _apolloClient.query(new GetAllFavorTransactionQuery());
+        Single<ApolloResponse<GetAllFavorTransactionQuery.Data>> responseSingle = Rx3Apollo.single(query);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<GetAllFavorTransactionQuery.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<GetAllFavorTransactionQuery.Data> dataApolloResponse) {
+                // TODO dix thiss!!
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
             }
         });
     }

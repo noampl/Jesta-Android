@@ -20,11 +20,13 @@ query GetAllUserFavorsRequestedTransaction {
             _id
             firstName
             lastName
+            phone
         }
         handledByUserId {
             _id
             firstName
             lastName
+            phone
         }
         dateCreated
         dateLastModified
@@ -221,5 +223,22 @@ query GetTransactionById($getTransactionByIdId: String) {
         }
         rating
     dateLastModified
+    }
+}
+
+query GetAllFavorTransaction {
+    getAllFavorTransaction {
+        _id
+        status
+        favorId
+        favorOwnerId
+        handledByUserId
+        ownerComment
+        handlerComment
+        dateAccepted
+        dateCompleted
+        dateCreated
+        dateLastModified
+        rating
     }
 }

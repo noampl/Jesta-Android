@@ -83,3 +83,30 @@ query GetFavorsByRadiosTimeAndDate($notIncludeMe: Boolean, $center: [Float], $ra
         dateToFinishExecute
     }
 }
+
+query GetAllUserFavors {
+    getAllUserFavors {
+        _id
+        status
+        ownerId
+        categoryId
+        numOfPeopleNeeded
+        sourceAddress {
+            fullAddress
+            location {
+                coordinates
+            }
+        }
+        destinationAddress {
+            fullAddress
+            location {
+                coordinates
+            }
+        }
+        description
+        paymentAmount
+        paymentMethod
+        dateToExecute
+        dateToFinishExecute
+    }
+}
