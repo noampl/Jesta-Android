@@ -17,6 +17,7 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.Constraints;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
@@ -39,6 +40,7 @@ import com.example.jesta.databinding.BellBinding;
 import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.model.repositories.GraphqlRepository;
 import com.example.jesta.viewmodel.NotificationViewModel;
+import com.example.jesta.workes.FavorsWorker;
 import com.example.jesta.workes.NotificationWorker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -128,6 +130,13 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
                 .addTag("Notification")
                 .build();
         WorkManager.getInstance(this).enqueue(periodicWorkRequest);
+
+
+        PeriodicWorkRequest periodicWork = new PeriodicWorkRequest.Builder(FavorsWorker.class, 30, TimeUnit.SECONDS)
+                .addTag("Get_Favors")
+                .setInitialDelay(1,TimeUnit.MINUTES)
+                .build();
+        WorkManager.getInstance(this).enqueue(periodicWork);
     }
 
 //    private void initListeners(){
