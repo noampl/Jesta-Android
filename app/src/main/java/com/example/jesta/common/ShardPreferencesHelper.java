@@ -44,9 +44,12 @@ public class ShardPreferencesHelper {
     public static void writePassword(String password){
         writeItem(Consts.PASSWORD,password);
     }
+
     public static void writeId(String Id){
         writeItem(Consts.ID, Id);
     }
+
+    public static void writeRadius(double radius){writeItem(Consts.RADIUS, String.valueOf(radius));}
 
     // endregion
 
@@ -65,6 +68,14 @@ public class ShardPreferencesHelper {
     }
 
     public static String readId(){return  readItem(Consts.ID);}
+
+    public static double readRadius(){
+        String d = readItem(Consts.RADIUS);
+        if (d.equals(Consts.INVALID_STRING)){
+            return 50;
+        }
+        return Double.parseDouble(d);
+    }
 
     // endregion
 
