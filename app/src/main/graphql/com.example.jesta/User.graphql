@@ -47,3 +47,7 @@ query GetUserById($id: String) {
         description
     }
 }
+
+mutation UpdateUserImage($newImage: Upload) {
+    updateUser(newImage: $newImage)
+}

@@ -1,11 +1,15 @@
 package com.example.jesta.viewmodel;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.apollographql.apollo3.api.DefaultUpload;
 import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo3.api.Upload;
+import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.interfaces.IDialogConsumerHelper;
 import com.example.jesta.model.enteties.User;
@@ -15,6 +19,9 @@ import com.example.jesta.type.UserUpdateInput;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import okio.Okio;
+import okio.Source;
 
 public class UsersViewModel extends ViewModel {
 
@@ -106,6 +113,16 @@ public class UsersViewModel extends ViewModel {
     public void logout() {
         GraphqlRepository.getInstance().getIsLoggedIn().setValue(false);
         ShardPreferencesHelper.logout();
+        // TODO clear firebase token
+    }
+
+    public void updateUserImage(Source source){
+            DefaultUpload upload = new DefaultUpload.Builder()
+                    .content(Okio.buffer(source))
+                    .fileName(_myUser.getValue().get_firstName() + "_" + _myUser.getValue().get_lastName() + Consts.JPG)
+                    .build();
+            new Optional.Present<Upload>(upload);
+            GraphqlRepository.getInstance().uploadPhoto(new Optional.Present<Upload>(upload));
     }
 
     // endregion

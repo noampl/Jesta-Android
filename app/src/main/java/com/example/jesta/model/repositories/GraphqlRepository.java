@@ -32,6 +32,7 @@ import com.example.jesta.GetUserQuery;
 import com.example.jesta.LoginMutation;
 import com.example.jesta.OwnerFinishFavorMutation;
 import com.example.jesta.SignUpMutation;
+import com.example.jesta.UpdateUserImageMutation;
 import com.example.jesta.UpdateUserMutation;
 import com.example.jesta.common.enums.FavorTransactionStatus;
 import com.example.jesta.model.enteties.Address;
@@ -252,6 +253,37 @@ public class GraphqlRepository {
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.d("UpdateUser", e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Upload picture to user
+     * @param uploadPresent The picture to upload
+     */
+    public void uploadPhoto(Optional.Present<Upload> uploadPresent) {
+        ApolloCall<UpdateUserImageMutation.Data> mutation = _apolloClient.mutation(new UpdateUserImageMutation(uploadPresent));
+        Single<ApolloResponse<UpdateUserImageMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<UpdateUserImageMutation.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<UpdateUserImageMutation.Data> dataApolloResponse) {
+                if (!dataApolloResponse.hasErrors()){
+                    Log.d("uploadPhoto", "upload photo seccess");
+                }
+                else{
+                    for (Error e : dataApolloResponse.errors)
+                        Log.e("uploadPhoto", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("uploadPhoto", e.getMessage());
             }
         });
     }
