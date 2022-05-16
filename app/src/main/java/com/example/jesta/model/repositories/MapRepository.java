@@ -15,8 +15,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.MyApplication;
 import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestasInRadiusQuery;
+import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.model.services.GpsHelper;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -42,7 +44,7 @@ public class MapRepository {
     private Geocoder _geoCoder;
     private ExecutorService _executorService;
     private MutableLiveData<Double> radiusInKm;
-
+    private Circle _circle;
 
     // endregion
 
@@ -57,7 +59,7 @@ public class MapRepository {
     }
 
     private MapRepository() {
-        _myLocation = new MutableLiveData<>(new LatLng(32, 35));
+        _myLocation = new MutableLiveData<>(new LatLng(ShardPreferencesHelper.readLat(),ShardPreferencesHelper.readLng()));
         _locationManager = (LocationManager) MyApplication.getAppContext().getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED &&
@@ -65,16 +67,24 @@ public class MapRepository {
                 != PackageManager.PERMISSION_GRANTED) {
             return ;
         }
-        _locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 3, new GpsHelper(_myLocation));
+        _locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 3, new GpsHelper(_myLocation));
         _geoCoder = new Geocoder(MyApplication.getAppContext(), Locale.forLanguageTag("he"));
         _executorService = Executors.newFixedThreadPool(2);
         _markerToJesta = new HashMap<>();
-        radiusInKm = new MutableLiveData<>(100D);
+        radiusInKm = new MutableLiveData<>(50D);
     }
 
     // endregion
 
     // region Properties
+
+    public Circle get_circle() {
+        return _circle;
+    }
+
+    public void set_circle(Circle _circle) {
+        this._circle = _circle;
+    }
 
     public MutableLiveData<Double> getRadiusInKm() {
         return radiusInKm;
@@ -127,4 +137,10 @@ public class MapRepository {
        return addressList.get(0);
     }
 
+    public void saveLocation(double latitude, double longitude) {
+        _executorService.execute(() -> {
+            ShardPreferencesHelper.writeLat(latitude);
+            ShardPreferencesHelper.writeLng(longitude);
+        });
+    }
 }

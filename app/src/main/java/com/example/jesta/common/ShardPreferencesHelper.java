@@ -51,6 +51,11 @@ public class ShardPreferencesHelper {
 
     public static void writeRadius(double radius){writeItem(Consts.RADIUS, String.valueOf(radius));}
 
+    public static void writeLat(double lat){writeItem(Consts.LAT, String.valueOf(lat));}
+
+    public static void writeLng(double lng){writeItem(Consts.LNG, String.valueOf(lng));}
+
+
     // endregion
 
     // region Read
@@ -76,6 +81,23 @@ public class ShardPreferencesHelper {
         }
         return Double.parseDouble(d);
     }
+
+    public static double readLat(){
+        String d = readItem(Consts.LAT);
+        if (d.equals(Consts.INVALID_STRING)){
+            return 32.0860661;
+        }
+        return Double.parseDouble(d);
+    }
+
+    public static double readLng(){
+        String d = readItem(Consts.LNG);
+        if (d.equals(Consts.INVALID_STRING)){
+            return 34.7908255;
+        }
+        return Double.parseDouble(d);
+    }
+
 
     // endregion
 
