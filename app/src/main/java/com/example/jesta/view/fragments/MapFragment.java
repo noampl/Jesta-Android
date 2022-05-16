@@ -15,6 +15,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,6 +36,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -62,7 +65,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                 return;
             }
             googleMap.setMyLocationEnabled(true);
-            googleMap.setOnMarkerClickListener(_markerClickListener);
+            addMapRadius(_mapViewModel.getMyLocation().getValue(),_mapViewModel.getRadiusInKm().getValue());
         }
     };
 
@@ -127,6 +130,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         _mapViewModel.getMyLocation().observe(getViewLifecycleOwner(), (ltlg) -> {
             if (_mapViewModel.getGoogleMap() != null) {
                 _mapViewModel.moveCamera(ltlg, 10);
+                addMapRadius(ltlg, _mapViewModel.getRadiusInKm().getValue());
             }
         });
         _mapViewModel.get_jestas().observe(getViewLifecycleOwner(), new Observer<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>>() {
@@ -157,6 +161,11 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             }
         });
         _binding.jestaLst.setAdapter(adapter);
+
+        _mapViewModel.getRadiusInKm().observe(getViewLifecycleOwner(), r->{
+            if (_mapViewModel.getGoogleMap() != null)
+                addMapRadius(_mapViewModel.getMyLocation().getValue(), r);
+        });
     }
 
     private void initListeners() {
@@ -192,6 +201,19 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                 MapFragmentDirections.actionNavMapToJestaDetailsFragment(id);
         Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
     }
+
+    private void addMapRadius(LatLng center, double radius){
+        System.out.println("peleg - circle  " + center);
+        _mapViewModel.getGoogleMap().addCircle(new CircleOptions()
+        .center(new LatLng(32.0860661,34.7908255))
+        .radius(10000.0)
+        .strokeWidth(3f)
+        .strokeColor(Color.RED)
+        .fillColor(Color.argb(70,150,50,50))
+        );
+
+    }
+
 
     // endregion
 }

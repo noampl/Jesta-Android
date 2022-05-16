@@ -26,7 +26,7 @@ public class MapViewModel extends ViewModel {
     private GoogleMap _googleMap;
     private MutableLiveData<LatLng> _myLocation;
     private MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> _jestas;
-    private Double radiusInKm = 100D;
+    private MutableLiveData<Double> radiusInKm;
     private HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> _markerToJesta;
     private INavigationHelper _navigationHelper;
 
@@ -39,6 +39,7 @@ public class MapViewModel extends ViewModel {
         _myLocation = MapRepository.getInstance().getMyLocation();
         _jestas = JestaRepository.getInstance().get_jestas();
         _markerToJesta = MapRepository.getInstance().getMarkerTOJesta();
+        radiusInKm = MapRepository.getInstance().getRadiusInKm();
     }
 
     // endregion
@@ -86,6 +87,15 @@ public class MapViewModel extends ViewModel {
             _markerToJesta.put(marker, jesta);
         }
     }
+
+    public MutableLiveData<Double> getRadiusInKm() {
+        return radiusInKm;
+    }
+
+    public void setRadiusInKm(double radiusInKm) {
+        this.radiusInKm.setValue(radiusInKm);
+    }
+
     // endregion
 
     // region Public Methods
@@ -123,7 +133,7 @@ public class MapViewModel extends ViewModel {
         List<Double> coordinates = new ArrayList<>();
         coordinates.add(_myLocation.getValue().latitude);
         coordinates.add(_myLocation.getValue().longitude);
-        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), new Optional.Present<Double>(radiusInKm));
+        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), new Optional.Present<Double>(radiusInKm.getValue()));
     }
 
     public void markerClicked(String jestaId, String transactionId) {

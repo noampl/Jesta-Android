@@ -7,6 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Looper;
 
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.MutableLiveData;
@@ -40,6 +41,8 @@ public class MapRepository {
     private HashMap<Marker,GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable > _markerToJesta;
     private Geocoder _geoCoder;
     private ExecutorService _executorService;
+    private MutableLiveData<Double> radiusInKm;
+
 
     // endregion
 
@@ -66,11 +69,16 @@ public class MapRepository {
         _geoCoder = new Geocoder(MyApplication.getAppContext(), Locale.forLanguageTag("he"));
         _executorService = Executors.newFixedThreadPool(2);
         _markerToJesta = new HashMap<>();
+        radiusInKm = new MutableLiveData<>(100D);
     }
 
     // endregion
 
     // region Properties
+
+    public MutableLiveData<Double> getRadiusInKm() {
+        return radiusInKm;
+    }
 
     public GoogleMap getGoogleMap() {
         return _googleMap;
