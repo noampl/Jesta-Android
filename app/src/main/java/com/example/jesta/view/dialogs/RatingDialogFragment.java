@@ -81,7 +81,10 @@ public class RatingDialogFragment extends DialogFragment {
 
     private void initListeners(){
         _binding.submitBtn.setOnClickListener(v->{
-            _JestaDetailsViewModel.ownerFinishFavor(_transactionId,_binding.ratingBar.getRating());
+            String comment = null;
+            if (_binding.commentVal.getText() != null)
+                comment =_binding.commentVal.getText().toString();
+            _JestaDetailsViewModel.ownerFinishFavor(_transactionId,_binding.ratingBar.getRating(), comment);
             _dialog.dismiss();
         });
 

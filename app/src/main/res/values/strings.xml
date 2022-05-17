@@ -154,5 +154,7 @@
     <string name="through_whatsapp">דרך WhatsApp</string>
     <string name="medals">מדליות</string>
     <string name="reviews">חוות דעת</string>
+    <string name="dismiss">dismiss</string>
+    <string name="comment">חוות דעת</string>
 
 </resources>

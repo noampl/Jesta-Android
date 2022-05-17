@@ -17,6 +17,7 @@ public class Transaction {
     private User handledByUserId;
     private String dateLastModified;
     private double rating;
+    private String comment;
 
     // endregion
 
@@ -30,9 +31,29 @@ public class Transaction {
         this.rating = rating;
     }
 
+
+    public Transaction(String _id, FavorTransactionStatus status, Jesta favorId, User favorOwnerId, User handledByUserId, String dateLastModified, double rating, String comment) {
+        this._id = _id;
+        this.status = status;
+        this.favorId = favorId;
+        this.favorOwnerId = favorOwnerId;
+        this.handledByUserId = handledByUserId;
+        this.dateLastModified = dateLastModified;
+        this.rating = rating;
+        this.comment = comment;
+    }
+
     // endregion
 
     //region Properties
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     public double getRating() {
         return rating;

@@ -27,7 +27,7 @@ public class FavorsWorker extends Worker {
         List<Double> center  = new ArrayList<>();
         center.add(MapRepository.getInstance().getMyLocation().getValue().latitude);
         center.add(MapRepository.getInstance().getMyLocation().getValue().longitude);
-        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(center), new Optional.Present<>(ShardPreferencesHelper.readRadius()));
+        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(center), new Optional.Present<>(MapRepository.getInstance().getRadiusInKm().getValue()));
         return Result.success();
     }
 }

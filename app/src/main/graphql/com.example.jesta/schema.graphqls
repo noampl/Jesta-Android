@@ -30,6 +30,7 @@ type User {
     rating: Float
     numberOfExecutedJesta: Int
     description: String
+    medal: Int
 }
 
 input UserCreateInput {
@@ -125,7 +126,8 @@ type Mutation {
     handleFavorTransactionRequest(favorTransactionId: String!, comment: String): String
     cancelFavorTransaction(favorTransactionId: String!): String
     executorNotifyDoneFavor(favorTransactionId: String!): String
-    ownerNotifyJestaHasBeenDone(favorTransactionId: String!, rate: Int): String
+    ownerNotifyJestaHasBeenDone(favorTransactionId: String!, rate: Int, handlerComment: String): String
+    userChangeJestaTransactionToClosed(favorTransactionId: String!): String
 }
 
 input CoordinatesInput {
@@ -288,6 +290,7 @@ enum FavorTransactionStatus {
     EXECUTOR_FINISH_JESTA
     JESTA_DONE
     CANCELED
+    CLOSED
 }
 
 type FavorTransaction {
