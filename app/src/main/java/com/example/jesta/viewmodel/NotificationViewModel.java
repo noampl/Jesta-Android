@@ -20,6 +20,8 @@ public class NotificationViewModel extends ViewModel {
     private INavigationHelper _ratingDialogOpener;
     private IDeepLinkHelper _deepLingHelper;
     private final MutableLiveData<Boolean> _isTransactionLoading;
+    private INavigationHelper _showRateDialog;
+
 
     // endregion
 
@@ -33,6 +35,15 @@ public class NotificationViewModel extends ViewModel {
     // endregion
 
     // region Properties
+
+
+    public INavigationHelper get_showRateDialog() {
+        return _showRateDialog;
+    }
+
+    public void set_showRateDialog(INavigationHelper _showRateDialog) {
+        this._showRateDialog = _showRateDialog;
+    }
 
     public IDeepLinkHelper get_deepLingHelper() {
         return _deepLingHelper;
@@ -100,6 +111,15 @@ public class NotificationViewModel extends ViewModel {
 
     public void openNavigationApp(List<String> lst) {
         _deepLingHelper.navigate(lst);
+    }
+
+    public void openShowRateDialog(Transaction transaction) {
+        String[] args = {String.valueOf(transaction.getRating()), transaction.getComment() , transaction.get_id()}; // TODO replace with transaction comment
+        _showRateDialog.navigate(args);
+    }
+
+    public void closeNotification(String transactionId) {
+        GraphqlRepository.getInstance().closeNotification(transactionId);
     }
 
     // endregion

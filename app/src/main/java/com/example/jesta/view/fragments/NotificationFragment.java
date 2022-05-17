@@ -60,6 +60,17 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         }
     };
 
+    private final INavigationHelper _showRatingDialog = new INavigationHelper() {
+        @Override
+        public void navigate(String[] args) {
+            NotificationFragmentDirections.ActionNavNotificationToRatingResultDialog action =
+                    NotificationFragmentDirections.actionNavNotificationToRatingResultDialog(args[0], args[1], args[2]);
+            Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
+
+
+        }
+    };
+
     // endregion
 
     // region LifeCycle
@@ -72,6 +83,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         _notificationViewModel.set_iNavigationHelper(this);
         _notificationViewModel.set_ratingDialogOpener(_ratingDialogOpener);
         _notificationViewModel.set_deepLingHelper(_deepLinkHelper);
+        _notificationViewModel.set_showRateDialog(_showRatingDialog);
 
         init();
         return _binding.getRoot();
@@ -89,6 +101,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         _notificationViewModel.set_iNavigationHelper(null);
         _notificationViewModel.set_deepLingHelper(null);
         _notificationViewModel.set_ratingDialogOpener(null);
+        _notificationViewModel.set_showRateDialog(null);
 
     }
 

@@ -90,7 +90,7 @@ public class NotificationAdapter extends ListAdapter<Transaction, NotificationAd
                     viewModel.approveSuggestion(transaction.get_id());
                 } else if (FavorTransactionStatus.JESTA_DONE.equals(transaction.getStatus())) {
                     System.out.println("peleg - rating is " + transaction.getRating());
-                // TODO show rating
+                    viewModel.openShowRateDialog(transaction);
                 } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.equals(transaction.getStatus())) {
                     viewModel.openRating(transaction.get_id());
                 } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.equals(transaction.getStatus())){

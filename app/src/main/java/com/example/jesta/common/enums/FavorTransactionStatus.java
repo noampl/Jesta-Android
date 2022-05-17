@@ -5,5 +5,6 @@ public enum FavorTransactionStatus {
     WAITING_FOR_JESTA_EXECUTION_TIME,
     EXECUTOR_FINISH_JESTA,
     JESTA_DONE,
-    CANCELED
+    CANCELED,
+    CLOSED
 }

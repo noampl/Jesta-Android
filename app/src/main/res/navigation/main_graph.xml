@@ -56,6 +56,9 @@
         <action
             android:id="@+id/action_nav_notification_to_ratingDialogFragment"
             app:destination="@id/ratingDialogFragment" />
+        <action
+            android:id="@+id/action_nav_notification_to_ratingResultDialog"
+            app:destination="@id/ratingResultDialog" />
     </fragment>
     <fragment
         android:id="@+id/nav_privacy"
@@ -195,4 +198,19 @@
             app:argType="string"
             android:defaultValue="1"/>
     </fragment>
+    <dialog
+        android:id="@+id/ratingResultDialog"
+        android:name="com.example.jesta.view.dialogs.RatingResultDialog"
+        android:label="dialog_my_raiting"
+        tools:layout="@layout/dialog_my_raiting" >
+        <argument
+            android:name="comment"
+            app:argType="string" />
+        <argument
+            android:name="rate"
+            app:argType="string" />
+        <argument
+            android:name="transactionId"
+            app:argType="string" />
+    </dialog>
 </navigation>

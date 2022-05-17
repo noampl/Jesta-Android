@@ -71,7 +71,7 @@ public class MapRepository {
         _geoCoder = new Geocoder(MyApplication.getAppContext(), Locale.forLanguageTag("he"));
         _executorService = Executors.newFixedThreadPool(2);
         _markerToJesta = new HashMap<>();
-        radiusInKm = new MutableLiveData<>(50D);
+        radiusInKm = new MutableLiveData<>(30D);
     }
 
     // endregion
