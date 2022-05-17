@@ -89,6 +89,10 @@ public class MyRequestedJestaAdapter extends ListAdapter<Pair<Jesta, List<Transa
             _binding.executePendingBindings();
 
             _binding.container.setOnClickListener(v -> {
+                if (pair.second == null || pair.second.size() < 1){
+                    _mapViewModel.markerClicked(pair.first.get_id(), null);
+                    return;
+                }
                 if (_binding.innerList.getVisibility() > 0){
                     _binding.innerList.setVisibility(View.VISIBLE);
                     _binding.sideIconName.setBackgroundResource(R.drawable.ic_baseline_arrow_drop_down_24);

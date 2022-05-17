@@ -48,6 +48,3 @@ query GetUserById($id: String) {
     }
 }
 
-mutation UpdateUserImage($newImage: Upload) {
-    updateUser(newImage: $newImage)
-}

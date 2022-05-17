@@ -31,6 +31,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rating_title" />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/rating_bar"
+            app:layout_constraintEnd_toEndOf="@id/rating_bar"
+            app:layout_constraintTop_toBottomOf="@id/rating_bar"
+            android:layout_marginTop="@dimen/margin_vertical"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/comment_val"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/comment"
+                android:pointerIcon="text"
+                />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <Button
             android:id="@+id/submit_btn"
             android:layout_width="wrap_content"
@@ -40,7 +61,7 @@
             app:layout_constraintEnd_toStartOf="@+id/cancel_button"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rating_bar" />
+            app:layout_constraintTop_toBottomOf="@id/comment" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/cancel_button"

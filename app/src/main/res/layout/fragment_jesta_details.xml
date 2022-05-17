@@ -315,6 +315,7 @@
             android:clickable="@{transaction == null}"
             android:textColor="@color/white"
             app:btnStatus="@{transactionStatus}"
+            android:visibility="@{jestaDetails.ownerId._id.equals(userId) ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@+id/status_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/half_guidline" />
@@ -327,6 +328,7 @@
             android:clickable="@{transaction == null}"
             android:text="@string/send_msg"
             android:textColor="@color/black"
+            android:visibility="@{jestaDetails.ownerId._id.equals(userId) ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@+id/status_layout"
             app:layout_constraintEnd_toStartOf="@+id/half_guidline"
             app:layout_constraintStart_toStartOf="parent"

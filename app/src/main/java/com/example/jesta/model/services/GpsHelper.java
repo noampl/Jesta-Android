@@ -15,7 +15,7 @@ public class GpsHelper implements LocationListener {
 
     // region Members
 
-    private MutableLiveData<LatLng> _myLocation;
+    private final MutableLiveData<LatLng> _myLocation;
 
     // endregion
 
@@ -32,12 +32,14 @@ public class GpsHelper implements LocationListener {
     @Override
     public void onLocationChanged(@NonNull Location location) {
         _myLocation.setValue(new LatLng(location.getLatitude(), location.getLongitude()));
+        MapRepository.getInstance().saveLocation(location.getLatitude(),location.getLongitude());
+        System.out.println("peleg - onLocationChanged " + Thread.currentThread().getName());
     }
 
     @Override
     public void onLocationChanged(@NonNull List<Location> locations) {
         System.out.println("peleg - onLocationsssChanged " + Thread.currentThread().getName());
-//        _myLocation.setValue(new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude()));
+        _myLocation.setValue(new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude()));
     }
 
     @Override
@@ -59,4 +61,6 @@ public class GpsHelper implements LocationListener {
     }
 
     // endregion
+
+
 }

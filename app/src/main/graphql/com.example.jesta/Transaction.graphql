@@ -57,9 +57,12 @@ query GetAllTransactionNotifications($status: FavorTransactionStatus, $getAllOwn
             _id
             firstName
             lastName
+            imagePath
+            rating
         }
         dateLastModified
         rating
+        handlerComment
     }
     getAllExecutorFavorTransactionByStatus(status: $status, fromDate: $fromDate) {
         _id
@@ -83,9 +86,12 @@ query GetAllTransactionNotifications($status: FavorTransactionStatus, $getAllOwn
             _id
             firstName
             lastName
+            rating
+            imagePath
         }
         dateLastModified
         rating
+        handlerComment
     }
 }
 
@@ -113,8 +119,8 @@ mutation ExecutorFinishFavor($favorTransactionId: String!) {
     executorNotifyDoneFavor(favorTransactionId: $favorTransactionId)
 }
 
-mutation OwnerFinishFavor($favorTransactionId: String!, $rate: Int) {
-    ownerNotifyJestaHasBeenDone(favorTransactionId: $favorTransactionId, rate: $rate)
+mutation ownerNotifyJestaHasBeenDone($favorTransactionId: String!, $rate: Int, $handlerComment: String) {
+    ownerNotifyJestaHasBeenDone(favorTransactionId: $favorTransactionId, rate: $rate, handlerComment: $handlerComment)
 }
 
 query GetAllOwnerFavorTransactionByStatus($status: FavorTransactionStatus) {
@@ -153,9 +159,12 @@ query GetAllOwnerFavorTransactionByStatus($status: FavorTransactionStatus) {
             _id
             firstName
             lastName
+            rating
+            imagePath
         }
         dateLastModified
         rating
+        handlerComment
     }
 }
 
@@ -195,10 +204,12 @@ query GetAllExecutorFavorTransactionByStatus($status: FavorTransactionStatus) {
             _id
             firstName
             lastName
+            rating
+            imagePath
         }
         dateLastModified
         rating
-
+        handlerComment
     }
 }
 
@@ -275,4 +286,8 @@ query GetAllFavorTransactionByFavorIdWhenOwner($favorId: String!) {
         dateLastModified
         rating
     }
+}
+
+mutation CloseTransaction($favorTransactionId: String!) {
+    userChangeJestaTransactionToClosed(favorTransactionId: $favorTransactionId)
 }

@@ -11,6 +11,7 @@ import com.example.jesta.model.repositories.JestaRepository;
 import com.example.jesta.model.repositories.MapRepository;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -26,24 +27,37 @@ public class MapViewModel extends ViewModel {
     private GoogleMap _googleMap;
     private MutableLiveData<LatLng> _myLocation;
     private MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> _jestas;
-    private Double radiusInKm = 100D;
+    private MutableLiveData<Double> radiusInKm;
     private HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> _markerToJesta;
     private INavigationHelper _navigationHelper;
+    private Circle _radius;
+    private MutableLiveData<Boolean> _mapFinish;
 
     // endregion
 
     // region C'tor
 
     public MapViewModel() {
+        _mapFinish = new MutableLiveData<>(false);
         _googleMap = MapRepository.getInstance().getGoogleMap();
         _myLocation = MapRepository.getInstance().getMyLocation();
         _jestas = JestaRepository.getInstance().get_jestas();
         _markerToJesta = MapRepository.getInstance().getMarkerTOJesta();
+        radiusInKm = MapRepository.getInstance().getRadiusInKm();
+        _radius = MapRepository.getInstance().get_circle();
     }
 
     // endregion
 
     // region Properties
+
+    public MutableLiveData<Boolean> get_mapFinish() {
+        return _mapFinish;
+    }
+
+    public void postMapFinish(boolean mapFinish) {
+        this._mapFinish.postValue(mapFinish);
+    }
 
     public INavigationHelper get_navigationHelper() {
         return _navigationHelper;
@@ -86,6 +100,23 @@ public class MapViewModel extends ViewModel {
             _markerToJesta.put(marker, jesta);
         }
     }
+
+    public MutableLiveData<Double> getRadiusInKm() {
+        return radiusInKm;
+    }
+
+    public void setRadiusInKm(double radiusInKm) {
+        this.radiusInKm.setValue(radiusInKm);
+    }
+
+    public Circle get_radius() {
+        return _radius;
+    }
+
+    public void set_radius(Circle _radius) {
+        this._radius = _radius;
+    }
+
     // endregion
 
     // region Public Methods
@@ -123,7 +154,7 @@ public class MapViewModel extends ViewModel {
         List<Double> coordinates = new ArrayList<>();
         coordinates.add(_myLocation.getValue().latitude);
         coordinates.add(_myLocation.getValue().longitude);
-        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), new Optional.Present<Double>(radiusInKm));
+        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), new Optional.Present<Double>(radiusInKm.getValue()));
     }
 
     public void markerClicked(String jestaId, String transactionId) {

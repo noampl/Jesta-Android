@@ -28,6 +28,7 @@ import com.example.jesta.interfaces.IDialogConsumerHelper;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.viewmodel.JestaDetailsViewModel;
 import com.example.jesta.viewmodel.NotificationViewModel;
+import com.example.jesta.viewmodel.UsersViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
 
@@ -124,6 +125,13 @@ public class JestaDetailsFragment extends Fragment {
     private void initListeners() {
         _binding.suggestHelp.setOnClickListener(v -> {
             if (_jestaDetailsViewModel.get_favorTransactionStatus().getValue() != null) {
+                if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())){
+                    System.out.println("peleg - user id is ownerID");
+                    return;
+                }
+                else{
+                    System.out.println("peleg - user id is NOT ownerID");
+                }
                 if (_jestaDetailsViewModel.get_favorTransactionStatus().getValue().equals(FavorTransactionStatus.CANCELED.toString())) {
                     _jestaDetailsViewModel.suggestHelp(_jestaId);
                 } else {
@@ -143,11 +151,15 @@ public class JestaDetailsFragment extends Fragment {
                     }).create().show();
                 }
             } else {
+                if (_binding.getJestaDetails().ownerId._id.equals(_jestaDetailsViewModel.get_userId()))
+                    return;
                 _jestaDetailsViewModel.suggestHelp(_jestaId);
             }
         });
 
         _binding.sendMsg.setOnClickListener(v -> {
+            if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId()))
+                return;
             this.openSendMessageOptionsDialog();
         });
 
