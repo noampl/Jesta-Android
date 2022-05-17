@@ -100,9 +100,11 @@ public class ProfileSettingsFragment extends Fragment {
         @Override
         public void onActivityResult(ActivityResult result) {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                Bundle extras = result.getData().getExtras();
-                Bitmap bitmap = (Bitmap) extras.get("data");
-                // TODO: save bitmap to server
+                try {
+                    uploadImage(result.getData().getData());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
     });
@@ -112,10 +114,7 @@ public class ProfileSettingsFragment extends Fragment {
         public void onActivityResult(ActivityResult result) {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 try {
-                    Uri imageUri = result.getData().getData();
-                    InputStream imageStream = requireActivity().getContentResolver().openInputStream(imageUri);
-                    Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
-                    // TODO: save bitmap to server
+                    uploadImage(result.getData().getData());
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -332,6 +331,12 @@ public class ProfileSettingsFragment extends Fragment {
             }
         });
         AlertDialogRtlHelper.make(builder).show();
+    }
+
+    private void uploadImage(Uri imageUri) throws FileNotFoundException {
+        InputStream imageStream = requireActivity().getContentResolver().openInputStream(imageUri);
+        Source source = Okio.source(imageStream);
+        _usersViewModel.updateUserImage(source);
     }
 
     // endregion
