@@ -119,10 +119,10 @@ public class UsersViewModel extends ViewModel {
     public void updateUserImage(Source source){
             DefaultUpload upload = new DefaultUpload.Builder()
                     .content(Okio.buffer(source))
-                    .fileName(_myUser.getValue().get_firstName() + "_" + _myUser.getValue().get_lastName() + Consts.JPG)
+                    .fileName("_" + _myUser.getValue().get_id() + Consts.JPG)
                     .build();
             new Optional.Present<Upload>(upload);
-            GraphqlRepository.getInstance().uploadPhoto(new Optional.Present<Upload>(upload));
+            GraphqlRepository.getInstance().uploadPhoto(new Optional.Present<Upload>(upload), _myUser.getValue().get_id());
     }
 
     // endregion

@@ -33,8 +33,8 @@ import com.example.jesta.GetUserQuery;
 import com.example.jesta.LoginMutation;
 import com.example.jesta.OwnerNotifyJestaHasBeenDoneMutation;
 import com.example.jesta.SignUpMutation;
-import com.example.jesta.UpdateUserImageMutation;
 import com.example.jesta.UpdateUserMutation;
+import com.example.jesta.UpdateUserPhotoMutation;
 import com.example.jesta.common.enums.FavorTransactionStatus;
 import com.example.jesta.model.enteties.Address;
 import com.example.jesta.model.enteties.Jesta;
@@ -261,18 +261,19 @@ public class GraphqlRepository {
     /**
      * Upload picture to user
      * @param uploadPresent The picture to upload
+     * @param id The Id of the user
      */
-    public void uploadPhoto(Optional.Present<Upload> uploadPresent) {
-        ApolloCall<UpdateUserImageMutation.Data> mutation = _apolloClient.mutation(new UpdateUserImageMutation(uploadPresent));
-        Single<ApolloResponse<UpdateUserImageMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
-        responseSingle.subscribe(new SingleObserver<ApolloResponse<UpdateUserImageMutation.Data>>() {
+    public void uploadPhoto(Optional.Present<Upload> uploadPresent, String id) {
+        ApolloCall<UpdateUserPhotoMutation.Data> mutation = _apolloClient.mutation(new UpdateUserPhotoMutation(uploadPresent, new Optional.Present<>(id)));
+        Single<ApolloResponse<UpdateUserPhotoMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<UpdateUserPhotoMutation.Data>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
 
             }
 
             @Override
-            public void onSuccess(@NonNull ApolloResponse<UpdateUserImageMutation.Data> dataApolloResponse) {
+            public void onSuccess(@NonNull ApolloResponse<UpdateUserPhotoMutation.Data> dataApolloResponse) {
                 if (!dataApolloResponse.hasErrors()){
                     Log.d("uploadPhoto", "upload photo seccess");
                 }
