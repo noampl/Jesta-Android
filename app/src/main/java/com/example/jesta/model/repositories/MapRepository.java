@@ -71,7 +71,7 @@ public class MapRepository {
         _geoCoder = new Geocoder(MyApplication.getAppContext(), Locale.forLanguageTag("he"));
         _executorService = Executors.newFixedThreadPool(2);
         _markerToJesta = new HashMap<>();
-        radiusInKm = new MutableLiveData<>(30D);
+        radiusInKm = new MutableLiveData<>(ShardPreferencesHelper.readRadius());
     }
 
     // endregion
@@ -141,6 +141,12 @@ public class MapRepository {
         _executorService.execute(() -> {
             ShardPreferencesHelper.writeLat(latitude);
             ShardPreferencesHelper.writeLng(longitude);
+        });
+    }
+
+    public void saveRadius(double radiusInKm) {
+        _executorService.execute(() -> {
+            ShardPreferencesHelper.writeRadius(radiusInKm);
         });
     }
 }

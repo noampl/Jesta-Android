@@ -156,5 +156,10 @@
     <string name="reviews">חוות דעת</string>
     <string name="dismiss">dismiss</string>
     <string name="comment">חוות דעת</string>
+    <string name="select_radius">בחר רדיוס</string>
+    <string name="_500_m">500 מטר</string>
+    <string name="_1_km">1 ק\"מ</string>
+    <string name="_10_km">10 ק\"מ</string>
+    <string name="_50_km">50 ק\"מ</string>
 
 </resources>

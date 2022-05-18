@@ -264,7 +264,8 @@ public class GraphqlRepository {
      * @param id The Id of the user
      */
     public void uploadPhoto(Optional.Present<Upload> uploadPresent, String id) {
-        ApolloCall<UpdateUserPhotoMutation.Data> mutation = _apolloClient.mutation(new UpdateUserPhotoMutation(uploadPresent, new Optional.Present<>(id)));
+        ApolloCall<UpdateUserPhotoMutation.Data> mutation = _apolloClient.mutation(new UpdateUserPhotoMutation(uploadPresent, new Optional.Present<>(id),
+                new Optional.Present<>(null), new Optional.Present<>(null)));
         Single<ApolloResponse<UpdateUserPhotoMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
         responseSingle.subscribe(new SingleObserver<ApolloResponse<UpdateUserPhotoMutation.Data>>() {
             @Override
@@ -278,14 +279,15 @@ public class GraphqlRepository {
                     Log.d("uploadPhoto", "upload photo seccess");
                 }
                 else{
+
                     for (Error e : dataApolloResponse.errors)
-                        Log.e("uploadPhoto", e.getMessage());
+                        Log.e("uploadPhotoOnSuccess", e.getMessage());
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
-                Log.e("uploadPhoto", e.getMessage());
+                Log.e("uploadPhotoError", e.getMessage());
             }
         });
     }
@@ -634,7 +636,6 @@ public class GraphqlRepository {
             @Override
             public void onSuccess(@NonNull ApolloResponse<GetFavorsByRadiosTimeAndDateQuery.Data> dataApolloResponse) {
                 if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null) {
-                    System.out.println("peleg - GetRemoteJestas success size is " + dataApolloResponse.data.getByRadiosAndDateAndOnlyAvailable.size());
                     JestaRepository.getInstance().set_jestas(dataApolloResponse.data.getByRadiosAndDateAndOnlyAvailable);
                 } else {
                     for (Error e : dataApolloResponse.errors)
@@ -662,7 +663,7 @@ public class GraphqlRepository {
             if (favor != null) {
                 JestaRepository.getInstance().set_jestaDetails(favor);
                 GetAllUserFavorTransactionByFavorIdQuery.GetAllUserFavorTransactionByFavorId transaction = synchronizeGetTransaction(id);
-                System.out.println("peleg - is transaction null? " + (transaction == null));
+
                 if (transaction != null) {
                     JestaRepository.getInstance().set_favorTransactionStatus(transaction.status);
                 } else {

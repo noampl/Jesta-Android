@@ -24,6 +24,9 @@
             android:id="@+id/action_nav_map_to_nav_user_profile"
             app:destination="@id/nav_user_profile"
             app:launchSingleTop="true" />
+        <action
+            android:id="@+id/action_nav_map_to_radiusSelectorDialogFragment"
+            app:destination="@id/radiusSelectorDialogFragment" />
     </fragment>
 
     <fragment
@@ -213,4 +216,9 @@
             android:name="transactionId"
             app:argType="string" />
     </dialog>
+    <dialog
+        android:id="@+id/radiusSelectorDialogFragment"
+        android:name="com.example.jesta.view.dialogs.RadiusSelectorDialogFragment"
+        android:label="fragment_radius_selector_dialog"
+        tools:layout="@layout/fragment_radius_selector_dialog" />
 </navigation>

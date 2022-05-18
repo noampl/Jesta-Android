@@ -129,7 +129,9 @@ public class User {
     }
 
     public void set_fullAddress(String _address) {
-        this._address.fullAddress = _address;
+        if (_address != null){
+            this._address.fullAddress = _address;
+        }
     }
 
     public double get_rating() {

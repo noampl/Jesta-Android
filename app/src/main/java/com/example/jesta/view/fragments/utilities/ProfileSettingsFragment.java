@@ -101,8 +101,8 @@ public class ProfileSettingsFragment extends Fragment {
         public void onActivityResult(ActivityResult result) {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 try {
-                    uploadImage(result.getData().getData());
-                } catch (FileNotFoundException e) {
+                    uploadImage(result.getData().getData()); // TODO figure if this working
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

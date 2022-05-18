@@ -49,7 +49,7 @@ public class introActivity extends AppCompatActivity {
         });
         // init Google places instance with an hebrew language code
         if (!Places.isInitialized()) {
-            Places.initialize(MyApplication.getAppContext(), getString(R.string.google_maps_key), Locale.forLanguageTag("he"));
+            Places.initialize(MyApplication.getAppContext(), "AIzaSyCjHwrlE2uW6jDHDTqyDcLP4V-5_9iH6GQ", Locale.forLanguageTag("he"));
         }
         viewModel.initLogin();
 
