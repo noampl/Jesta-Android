@@ -114,6 +114,13 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         init();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        _mapViewModel.set_radius(null);
+    }
+
+
     // endregion
 
     // region Private Methods
@@ -121,15 +128,16 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private void init() {
         _mapViewModel.getRemoteJestas();
         _mapViewModel.set_navigationHelper(this);
+        initCircle();
         initObservers();
         initListeners();
-        initCircle();
     }
 
     private void initObservers() {
         JestaAdapter adapter = new JestaAdapter(getViewLifecycleOwner(), _mapViewModel);
         _mapViewModel.getMyLocation().observe(getViewLifecycleOwner(), (ltlg) -> {
             if (_mapViewModel.getGoogleMap() != null) {
+                System.out.println("peleg - location change");
                 addMapRadius(ltlg, _mapViewModel.getRadiusInKm().getValue());
             }
         });
@@ -145,7 +153,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                 adapter.submitList(jestaList);
                 adapter.notifyDataSetChanged();
                 if (_mapViewModel.getGoogleMap() != null) {
-                    _mapViewModel.getGoogleMap().clear();
+                    _mapViewModel.get_markerToJesta().forEach((marker,v)->marker.remove());
                     if (_mapViewModel.get_markerToJesta() != null) {
                         _mapViewModel.get_markerToJesta().clear();
                     }
@@ -162,8 +170,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         });
         _binding.jestaLst.setAdapter(adapter);
 
-        _mapViewModel.getRadiusInKm().observe(getViewLifecycleOwner(), r->{
+        _mapViewModel.getRadiusInKm().observe(getViewLifecycleOwner(), r -> {
             if (_mapViewModel.getGoogleMap() != null) {
+                System.out.println("peleg - radius change " + r);
                 addMapRadius(_mapViewModel.getMyLocation().getValue(), r);
             }
         });
@@ -172,6 +181,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private void initListeners() {
         _binding.plusBtn.setOnClickListener((v) ->
                 Navigation.findNavController(requireActivity(), R.id.main_container).navigate(R.id.action_nav_map_to_addJestaFragment));
+
+        _binding.filter.setOnClickListener((v) ->
+                Navigation.findNavController(requireActivity(), R.id.main_container).navigate(R.id.action_nav_map_to_radiusSelectorDialogFragment));
+
     }
 
     // endregion
@@ -203,25 +216,41 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
     }
 
-    private void initCircle(){
-        _mapViewModel.get_mapFinish().observe(getViewLifecycleOwner(), b->{
-            System.out.println("peleg - radius " + _mapViewModel.getRadiusInKm().getValue());
-            if (b)
+    private void initCircle() {
+        _mapViewModel.get_mapFinish().observe(getViewLifecycleOwner(), b -> {
+            if (b) {
+                System.out.println("peleg - create circle 5 " + Thread.currentThread());
+                createCircleRadius(_mapViewModel.getMyLocation().getValue(),
+                        _mapViewModel.getRadiusInKm().getValue());
+            }
+        });
+        if (_mapViewModel.get_mapFinish().getValue()) {
+            System.out.println("peleg - create circle 6 " + Thread.currentThread());
+            createCircleRadius(_mapViewModel.getMyLocation().getValue(),
+                    _mapViewModel.getRadiusInKm().getValue());
+        }
+    }
+
+    private void addMapRadius(LatLng center, double radius) {
+        System.out.println("peleg - is circle null? 1 " + (_mapViewModel.get_radius() == null) + " " + Thread.currentThread());
+        if (_mapViewModel.get_radius() != null) {
+            _mapViewModel.get_radius().setCenter(center);
+            _mapViewModel.get_radius().setRadius(radius * 1000);
+        } else {
+            System.out.println("peleg - add new circle 2 " + Thread.currentThread());
+            createCircleRadius(center, radius);
+        }
+    }
+
+    private void createCircleRadius(LatLng center, double radius) {
+        if (_mapViewModel.get_radius() == null)
             _mapViewModel.set_radius(_mapViewModel.getGoogleMap().addCircle(new CircleOptions()
-                    .center(_mapViewModel.getMyLocation().getValue())
-                    .radius(_mapViewModel.getRadiusInKm().getValue() * 1000)
+                    .center(center)
+                    .radius(radius * 1000)
                     .strokeWidth(3f)
                     .strokeColor(Color.BLUE)
-                    .fillColor(Color.argb(70,50,50,150))));
-        });
+                    .fillColor(Color.argb(70, 50, 50, 150))));
     }
-
-    private void addMapRadius(LatLng center, double radius){
-        System.out.println("peleg - circle  " + center);
-        _mapViewModel.get_radius().setCenter(center);
-        _mapViewModel.get_radius().setRadius(radius * 1000);
-    }
-
 
     // endregion
 }

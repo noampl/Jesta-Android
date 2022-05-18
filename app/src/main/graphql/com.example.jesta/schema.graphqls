@@ -128,6 +128,7 @@ type Mutation {
     executorNotifyDoneFavor(favorTransactionId: String!): String
     ownerNotifyJestaHasBeenDone(favorTransactionId: String!, rate: Int, handlerComment: String): String
     userChangeJestaTransactionToClosed(favorTransactionId: String!): String
+    rateTransactionWithOptionalComment(favorTransactionId: String!, rate: Int, handlerComment: String): String
 }
 
 input CoordinatesInput {

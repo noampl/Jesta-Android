@@ -148,19 +148,13 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         viewModel.get_notificationTransaction().observe(this, new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
-                System.out.println("peleg - transacions null ? " + (transactions == null) + " thread is " + Thread.currentThread());
-                System.out.println("peleg - start is card visible " + _notificationCard.getVisibility());
                 if (transactions != null) {
                     if (transactions.size() > 0) {
                         _notificationCard.setVisibility(View.VISIBLE);
-                        System.out.println("peleg - set card visible");
                     } else {
                         _notificationCard.setVisibility(View.INVISIBLE);
-                        System.out.println("peleg - set card invisible");
                     }
                     _notificationNumber.setText(String.valueOf(transactions.size()));
-                    System.out.println("peleg - transactionsize " + transactions.size());
-                    System.out.println("peleg - end is card visible " + _notificationCard.getVisibility());
                     _binding.mainToolbar.getMenu().findItem(R.id.nav_notification);
                 }
             }

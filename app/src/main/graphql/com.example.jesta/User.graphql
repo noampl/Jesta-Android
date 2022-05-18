@@ -48,6 +48,6 @@ query GetUserById($id: String) {
     }
 }
 
-mutation UpdateUserPhoto($newImage: Upload, $id: String) {
-    updateUser(newImage: $newImage, _id: $id)
+mutation UpdateUserPhoto($newImage: Upload, $id: String, $email: String, $updatedUser: UserUpdateInput) {
+    updateUser(newImage: $newImage, _id: $id, email: $email, updatedUser: $updatedUser)
 }

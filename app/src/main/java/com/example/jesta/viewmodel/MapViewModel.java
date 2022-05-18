@@ -1,5 +1,7 @@
 package com.example.jesta.viewmodel;
 
+import android.location.Location;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -25,13 +27,13 @@ public class MapViewModel extends ViewModel {
     // region Members
 
     private GoogleMap _googleMap;
-    private MutableLiveData<LatLng> _myLocation;
-    private MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> _jestas;
-    private MutableLiveData<Double> radiusInKm;
-    private HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> _markerToJesta;
+    private final MutableLiveData<LatLng> _myLocation;
+    private final MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> _jestas;
+    private final MutableLiveData<Double> radiusInKm;
+    private final HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> _markerToJesta;
     private INavigationHelper _navigationHelper;
     private Circle _radius;
-    private MutableLiveData<Boolean> _mapFinish;
+    private final MutableLiveData<Boolean> _mapFinish;
 
     // endregion
 
@@ -107,6 +109,7 @@ public class MapViewModel extends ViewModel {
 
     public void setRadiusInKm(double radiusInKm) {
         this.radiusInKm.setValue(radiusInKm);
+        MapRepository.getInstance().saveRadius(radiusInKm);
     }
 
     public Circle get_radius() {
@@ -158,9 +161,16 @@ public class MapViewModel extends ViewModel {
     }
 
     public void markerClicked(String jestaId, String transactionId) {
-        System.out.println("peleg - mapview model navigate transactionId " + transactionId);
         String[] args = {jestaId, transactionId};
         _navigationHelper.navigate(args);
+    }
+
+    public void submitRadiusChange(double radius){
+        setRadiusInKm(radius);
+        List<Double> center  = new ArrayList<>();
+        center.add(MapRepository.getInstance().getMyLocation().getValue().latitude);
+        center.add(MapRepository.getInstance().getMyLocation().getValue().longitude);
+        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(center), new Optional.Present<>(radius));
     }
 
     // endregion

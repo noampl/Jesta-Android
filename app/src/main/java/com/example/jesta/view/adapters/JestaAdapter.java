@@ -66,8 +66,12 @@ public class JestaAdapter extends ListAdapter<Jesta, JestaAdapter.JestaViewHolde
     public void onBindViewHolder(@NonNull JestaViewHolder holder, int position) {
         holder.bind(getItem(position));
         System.out.println("peleg - is transactionid null " + (_transactionId == null));
-        if (_transactionId != null && position < _transactionId.size())
+        if (_transactionId != null && position < _transactionId.size()){
             holder.setTransactioId(_transactionId.get(position));
+        }
+        else{
+            return;
+        }
     }
 
     public void setTransactionId(List<String> transactionId) {
