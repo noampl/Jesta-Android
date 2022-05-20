@@ -157,7 +157,9 @@ public class MapViewModel extends ViewModel {
         List<Double> coordinates = new ArrayList<>();
         coordinates.add(_myLocation.getValue().latitude);
         coordinates.add(_myLocation.getValue().longitude);
-        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), new Optional.Present<Double>(radiusInKm.getValue()));
+        // TODO: noam check, without this I get null reference exception in startup
+        if (radiusInKm != null)
+            GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), new Optional.Present<Double>(radiusInKm.getValue()));
     }
 
     public void markerClicked(String jestaId, String transactionId) {
@@ -165,9 +167,9 @@ public class MapViewModel extends ViewModel {
         _navigationHelper.navigate(args);
     }
 
-    public void submitRadiusChange(double radius){
+    public void submitRadiusChange(double radius) {
         setRadiusInKm(radius);
-        List<Double> center  = new ArrayList<>();
+        List<Double> center = new ArrayList<>();
         center.add(MapRepository.getInstance().getMyLocation().getValue().latitude);
         center.add(MapRepository.getInstance().getMyLocation().getValue().longitude);
         GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(center), new Optional.Present<>(radius));
