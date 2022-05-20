@@ -1,5 +1,7 @@
 package com.example.jesta.view.fragments.utilities;
 
+import static com.example.jesta.common.Consts.SERVER_PRE_FIX;
+
 import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
@@ -9,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentUserProfileBinding;
@@ -17,6 +20,9 @@ import com.example.jesta.view.fragments.jestas.JestaDetailsFragmentArgs;
 import com.example.jesta.viewmodel.JestaDetailsViewModel;
 import com.example.jesta.viewmodel.NotificationViewModel;
 import com.example.jesta.viewmodel.UserProfileViewModel;
+import com.squareup.picasso.Picasso;
+
+import java.util.Objects;
 
 public class UserProfileFragment extends Fragment {
 
@@ -37,6 +43,9 @@ public class UserProfileFragment extends Fragment {
 
         _userId = UserProfileFragmentArgs.fromBundle(getArguments()).getUserId();
         _userProfileViewModel.getUser(_userId);
+        if (Objects.nonNull(_userProfileViewModel.get_userDetails().getValue())){
+            addUserImage(Objects.requireNonNull(_userProfileViewModel.get_userDetails().getValue()).get_imagePath());
+        }
         init();
         return _binding.getRoot();
     }
@@ -73,6 +82,13 @@ public class UserProfileFragment extends Fragment {
         _binding.btnMedals.setOnClickListener(v -> {
             // TODO: navigate to list of medals
         });
+    }
+
+    private void addUserImage(String imagePath) {
+        ImageView userImage = _binding.imgUserPhoto;
+        if (Objects.nonNull(imagePath) && !imagePath.isEmpty()) {
+            Picasso.with(userImage.getContext()).load(SERVER_PRE_FIX + imagePath).fit().into(userImage);
+        }
     }
 
     //endregion
