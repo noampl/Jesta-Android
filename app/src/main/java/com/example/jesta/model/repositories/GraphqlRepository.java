@@ -260,8 +260,9 @@ public class GraphqlRepository {
 
     /**
      * Upload picture to user
+     *
      * @param uploadPresent The picture to upload
-     * @param id The Id of the user
+     * @param id            The Id of the user
      */
     public void uploadPhoto(Optional.Present<Upload> uploadPresent, String id) {
         ApolloCall<UpdateUserPhotoMutation.Data> mutation = _apolloClient.mutation(new UpdateUserPhotoMutation(uploadPresent, new Optional.Present<>(id),
@@ -275,10 +276,9 @@ public class GraphqlRepository {
 
             @Override
             public void onSuccess(@NonNull ApolloResponse<UpdateUserPhotoMutation.Data> dataApolloResponse) {
-                if (!dataApolloResponse.hasErrors()){
+                if (!dataApolloResponse.hasErrors()) {
                     Log.d("uploadPhoto", "upload photo seccess");
-                }
-                else{
+                } else {
 
                     for (Error e : dataApolloResponse.errors)
                         Log.e("uploadPhotoOnSuccess", e.getMessage());
@@ -391,8 +391,8 @@ public class GraphqlRepository {
     /**
      * Onwer rating the jestioner performance
      *
-     * @param id   The TransactionId
-     * @param rate The Rate (1-5)
+     * @param id      The TransactionId
+     * @param rate    The Rate (1-5)
      * @param comment Comment about the jestioner handler
      */
     public void ownerFinishFavor(String id, int rate, String comment) {
@@ -501,6 +501,7 @@ public class GraphqlRepository {
 
     /**
      * Move transaction stratus to close
+     *
      * @param transactionId the id
      */
     public void closeNotification(String transactionId) {
@@ -514,11 +515,10 @@ public class GraphqlRepository {
 
             @Override
             public void onSuccess(@NonNull ApolloResponse<CloseTransactionMutation.Data> dataApolloResponse) {
-                if (dataApolloResponse.hasErrors()){
+                if (dataApolloResponse.hasErrors()) {
                     for (Error e : dataApolloResponse.errors)
                         Log.e("closeNotification", e.getMessage());
-                }
-                else{
+                } else {
                     Log.d("closeNotification", "close transaction successfully " + transactionId);
                     NotificationRepository.getInstance().removeTransactionById(transactionId);
                 }
@@ -742,15 +742,15 @@ public class GraphqlRepository {
                 if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null) {
                     List<Transaction> transactions = new ArrayList<>();
                     dataApolloResponse.data.getAllExecutorFavorTransactionByStatus.forEach(t -> {
-                                transactions.add(new Transaction(t._id, FavorTransactionStatus.valueOf(t.status), new Jesta(t.favorId._id, t.favorId.status,
-                                        t.favorId.ownerId, new Address(t.favorId.sourceAddress.fullAddress, t.favorId.sourceAddress.location.coordinates),
-                                        t.favorId.numOfPeopleNeeded, t.favorId.dateToExecute != null ? t.favorId.dateToExecute.toString() : null,
-                                        t.favorId.dateToFinishExecute != null ? t.favorId.dateToFinishExecute.toString() : null),
-                                        new User(t.favorOwnerId._id, t.favorOwnerId.firstName, t.favorOwnerId.lastName),
-                                        new User(t.handledByUserId._id, t.handledByUserId.firstName, t.handledByUserId.lastName,
-                                                t.handledByUserId.rating != null ? t.handledByUserId.rating : 0.0, t.handledByUserId.imagePath),
-                                        t.dateLastModified.toString(), t.rating != null ? t.rating : 0));
-                            });
+                        transactions.add(new Transaction(t._id, FavorTransactionStatus.valueOf(t.status), new Jesta(t.favorId._id, t.favorId.status,
+                                t.favorId.ownerId, new Address(t.favorId.sourceAddress.fullAddress, t.favorId.sourceAddress.location.coordinates),
+                                t.favorId.numOfPeopleNeeded, t.favorId.dateToExecute != null ? t.favorId.dateToExecute.toString() : null,
+                                t.favorId.dateToFinishExecute != null ? t.favorId.dateToFinishExecute.toString() : null),
+                                new User(t.favorOwnerId._id, t.favorOwnerId.firstName, t.favorOwnerId.lastName),
+                                new User(t.handledByUserId._id, t.handledByUserId.firstName, t.handledByUserId.lastName,
+                                        t.handledByUserId.rating != null ? t.handledByUserId.rating : 0.0, t.handledByUserId.imagePath),
+                                t.dateLastModified.toString(), t.rating != null ? t.rating : 0));
+                    });
                     JestasListsRepository.getInstance().setTransactions(transactions);
                 } else {
                     for (Error e : dataApolloResponse.errors)
@@ -838,7 +838,10 @@ public class GraphqlRepository {
                 } else {
                     GetUserByIdQuery.GetUser u = dataApolloResponse.data.getUser;
                     User user = new User(u._id, u.firstName, u.lastName,
-                            u.birthday!= null ? u.birthday.toString() : null, u.email, u.phone, u.role, u.imagePath, new GetUserQuery.Address(u.address.fullAddress));
+                            u.birthday != null ? u.birthday.toString() : null,
+                            u.email, u.phone, u.role, u.imagePath,
+                            u.address != null ? new GetUserQuery.Address(u.address.fullAddress) : null
+                    );
                     user.set_numOfJestasDone(u.numberOfExecutedJesta);
                     user.set_isTopJestioner(u.mostVolunteered);
                     user.setDescription(u.description);
