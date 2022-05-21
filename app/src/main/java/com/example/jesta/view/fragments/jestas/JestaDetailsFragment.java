@@ -122,34 +122,32 @@ public class JestaDetailsFragment extends Fragment {
         validateStatusBtn(status);
     }
 
-    private void validateStatusBtn(String status){
-        if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null){
-            if (status != null){
-                if (status.equals(FavorTransactionStatus.CLOSED.toString())){
+    private void validateStatusBtn(String status) {
+        if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null) {
+            if (status != null) {
+                if (status.equals(FavorTransactionStatus.CLOSED.toString())) {
                     _binding.suggestHelp.setVisibility(View.GONE);
                     _binding.sendMsg.setVisibility(View.GONE);
-                }
-                else if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())){
+                } else if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
                     _binding.suggestHelp.setVisibility(View.GONE);
                     _binding.sendMsg.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     _binding.suggestHelp.setVisibility(View.VISIBLE);
                     _binding.sendMsg.setVisibility(View.VISIBLE);
+                    _binding.sendMsg.setClickable(true);
+                    _binding.suggestHelp.setClickable(true);
                 }
             }
-
         }
     }
 
     private void validateDoneBtn(String status) {
-        if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null && status != null){
+        if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null && status != null) {
             if (status.equals(FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString()) &&
-                !_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())){
+                    !_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
                 _binding.doneBtn.setVisibility(View.VISIBLE);
                 _binding.doneBtn.setClickable(true);
-            }
-            else{
+            } else {
                 _binding.doneBtn.setVisibility(View.INVISIBLE);
                 _binding.doneBtn.setClickable(false);
             }
@@ -205,7 +203,7 @@ public class JestaDetailsFragment extends Fragment {
             if (_binding.getTransaction() != null) {
                 if (_jestaDetailsViewModel.get_userId().equals(_binding.getTransaction().getFavorOwnerId().get_id())) {
                     JestaDetailsFragmentDirections.ActionJestaDetailsFragmentToNavUserProfile action =
-                    JestaDetailsFragmentDirections.actionJestaDetailsFragmentToNavUserProfile();
+                            JestaDetailsFragmentDirections.actionJestaDetailsFragmentToNavUserProfile();
                     action.setUserId(_binding.getTransaction().getHandledByUserId().get_id());
                     Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
                 }
