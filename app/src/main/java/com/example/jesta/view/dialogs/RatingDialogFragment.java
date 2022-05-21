@@ -85,6 +85,7 @@ public class RatingDialogFragment extends DialogFragment {
             if (_binding.commentVal.getText() != null)
                 comment =_binding.commentVal.getText().toString();
             _JestaDetailsViewModel.ownerFinishFavor(_transactionId,_binding.ratingBar.getRating(), comment);
+            Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
             _dialog.dismiss();
         });
 

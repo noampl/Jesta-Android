@@ -44,6 +44,8 @@ public class RequestedJestasFragment extends Fragment {
         public void navigate(String[] args) {
             RequestedJestasFragmentDirections.ActionNavRequestJestasToJestaDetailsFragment action =
                     RequestedJestasFragmentDirections.actionNavRequestJestasToJestaDetailsFragment(args[0]);
+            if (args.length > 1 && args[1] != null)
+                action.setTransactionId(args[1]);
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
         }
     };
@@ -74,14 +76,14 @@ public class RequestedJestasFragment extends Fragment {
 
     // region Private Methods
 
-    private void init(){
+    private void init() {
         _jestasListsViewModel.fetchMyJestas();
         initObservers();
         initListeners();
     }
 
-    private void initObservers(){
-        MyRequestedJestaAdapter adapter = new MyRequestedJestaAdapter(getViewLifecycleOwner(),_mapViewModel);
+    private void initObservers() {
+        MyRequestedJestaAdapter adapter = new MyRequestedJestaAdapter(getViewLifecycleOwner(), _mapViewModel);
         _jestasListsViewModel.get_jestasMap().observe(getViewLifecycleOwner(), new Observer<Map<Jesta, List<Transaction>>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -89,7 +91,7 @@ public class RequestedJestasFragment extends Fragment {
                 if (transactions == null)
                     return;
                 List<Pair<Jesta, List<Transaction>>> pairs = new ArrayList<>();
-                transactions.forEach((k,v) -> pairs.add(new Pair<>(k,v)));
+                transactions.forEach((k, v) -> pairs.add(new Pair<>(k, v)));
                 adapter.submitList(pairs);
                 adapter.notifyDataSetChanged();
                 _binding.genericList.swiper.setRefreshing(false);
@@ -98,11 +100,14 @@ public class RequestedJestasFragment extends Fragment {
         _binding.genericList.list.setAdapter(adapter);
     }
 
-    private void initListeners(){
+    private void initListeners() {
         // TODO Implement this
-        _binding.genericList.filter.setOnClickListener(v->{});
-        _binding.genericList.clock.setOnClickListener(v->{});
-        _binding.genericList.sort.setOnClickListener(v->{});
+        _binding.genericList.filter.setOnClickListener(v -> {
+        });
+        _binding.genericList.clock.setOnClickListener(v -> {
+        });
+        _binding.genericList.sort.setOnClickListener(v -> {
+        });
         _binding.genericList.swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

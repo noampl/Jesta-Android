@@ -48,7 +48,7 @@ public class JestasListsViewModel extends ViewModel {
      * Fetch all done jestas by the user
      */
     public void fetchDoneJestas() {
-        GraphqlRepository.getInstance().getExecuterFavorTransaction(FavorTransactionStatus.JESTA_DONE);
+        GraphqlRepository.getInstance().fetchDoneJesta();
     }
 
     /**

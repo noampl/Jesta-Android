@@ -75,7 +75,7 @@ public class ShardPreferencesHelper {
     public static String readId(){return  readItem(Consts.ID);}
 
     public static double readRadius(){
-        String d = readItem(Consts.RADIUS);
+        String d = readItem(Consts.RADIUS);;
         if (d.equals(Consts.INVALID_STRING)){
             return 50;
         }

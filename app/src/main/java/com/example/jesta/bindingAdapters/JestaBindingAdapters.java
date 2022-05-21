@@ -15,11 +15,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
 
-import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
 import com.example.jesta.common.Consts;
@@ -32,8 +29,6 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -132,9 +127,10 @@ public class JestaBindingAdapters {
     public static void setVisibility(View view, String status, String currentUser, String ownerId) {
         if (status == null) {
             view.setVisibility(View.GONE);
+            System.out.println("peleg - status is null");
             return;
         }
-
+        System.out.println("peleg - status is " + status);
         if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString().equals(status) ||
                 FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(status) ||
                 (FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(status) && currentUser.equals(ownerId))) {
@@ -189,7 +185,8 @@ public class JestaBindingAdapters {
     public static void setStatus(TextView textView, String status, String currentId, Transaction transaction) {
         if (status == null)
             return;
-        if (FavorTransactionStatus.JESTA_DONE.toString().equals(status)) {
+        if (FavorTransactionStatus.JESTA_DONE.toString().equals(status) ||
+                FavorTransactionStatus.CLOSED.toString().equals(status)) {
             textView.setText(R.string.finished);
         } else if (transaction != null && FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(status) &&
                 currentId.equals(transaction.getFavorOwnerId().get_id())) {
@@ -201,6 +198,39 @@ public class JestaBindingAdapters {
             textView.setText(R.string.pendig_for_execution_time);
         } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(status)) {
             textView.setText(R.string.executor_finish_jesta);
+        } else if (FavorTransactionStatus.CANCELED.toString().equals(status)) {
+            textView.setText(R.string.canceled);
+        }
+    }
+
+    @BindingAdapter("textStatus")
+    public static void innerStatus(TextView textView, Transaction transaction) {
+        if (transaction == null) {
+            return;
+        }
+        switch (transaction.getStatus()) {
+            case CLOSED:
+            case JESTA_DONE:
+                textView.setText(R.string.finished);
+                break;
+            case CANCELED:
+                textView.setText(R.string.canceled);
+
+                break;
+            case PENDING_FOR_OWNER:
+                textView.setText(R.string.pending_for_owner);
+
+                break;
+            case EXECUTOR_FINISH_JESTA:
+                textView.setText(R.string.executor_finish_jesta);
+
+                break;
+            case WAITING_FOR_JESTA_EXECUTION_TIME:
+                textView.setText(R.string.pendig_for_execution_time);
+
+            default:
+                Log.d("innerStatus", "status unrecognized " + transaction.getStatus());
+                break;
         }
     }
 
@@ -214,14 +244,60 @@ public class JestaBindingAdapters {
 
     @BindingAdapter({"userId", "transaction"})
     public static void setButtonVisibility(AppCompatButton button, String userId, Transaction transaction) {
-        if (transaction != null &&
-                FavorTransactionStatus.PENDING_FOR_OWNER == transaction.getStatus() &&
-                userId.equals(transaction.getFavorOwnerId().get_id())) {
-            button.setVisibility(View.VISIBLE);
-        } else {
+        if (transaction == null || !transaction.getFavorOwnerId().get_id().equals(userId)) {
             button.setVisibility(View.GONE);
+        } else {
+            if (FavorTransactionStatus.PENDING_FOR_OWNER == transaction.getStatus()) {
+                if (button.getId() == R.id.approve) {
+                    button.setText(R.string.approve);
+                } else {
+                    button.setText(R.string.reject);
+                }
+                button.setVisibility(View.VISIBLE);
+            } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME == transaction.getStatus()) {
+                if (button.getId() == R.id.approve) {
+                    button.setText(R.string.report);
+                } else {
+                    button.setText(R.string.cancel);
+                }
+                button.setVisibility(View.VISIBLE);
+            } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA == transaction.getStatus()) {
+                if (button.getId() == R.id.approve) {
+                    button.setText(R.string.write_rating);
+                } else {
+                    button.setText(R.string.back);
+                }
+                button.setVisibility(View.VISIBLE);
+            } else {
+                button.setVisibility(View.GONE);
+            }
         }
     }
+//
+//    @BindingAdapter({"doneUserId", "doneOwnerId", "doneTransaction"})
+//    public static void doneVisibilityAndClickability(AppCompatButton button, String userId, String ownerId, Transaction transaction){
+//        if (userId.equals(ownerId)){
+//            button.setVisibility(View.INVISIBLE);
+//            button.setClickable(false);
+//        }
+//        else {
+//            if (transaction == null){
+//                System.out.println("peleg - doneVisibilityAndClickability transaction is null");
+//                button.setVisibility(View.INVISIBLE);
+//                button.setClickable(false);
+//                return;
+//            }
+//            if (transaction.getStatus()==FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME){
+//                button.setVisibility(View.VISIBLE);
+//                button.setClickable(true);
+//            }
+//            else {
+//                button.setVisibility(View.INVISIBLE);
+//                button.setClickable(false);
+//            }
+//        }
+//    }
+
 
     @BindingAdapter({"setText", "defaultText"})
     public static void setText(TextView view, String text, int resId) {

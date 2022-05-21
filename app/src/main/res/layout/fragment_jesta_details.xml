@@ -46,7 +46,7 @@
 
         <ImageView
             android:id="@+id/carousel"
-            setJestaImages="@{jestaDetails.imagesPath}"
+            app:setJestaImages="@{jestaDetails.imagesPath}"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="@color/gray200"
@@ -304,6 +304,38 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_vertical"
                     app:layout_constraintTop_toBottomOf="@id/user_icon" />
+
+<!--                <TextView-->
+<!--                    android:id="@+id/finish_status_title"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/user_divider"-->
+<!--                    android:text="@string/status"-->
+<!--                    android:layout_marginTop="@dimen/margin_vertical"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:layout_marginStart="@dimen/margin_side"-->
+<!--                    />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/finish_status_val"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:layout_constraintTop_toTopOf="@id/finish_status_title"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/finish_status_title"-->
+<!--                    android:layout_marginStart="@dimen/side_mini_margin"-->
+<!--                    app:transaction="@{transaction}"-->
+<!--                    app:status="@{transactionStatus}"-->
+<!--                    app:userId="@{userId}"-->
+<!--                    />-->
+
+<!--                <com.google.android.material.divider.MaterialDivider-->
+<!--                    android:id="@+id/finish_status_divider"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="@dimen/margin_vertical"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/finish_status_val" />-->
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
@@ -315,7 +347,6 @@
             android:clickable="@{transaction == null}"
             android:textColor="@color/white"
             app:btnStatus="@{transactionStatus}"
-            android:visibility="@{jestaDetails.ownerId._id.equals(userId) ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@+id/status_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/half_guidline" />
@@ -427,6 +458,8 @@
                 android:background="@color/black"
                 android:text="@string/done"
                 android:textColor="@color/white"
+                android:visibility="@{jestaDetails.ownerId._id.equals(userId) ? View.INVISIBLE : View.VISIBLE}"
+                android:clickable="@{!jestaDetails.ownerId._id.equals(userId)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

@@ -41,13 +41,6 @@ public class JestaDetailsFragment extends Fragment {
     private NotificationViewModel _notificationViewModel;
     private String _jestaId;
     private String _transactionId;
-    private final IDialogConsumerHelper messageConsumer = new IDialogConsumerHelper() {
-        @Override
-        public void consume(String val) {
-            _jestaDetailsViewModel.set_comment(val);
-//            _jestaDetailsViewModel.suggestHelp(_jestaId); // TODO does needed here?
-        }
-    };
 
     // endregion
 
@@ -111,26 +104,67 @@ public class JestaDetailsFragment extends Fragment {
         _jestaDetailsViewModel.get_favorTransactionStatus().observe(getViewLifecycleOwner(), status -> {
             _binding.setTransactionStatus(status);
             System.out.println("peleg - set TransactionStatus " + status);
+            validateButtons(status);
+            _binding.executePendingBindings();
         });
 
-        _jestaDetailsViewModel.get_detailsTransaction().observe(getViewLifecycleOwner(), transaction ->{
-                if (transaction != null){
-                    _binding.setTransaction(transaction);
-                    _binding.setTransactionStatus(transaction.getStatus().toString());
-                    System.out.println("peleg - set status " + transaction.getStatus().toString());
-                }
+        _jestaDetailsViewModel.get_detailsTransaction().observe(getViewLifecycleOwner(), transaction -> {
+            if (transaction != null) {
+                _binding.setTransaction(transaction);
+                _jestaDetailsViewModel.set_favorTransactionStatus(transaction.getStatus().toString());
+                System.out.println("peleg - set status " + transaction.getStatus().toString());
+            }
         });
+    }
+
+    private void validateButtons(String status) {
+        validateDoneBtn(status);
+        validateStatusBtn(status);
+    }
+
+    private void validateStatusBtn(String status){
+        if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null){
+            if (status != null){
+                if (status.equals(FavorTransactionStatus.CLOSED.toString())){
+                    _binding.suggestHelp.setVisibility(View.GONE);
+                    _binding.sendMsg.setVisibility(View.GONE);
+                }
+                else if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())){
+                    _binding.suggestHelp.setVisibility(View.GONE);
+                    _binding.sendMsg.setVisibility(View.GONE);
+                }
+                else {
+                    _binding.suggestHelp.setVisibility(View.VISIBLE);
+                    _binding.sendMsg.setVisibility(View.VISIBLE);
+                }
+            }
+
+        }
+    }
+
+    private void validateDoneBtn(String status) {
+        if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null){
+            if (status.equals(FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString()) &&
+                !_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())){
+                _binding.doneBtn.setVisibility(View.VISIBLE);
+                _binding.doneBtn.setClickable(true);
+            }
+            else{
+                _binding.doneBtn.setVisibility(View.INVISIBLE);
+                _binding.doneBtn.setClickable(false);
+            }
+        }
     }
 
     private void initListeners() {
         _binding.suggestHelp.setOnClickListener(v -> {
             if (_jestaDetailsViewModel.get_favorTransactionStatus().getValue() != null) {
-                if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())){
-                    System.out.println("peleg - user id is ownerID");
+                if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId()))
                     return;
-                }
-                else{
-                    System.out.println("peleg - user id is NOT ownerID");
+                if (_jestaDetailsViewModel.get_favorTransactionStatus().getValue().equals(FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString()) ||
+                        _jestaDetailsViewModel.get_favorTransactionStatus().getValue().equals(FavorTransactionStatus.JESTA_DONE.toString()) ||
+                        _jestaDetailsViewModel.get_favorTransactionStatus().getValue().equals(FavorTransactionStatus.CLOSED.toString())) {
+                    return;
                 }
                 if (_jestaDetailsViewModel.get_favorTransactionStatus().getValue().equals(FavorTransactionStatus.CANCELED.toString())) {
                     _jestaDetailsViewModel.suggestHelp(_jestaId);
@@ -176,13 +210,32 @@ public class JestaDetailsFragment extends Fragment {
         });
 
         _binding.approve.setOnClickListener(v -> {
-            _notificationViewModel.approveSuggestion(_transactionId);
-            Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
+            if (_binding.getTransaction() != null &&
+                    _binding.getTransaction().getStatus() == FavorTransactionStatus.PENDING_FOR_OWNER) {
+                _notificationViewModel.approveSuggestion(_transactionId);
+                Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
+            } else {
+                JestaDetailsFragmentDirections.ActionJestaDetailsFragmentToRatingDialogFragment action =
+                        JestaDetailsFragmentDirections.actionJestaDetailsFragmentToRatingDialogFragment(_transactionId);
+                Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
+            }
         });
 
         _binding.reject.setOnClickListener(v -> {
-            _notificationViewModel.cancelSuggetstion(_transactionId);
-            Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
+            if (_binding.getTransaction() != null && _binding.getTransaction().getStatus() == FavorTransactionStatus.EXECUTOR_FINISH_JESTA) {
+                Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
+            } else {
+                new AlertDialog.Builder(requireContext())
+                        .setMessage(getString(R.string.are_u_sure_cancel_jesta))
+                        .setNegativeButton(R.string.no, (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .setPositiveButton(R.string.yes, ((dialog, which) -> {
+                            _notificationViewModel.cancelSuggetstion(_transactionId);
+                            Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
+                        }))
+                        .show();
+            }
         });
 
         _binding.userName.setOnClickListener(v -> {
