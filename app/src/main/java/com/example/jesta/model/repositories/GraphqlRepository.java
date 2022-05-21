@@ -26,6 +26,7 @@ import com.example.jesta.GetAllOwnerFavorTransactionByStatusQuery;
 import com.example.jesta.GetAllTransactionNotificationsQuery;
 import com.example.jesta.GetAllUserFavorTransactionByFavorIdQuery;
 import com.example.jesta.GetAllUserFavorsQuery;
+import com.example.jesta.GetAllUserHandledFavorTransactionByStatusQuery;
 import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetTransactionByIdQuery;
@@ -130,12 +131,12 @@ public class GraphqlRepository {
             if (doneTransaction != null) {
                 resTransaction.addAll(doneTransaction);
             }
-             closedTransaction = synchronizegetExecuterFavorTransaction(com.example.jesta.type.FavorTransactionStatus.CLOSED);
-            if (closedTransaction != null){
+            closedTransaction = synchronizegetExecuterFavorTransaction(com.example.jesta.type.FavorTransactionStatus.CLOSED);
+            if (closedTransaction != null) {
                 resTransaction.addAll(closedTransaction);
             }
             finishTransaction = synchronizegetExecuterFavorTransaction(com.example.jesta.type.FavorTransactionStatus.EXECUTOR_FINISH_JESTA);
-            if (finishTransaction != null){
+            if (finishTransaction != null) {
                 resTransaction.addAll(finishTransaction);
             }
             JestasListsRepository.getInstance().setTransactions(resTransaction);
@@ -869,6 +870,7 @@ public class GraphqlRepository {
                     user.set_numOfJestasDone(u.numberOfExecutedJesta);
                     user.set_isTopJestioner(u.mostVolunteered);
                     user.setDescription(u.description);
+                    user.set_rating(u.rating);
                     UsersRepository.getInstance().set_myUser(user);
                 }
             }
@@ -879,6 +881,23 @@ public class GraphqlRepository {
             }
         });
     }
+
+    public void getCommentsOnUserId(String userId) {
+        _executorService.execute(() -> {
+            List<Transaction> closeTransaction, doneTransaction;
+            List<Transaction> resTransaction = new ArrayList<>();
+            closeTransaction = synchronizeGetHandlerTranzactionByStatus(com.example.jesta.type.FavorTransactionStatus.CLOSED, userId);
+
+            if (closeTransaction != null)
+                resTransaction.addAll(closeTransaction);
+            doneTransaction = synchronizeGetHandlerTranzactionByStatus(com.example.jesta.type.FavorTransactionStatus.JESTA_DONE, userId);
+
+            if (doneTransaction != null)
+                resTransaction.addAll(doneTransaction);
+            CommentsRepository.getInstance().set_commenets(resTransaction);
+        });
+    }
+
 
     // endregion
 
@@ -1023,6 +1042,33 @@ public class GraphqlRepository {
         });
         return transactions;
     }
+
+    private List<Transaction> synchronizeGetHandlerTranzactionByStatus(com.example.jesta.type.FavorTransactionStatus status, String handlerId) {
+        ApolloCall<GetAllUserHandledFavorTransactionByStatusQuery.Data> query =
+                _apolloClient.query(new GetAllUserHandledFavorTransactionByStatusQuery(
+                        new Optional.Present<>(status),
+                        new Optional.Present<>(handlerId)));
+        Single<ApolloResponse<GetAllUserHandledFavorTransactionByStatusQuery.Data>> responseSingle = Rx3Apollo.single(query);
+        ApolloResponse<GetAllUserHandledFavorTransactionByStatusQuery.Data> dataApolloResponse = responseSingle.blockingGet();
+        if (dataApolloResponse.hasErrors()) {
+            for (Error e : dataApolloResponse.errors)
+                Log.e("synchronizeGetHandlerTranzactionByStatus", e.getMessage());
+            return null;
+        }
+        List<Transaction> transactions = new ArrayList<>();
+        dataApolloResponse.data.getAllUserHandledFavorTransactionByStatus.forEach(t -> {
+            Transaction transaction = new Transaction(t._id);
+            transaction.setStatus(FavorTransactionStatus.valueOf(t.status));
+            transaction.setComment(t.handlerComment);
+            transaction.setRating(t.rating != null ? t.rating : 0);
+            transaction.setHandledByUserId(new User(t.handledByUserId._id,
+                    t.handledByUserId.firstName, t.handledByUserId.lastName));
+            transactions.add(transaction);
+        });
+        System.out.println("peleg - comment size is " + transactions.size());
+        return transactions;
+    }
+
 
     // endregion
 
