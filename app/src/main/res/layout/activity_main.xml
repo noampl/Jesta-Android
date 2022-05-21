@@ -44,7 +44,7 @@
                             android:layout_height="32dp"
                             android:layout_gravity="center_vertical|start"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/jesta_black_900x300" />
+                            android:src="@drawable/jesta_logo_900x300" />
 
                     </FrameLayout>
 

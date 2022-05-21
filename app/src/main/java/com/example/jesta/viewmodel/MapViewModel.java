@@ -171,9 +171,9 @@ public class MapViewModel extends ViewModel {
         _navigationHelper.navigate(args);
     }
 
-    public void submitRadiusChange(double radius){
+    public void submitRadiusChange(double radius) {
         setRadiusInKm(radius);
-        List<Double> center  = new ArrayList<>();
+        List<Double> center = new ArrayList<>();
         center.add(MapRepository.getInstance().getMyLocation().getValue().latitude);
         center.add(MapRepository.getInstance().getMyLocation().getValue().longitude);
         GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(center), new Optional.Present<>(radius));

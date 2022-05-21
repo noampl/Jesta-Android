@@ -166,11 +166,16 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         });
         _binding.jestaLst.setAdapter(adapter);
 
-        _mapViewModel.getRadiusInKm().observe(getViewLifecycleOwner(), r -> {
-            if (_mapViewModel.getGoogleMap() != null) {
-                addMapRadius(_mapViewModel.getMyLocation().getValue(), r);
-            }
-        });
+
+        // TODO: noam check, without this I get null reference exception in startup
+        if (_mapViewModel.getRadiusInKm() != null) {
+            _mapViewModel.getRadiusInKm().observe(getViewLifecycleOwner(), r -> {
+                if (_mapViewModel.getGoogleMap() != null) {
+                    System.out.println("peleg - radius change " + r);
+                    addMapRadius(_mapViewModel.getMyLocation().getValue(), r);
+                }
+            });
+        }
     }
 
     private void initListeners() {

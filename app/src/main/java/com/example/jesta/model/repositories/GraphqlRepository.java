@@ -860,7 +860,10 @@ public class GraphqlRepository {
                 } else {
                     GetUserByIdQuery.GetUser u = dataApolloResponse.data.getUser;
                     User user = new User(u._id, u.firstName, u.lastName,
-                            u.birthday != null ? u.birthday.toString() : null, u.email, u.phone, u.role, u.imagePath, new GetUserQuery.Address(u.address.fullAddress));
+                            u.birthday != null ? u.birthday.toString() : null,
+                            u.email, u.phone, u.role, u.imagePath,
+                            u.address != null ? new GetUserQuery.Address(u.address.fullAddress) : null
+                    );
                     user.set_numOfJestasDone(u.numberOfExecutedJesta);
                     user.set_isTopJestioner(u.mostVolunteered);
                     user.setDescription(u.description);

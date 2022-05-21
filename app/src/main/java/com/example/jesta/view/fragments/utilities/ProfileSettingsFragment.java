@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -25,6 +26,8 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.example.jesta.R;
 import com.example.jesta.common.AlertDialogRtlHelper;
@@ -169,7 +172,7 @@ public class ProfileSettingsFragment extends Fragment {
         });
         _binding.descriptionCard.setOnClickListener(view -> {
             showDialog(R.string.short_description_about_yourself, _binding.descriptionTitle.getText().toString(), FiledType.DESCRIPTION,
-                    _binding.descriptionTxt.getText().toString(), phoneConsumer);
+                    _binding.descriptionTxt.getText().toString(), descriptionConsumer);
         });
         _binding.imageCard.setOnClickListener(view -> {
             this.openImageOptionsDialog();
@@ -236,6 +239,13 @@ public class ProfileSettingsFragment extends Fragment {
     private void initAutoComplete() {
         AutocompleteSupportFragment autoCompleteSrcAddr = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.addr_autocomplete_fragment);
+
+        // Removes the search icon:
+        ImageView searchIcon = (ImageView) ((LinearLayout) autoCompleteSrcAddr.getView()).getChildAt(0);
+        searchIcon.setVisibility(View.GONE);
+        // Makes the layout direction RTL:
+        autoCompleteSrcAddr.requireView().setTextDirection(View.TEXT_DIRECTION_RTL);
+
         autoCompleteSrcAddr.setHint(getString(R.string.address));
         if (_usersViewModel.get_myUser().getValue() != null && _usersViewModel.get_myUser().getValue().get_address() != null) {
             autoCompleteSrcAddr.setText(_usersViewModel.get_myUser().getValue().get_address().fullAddress);
