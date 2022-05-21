@@ -80,9 +80,7 @@ public class UserProfileFragment extends Fragment {
                     UserProfileFragmentDirections.actionNavUserProfileToCommentsFragment(_userId);
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
         });
-//        _binding.btnMedals.setOnClickListener(v -> {
-//            // TODO: navigate to list of medals
-//        });
+
     }
 
     //endregion
