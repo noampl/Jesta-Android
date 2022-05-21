@@ -135,7 +135,7 @@ public class User {
     }
 
     public double get_rating() {
-        return _rating;
+        return Math.floor(_rating * 100) / 100;
     }
 
     public void set_rating(double _rating) {

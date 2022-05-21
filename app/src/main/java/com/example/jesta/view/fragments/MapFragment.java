@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -127,6 +128,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @Override
     public void onPause() {
         super.onPause();
+        _mapViewModel.set_radius(null);
+        _mapViewModel.getGoogleMap().clear();
+    }
 
         if (_mapViewModel != null)
             _mapViewModel.set_radius(null);
@@ -208,12 +212,16 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         });
         _binding.jestaLst.setAdapter(adapter);
 
-        _mapViewModel.getRadiusInKm().observe(getViewLifecycleOwner(), r -> {
-            if (_mapViewModel.getGoogleMap() != null) {
-                System.out.println("peleg - radius change " + r);
-                addMapRadius(_mapViewModel.getMyLocation().getValue(), r);
-            }
-        });
+
+        // TODO: noam check, without this I get null reference exception in startup
+        if (_mapViewModel.getRadiusInKm() != null) {
+            _mapViewModel.getRadiusInKm().observe(getViewLifecycleOwner(), r -> {
+                if (_mapViewModel.getGoogleMap() != null) {
+                    System.out.println("peleg - radius change " + r);
+                    addMapRadius(_mapViewModel.getMyLocation().getValue(), r);
+                }
+            });
+        }
     }
 
     private void initListeners() {
@@ -257,26 +265,20 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private void initCircle() {
         _mapViewModel.get_mapFinish().observe(getViewLifecycleOwner(), b -> {
             if (b) {
-                System.out.println("peleg - create circle 5 " + Thread.currentThread());
                 createCircleRadius(_mapViewModel.getMyLocation().getValue(),
                         _mapViewModel.getRadiusInKm().getValue());
             }
         });
         if (_mapViewModel.get_mapFinish().getValue()) {
-            System.out.println("peleg - create circle 6 " + Thread.currentThread());
             createCircleRadius(_mapViewModel.getMyLocation().getValue(),
                     _mapViewModel.getRadiusInKm().getValue());
         }
     }
 
     private void addMapRadius(LatLng center, double radius) {
-        System.out.println("peleg - is circle null? 1 " + (_mapViewModel.get_radius() == null) + " " + Thread.currentThread());
         if (_mapViewModel.get_radius() != null) {
             _mapViewModel.get_radius().setCenter(center);
             _mapViewModel.get_radius().setRadius(radius * 1000);
-        } else {
-            System.out.println("peleg - add new circle 2 " + Thread.currentThread());
-            createCircleRadius(center, radius);
         }
     }
 
@@ -287,7 +289,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                     .radius(radius * 1000)
                     .strokeWidth(3f)
                     .strokeColor(Color.BLUE)
-                    .fillColor(Color.argb(70, 50, 50, 150))));
+                    .fillColor(Color.argb(70, 50, 50, 120))));
     }
 
     // endregion

@@ -1,5 +1,6 @@
 package com.example.jesta.model.repositories;
 
+import android.location.Location;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -120,6 +121,27 @@ public class GraphqlRepository {
 
     // region Server Interactions Method
 
+    public void fetchDoneJesta() {
+        _executorService.execute(() -> {
+            List<Transaction> doneTransaction, closedTransaction, finishTransaction;
+            List<Transaction> resTransaction = new ArrayList<>();
+
+            doneTransaction = synchronizegetExecuterFavorTransaction(com.example.jesta.type.FavorTransactionStatus.JESTA_DONE);
+            if (doneTransaction != null) {
+                resTransaction.addAll(doneTransaction);
+            }
+             closedTransaction = synchronizegetExecuterFavorTransaction(com.example.jesta.type.FavorTransactionStatus.CLOSED);
+            if (closedTransaction != null){
+                resTransaction.addAll(closedTransaction);
+            }
+            finishTransaction = synchronizegetExecuterFavorTransaction(com.example.jesta.type.FavorTransactionStatus.EXECUTOR_FINISH_JESTA);
+            if (finishTransaction != null){
+                resTransaction.addAll(finishTransaction);
+            }
+            JestasListsRepository.getInstance().setTransactions(resTransaction);
+        });
+    }
+
     // region Mutations
 
     /**
@@ -147,7 +169,7 @@ public class GraphqlRepository {
                 ShardPreferencesHelper.writeId(response.data.connectUser.userId);
 
                 _isLoggedIn.postValue(true);
-                _apolloClient = _apolloClient.newBuilder().addHttpHeader(Consts.AUTHORIZATION, response.data.connectUser.token).build(); // Check if this is working
+                _apolloClient = _apolloClient.newBuilder().addHttpHeader(Consts.AUTHORIZATION, response.data.connectUser.token).build();
                 getMyUserInformation(email);
             } else {
                 _isLoggedIn.postValue(false);
@@ -977,6 +999,28 @@ public class GraphqlRepository {
         return transactions;
     }
 
+    private List<Transaction> synchronizegetExecuterFavorTransaction(com.example.jesta.type.FavorTransactionStatus status) {
+        ApolloCall<GetAllExecutorFavorTransactionByStatusQuery.Data> quary = _apolloClient.query(new GetAllExecutorFavorTransactionByStatusQuery(new Optional.Present<>(status)));
+        Single<ApolloResponse<GetAllExecutorFavorTransactionByStatusQuery.Data>> responseSingle = Rx3Apollo.single(quary);
+        ApolloResponse<GetAllExecutorFavorTransactionByStatusQuery.Data> dataApolloResponse = responseSingle.blockingGet();
+        if (dataApolloResponse.hasErrors()) {
+            for (Error e : dataApolloResponse.errors)
+                Log.e("synchronizegetExecuterFavorTransaction", e.getMessage());
+            return null;
+        }
+        List<Transaction> transactions = new ArrayList<>();
+        dataApolloResponse.data.getAllExecutorFavorTransactionByStatus.forEach(t -> {
+            transactions.add(new Transaction(t._id, FavorTransactionStatus.valueOf(t.status), new Jesta(t.favorId._id, t.favorId.status,
+                    t.favorId.ownerId, new Address(t.favorId.sourceAddress.fullAddress, t.favorId.sourceAddress.location.coordinates),
+                    t.favorId.numOfPeopleNeeded, t.favorId.dateToExecute != null ? t.favorId.dateToExecute.toString() : null,
+                    t.favorId.dateToFinishExecute != null ? t.favorId.dateToFinishExecute.toString() : null),
+                    new User(t.favorOwnerId._id, t.favorOwnerId.firstName, t.favorOwnerId.lastName),
+                    new User(t.handledByUserId._id, t.handledByUserId.firstName, t.handledByUserId.lastName,
+                            t.handledByUserId.rating != null ? t.handledByUserId.rating : 0.0, t.handledByUserId.imagePath),
+                    t.dateLastModified.toString(), t.rating != null ? t.rating : 0));
+        });
+        return transactions;
+    }
 
     // endregion
 

@@ -83,9 +83,11 @@
     <string name="enter_phone">הכנס מספר טלפון</string>
     <string name="enter_address">הכנס כתובת</string>
     <string name="cancel">ביטול</string>
+    <string name="canceled">מבוטלת</string>
     <string name="submit">אישור</string>
     <string name="are_u_sure_delete_user">האם אתה בתוך שברצונך למחוק את המשתמש?</string>
     <string name="are_u_sure_logout_user">האם אתה בתוך שברצונך להתנתק?</string>
+    <string name="are_u_sure_cancel_jesta">האם אתה בתוך שברצונך לבטל את הג\'סטה?</string>
     <string name="old_password">סיסמה ישנה</string>
     <string name="new_password">סיסמה חדשה</string>
     <string name="meter">מ\'</string>
@@ -155,14 +157,15 @@
     <string name="through_whatsapp">דרך WhatsApp</string>
     <string name="medals">מדליות</string>
     <string name="reviews">חוות דעת</string>
-    <string name="dismiss">dismiss</string>
+    <string name="dismiss">סגור</string>
     <string name="comment">חוות דעת</string>
     <string name="select_radius">בחר רדיוס</string>
-    <string name="_500_m">500 מטר</string>
-    <string name="_1_km">1 ק\"מ</string>
+    <string name="_5_km">5 ק\"מ</string>
+    <string name="_20_km">20 ק\"מ</string>
     <string name="_10_km">10 ק\"מ</string>
     <string name="_50_km">50 ק\"מ</string>
     <string name="location_permission_is_needed">יש לאפשר הרשאת מיקום על מנת להמשיך.</string>
     <string name="allow">אפשר</string>
+    <string name="report">דווח</string>
 
 </resources>
