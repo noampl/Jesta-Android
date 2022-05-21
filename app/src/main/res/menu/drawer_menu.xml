@@ -37,11 +37,6 @@
             android:icon="@drawable/ic_baseline_done_jestas"
 
             />
-        <item
-            android:id="@+id/nav_jesta_settings"
-            android:title="@string/jesta_settings"
-            android:icon="@drawable/ic_baseline_jesta_settings"
-            />
     </group>
 
     <group

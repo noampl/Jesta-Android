@@ -3,11 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/nav_podium"
-        android:icon="@drawable/ic_outline_bar_chart_24"
-        android:title="@string/podium"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/nav_notification"
         android:title="@string/notification"
         app:actionLayout="@layout/bell"

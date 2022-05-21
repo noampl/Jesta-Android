@@ -249,9 +249,9 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
                 case R.id.nav_notification:
                     _navController.navigate(R.id.nav_notification);
                     return true;
-                case R.id.nav_podium:
-                    _navController.navigate(R.id.nav_podium);
-                    return true;
+//                case R.id.nav_podium:
+//                    _navController.navigate(R.id.nav_podium);
+//                    return true;
                 case R.id.nav_user_profile:
                     _navController.navigate(R.id.nav_user_profile);
                     return true;

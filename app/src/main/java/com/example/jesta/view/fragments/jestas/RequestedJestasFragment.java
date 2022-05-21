@@ -101,13 +101,6 @@ public class RequestedJestasFragment extends Fragment {
     }
 
     private void initListeners() {
-        // TODO Implement this
-        _binding.genericList.filter.setOnClickListener(v -> {
-        });
-        _binding.genericList.clock.setOnClickListener(v -> {
-        });
-        _binding.genericList.sort.setOnClickListener(v -> {
-        });
         _binding.genericList.swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

@@ -77,9 +77,6 @@ public class UserProfileFragment extends Fragment {
         _binding.btnReviews.setOnClickListener(v -> {
             // TODO: navigate to list of reviews
         });
-        _binding.btnMedals.setOnClickListener(v -> {
-            // TODO: navigate to list of medals
-        });
     }
 
     //endregion
