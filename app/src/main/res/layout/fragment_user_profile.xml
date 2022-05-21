@@ -235,44 +235,45 @@
                         app:tint="@color/black" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/btnMedals"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="28dp"
-                    android:paddingEnd="28dp">
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/btnMedals"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:clickable="true"-->
+<!--                    android:focusable="true"-->
+<!--                    android:foreground="?android:attr/selectableItemBackground"-->
+<!--                    android:gravity="center_vertical"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:paddingStart="28dp"-->
+<!--                    android:paddingEnd="28dp">-->
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_weight="0"
-                        android:layoutDirection="ltr"
-                        android:src="@drawable/baseline_workspace_premium_24"
-                        app:tint="@color/black" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="24dp"-->
+<!--                        android:layout_height="24dp"-->
+<!--                        android:layout_weight="0"-->
+<!--                        android:layoutDirection="ltr"-->
+<!--                        android:src="@drawable/baseline_workspace_premium_24"-->
+<!--                        app:tint="@color/black" />-->
 
-                    <TextView
-                        android:id="@+id/txtMedalsButtonLabel"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="16dp"
-                        android:text="@string/medals"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/txtMedalsButtonLabel"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:padding="16dp"-->
+<!--                        android:text="@string/medals"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textStyle="bold" />-->
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_weight="0"
-                        android:src="@drawable/ic_baseline_arrow_back_ios_24"
-                        app:tint="@color/black" />
-                </LinearLayout>
+<!--                    <ImageView-->
+<!--                        android:layout_width="24dp"-->
+<!--                        android:layout_height="24dp"-->
+<!--                        android:layout_weight="0"-->
+<!--                        android:src="@drawable/ic_baseline_arrow_back_ios_24"-->
+<!--                        app:tint="@color/black" />-->
+<!--                </LinearLayout>-->
+
             </LinearLayout>
 
         </LinearLayout>

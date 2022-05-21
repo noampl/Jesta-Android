@@ -101,6 +101,7 @@ type Query {
     getNumberOfOnProgressJesta: Int
     getNumberOfExecutedJesta: Int
     getTransactionById(id: String): PopulatedFavorTransaction
+    getAllUserHandledFavorTransactionByStatus(status: FavorTransactionStatus, handledByUserId: String): [PopulatedFavorTransaction]
     getUsersRegistrationLastMonth: GraphData
     getJestaRegistrationLastMonth: GraphData
 }

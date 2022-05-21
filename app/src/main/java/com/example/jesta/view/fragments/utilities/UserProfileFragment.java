@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -75,11 +76,11 @@ public class UserProfileFragment extends Fragment {
 
     private void initListeners() {
         _binding.btnReviews.setOnClickListener(v -> {
-            // TODO: navigate to list of reviews
+            UserProfileFragmentDirections.ActionNavUserProfileToCommentsFragment action =
+                    UserProfileFragmentDirections.actionNavUserProfileToCommentsFragment(_userId);
+            Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
         });
-        _binding.btnMedals.setOnClickListener(v -> {
-            // TODO: navigate to list of medals
-        });
+
     }
 
     //endregion

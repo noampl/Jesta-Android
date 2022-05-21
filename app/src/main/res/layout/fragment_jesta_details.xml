@@ -295,6 +295,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_weight="0"
+                        android:layout_gravity="center"
                         android:src="@drawable/ic_baseline_account_circle_24"
                         app:layout_constraintEnd_toEndOf="@+id/people_amount_icon"
                         app:layout_constraintStart_toStartOf="@id/title"
@@ -364,6 +365,7 @@
             android:clickable="@{transaction == null}"
             android:textColor="@color/white"
             app:btnStatus="@{transactionStatus}"
+            android:visibility="@{jestaDetails.ownerId._id.equals(userId) ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@+id/status_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/half_guidline" />
@@ -476,7 +478,7 @@
                 android:clickable="@{!jestaDetails.ownerId._id.equals(userId)}"
                 android:text="@string/done"
                 android:textColor="@color/white"
-                android:visibility="@{jestaDetails.ownerId._id.equals(userId) ? View.INVISIBLE : View.VISIBLE}"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

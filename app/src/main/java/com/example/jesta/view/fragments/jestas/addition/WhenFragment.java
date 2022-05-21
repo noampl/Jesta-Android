@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.example.jesta.R;
+import com.example.jesta.databinding.FragmentWhenBinding;
 import com.example.jesta.databinding.FragmentWhenBindingImpl;
 import com.example.jesta.viewmodel.CreateJestaViewModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -26,7 +27,7 @@ public class WhenFragment extends Fragment {
 
     // region Members
 
-    private FragmentWhenBindingImpl _binding;
+    private FragmentWhenBinding _binding;
     private CreateJestaViewModel _createJestaViewModel;
 
     // endregion
@@ -49,12 +50,12 @@ public class WhenFragment extends Fragment {
     private void initBinding(){
         _binding.setViewModel(_createJestaViewModel);
         _binding.setLifecycleOwner(getViewLifecycleOwner());
-        _binding.repeatCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-            }
-        });
+//        _binding.repeatCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//
+//            }
+//        });
     }
 
     private void initListeners(){

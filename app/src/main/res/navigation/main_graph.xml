@@ -203,6 +203,9 @@
             android:name="userId"
             android:defaultValue="1"
             app:argType="string" />
+        <action
+            android:id="@+id/action_nav_user_profile_to_commentsFragment"
+            app:destination="@id/commentsFragment" />
     </fragment>
     <dialog
         android:id="@+id/ratingResultDialog"
@@ -224,4 +227,13 @@
         android:name="com.example.jesta.view.dialogs.RadiusSelectorDialogFragment"
         android:label="fragment_radius_selector_dialog"
         tools:layout="@layout/fragment_radius_selector_dialog" />
+    <fragment
+        android:id="@+id/commentsFragment"
+        android:name="com.example.jesta.view.fragments.CommentsFragment"
+        android:label="@string/comment"
+        tools:layout="@layout/fragment_comments" >
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </fragment>
 </navigation>
