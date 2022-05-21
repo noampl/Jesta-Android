@@ -1,5 +1,7 @@
 package com.example.jesta.bindingAdapters;
 
+import static com.example.jesta.common.Consts.SERVER_PRE_FIX;
+
 import android.annotation.SuppressLint;
 
 import android.graphics.drawable.Drawable;
@@ -34,6 +36,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class JestaBindingAdapters {
 
@@ -47,6 +50,16 @@ public class JestaBindingAdapters {
     public static void setProfilePlaceHolder(ImageView imageView, Drawable res) {
         if (res != null)
             Picasso.with(imageView.getContext()).load(R.drawable.no_profile_picture).fit().into(imageView);
+    }
+
+    @BindingAdapter("profileImage")
+    public static void setProfileImage(ImageView imageView, String path) {
+        if (path == null)
+            Picasso.with(imageView.getContext()).load(R.drawable.no_profile_picture).fit().into(imageView);
+        else {
+            Picasso.with(imageView.getContext()).load(SERVER_PRE_FIX + path).placeholder(R.drawable.no_profile_picture).into(imageView);
+        }
+
     }
 
     @BindingAdapter("setImage")

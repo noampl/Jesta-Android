@@ -33,13 +33,25 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="24dp">
 
-                <ImageView
-                    android:id="@+id/imgUserPhoto"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/profile_image_layout"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_weight="0"
-                    android:src="@drawable/ic_baseline_account_circle_24"
-                    app:tint="@color/black" />
+                    app:cardCornerRadius="250dp"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:id="@+id/imgUserPhoto"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_weight="0"
+                        android:src="@drawable/ic_baseline_account_circle_24"
+                        app:profileImage="@{userDetails._imagePath}"
+                    />
+
+                </androidx.cardview.widget.CardView>
 
                 <LinearLayout
                     android:layout_width="match_parent"

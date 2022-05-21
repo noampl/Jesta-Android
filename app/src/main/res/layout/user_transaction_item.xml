@@ -16,16 +16,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/user_img"
-            setImage="@{transation.handledByUserId._imagePath}"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profile_image_layout"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_weight="0"
+            app:cardCornerRadius="250dp"
             android:layout_marginStart="@dimen/margin_side"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/ic_baseline_account_circle_24"
+            android:layout_marginTop="0dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/user_img"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="0"
+                android:src="@drawable/ic_baseline_account_circle_24"
+                app:layout_constraintEnd_toEndOf="@+id/people_amount_icon"
+                app:layout_constraintStart_toStartOf="@id/title"
+                app:layout_constraintTop_toBottomOf="@id/cost_divider"
+                app:profileImage="@{transation.handledByUserId._imagePath}"
+                />
+
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/user_name"

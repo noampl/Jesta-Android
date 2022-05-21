@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,9 +44,6 @@ public class UserProfileFragment extends Fragment {
 
         _userId = UserProfileFragmentArgs.fromBundle(getArguments()).getUserId();
         _userProfileViewModel.getUser(_userId);
-        if (Objects.nonNull(_userProfileViewModel.get_userDetails().getValue())){
-            addUserImage(Objects.requireNonNull(_userProfileViewModel.get_userDetails().getValue()).get_imagePath());
-        }
         init();
         return _binding.getRoot();
     }
@@ -82,13 +80,6 @@ public class UserProfileFragment extends Fragment {
         _binding.btnMedals.setOnClickListener(v -> {
             // TODO: navigate to list of medals
         });
-    }
-
-    private void addUserImage(String imagePath) {
-        ImageView userImage = _binding.imgUserPhoto;
-        if (Objects.nonNull(imagePath) && !imagePath.isEmpty()) {
-            Picasso.with(userImage.getContext()).load(SERVER_PRE_FIX + imagePath).fit().into(userImage);
-        }
     }
 
     //endregion

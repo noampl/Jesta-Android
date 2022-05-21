@@ -275,16 +275,30 @@
                     android:visibility="@{jestaDetails.paymentAmount > 0 ? View.VISIBLE : View.GONE}"
                     app:layout_constraintTop_toBottomOf="@id/nis_ic" />
 
-                <ImageView
-                    android:id="@+id/user_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vertical"
-                    android:backgroundTint="@color/black"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/profile_image_layout"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_weight="0"
+                    app:cardCornerRadius="250dp"
                     app:layout_constraintEnd_toEndOf="@+id/people_amount_icon"
                     app:layout_constraintStart_toStartOf="@id/title"
                     app:layout_constraintTop_toBottomOf="@id/cost_divider"
-                    app:setImage="@{jestaDetails.ownerId.imagePath}" />
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:id="@+id/user_icon"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_weight="0"
+                        android:src="@drawable/ic_baseline_account_circle_24"
+                        app:layout_constraintEnd_toEndOf="@+id/people_amount_icon"
+                        app:layout_constraintStart_toStartOf="@id/title"
+                        app:layout_constraintTop_toBottomOf="@id/cost_divider"
+                        app:profileImage="@{jestaDetails.ownerId.imagePath}"
+                        />
+
+                </androidx.cardview.widget.CardView>
 
                 <TextView
                     android:id="@+id/user_name"
@@ -292,10 +306,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/side_mini_margin"
                     android:textColor="@color/black"
+                    android:layout_marginEnd="4dp"
                     app:firstName="@{jestaDetails.ownerId.firstName}"
-                    app:layout_constraintBottom_toBottomOf="@id/user_icon"
-                    app:layout_constraintStart_toEndOf="@id/user_icon"
-                    app:layout_constraintTop_toTopOf="@id/user_icon"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_image_layout"
+                    app:layout_constraintStart_toEndOf="@+id/profile_image_layout"
+                    app:layout_constraintTop_toTopOf="@+id/profile_image_layout"
                     app:secondName="@{jestaDetails.ownerId.lastName}" />
 
                 <com.google.android.material.divider.MaterialDivider
@@ -303,7 +318,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_vertical"
-                    app:layout_constraintTop_toBottomOf="@id/user_icon" />
+                    app:layout_constraintTop_toBottomOf="@+id/profile_image_layout" />
 
 <!--                <TextView-->
 <!--                    android:id="@+id/finish_status_title"-->
@@ -402,7 +417,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/status_val"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/status_val"
-                app:setImage="@{transaction.handledByUserId._imagePath}"
+                app:profileImage="@{transaction.handledByUserId._imagePath}"
                 app:visibilityOwnerId="@{jestaDetails.ownerId._id}"
                 app:visibilityUserId="@{userId}" />
 
