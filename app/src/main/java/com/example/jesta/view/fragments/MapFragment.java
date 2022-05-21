@@ -211,8 +211,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         });
         _binding.jestaLst.setAdapter(adapter);
 
-
-        // TODO: noam check, without this I get null reference exception in startup
         if (_mapViewModel.getRadiusInKm() != null) {
             _mapViewModel.getRadiusInKm().observe(getViewLifecycleOwner(), r -> {
                 if (_mapViewModel.getGoogleMap() != null) {
