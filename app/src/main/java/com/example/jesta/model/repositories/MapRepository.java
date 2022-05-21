@@ -59,6 +59,10 @@ public class MapRepository {
     }
 
     private MapRepository() {
+        _geoCoder = new Geocoder(MyApplication.getAppContext(), Locale.forLanguageTag("he"));
+        _executorService = Executors.newFixedThreadPool(2);
+        _markerToJesta = new HashMap<>();
+        radiusInKm = new MutableLiveData<>(ShardPreferencesHelper.readRadius());
         _myLocation = new MutableLiveData<>(new LatLng(ShardPreferencesHelper.readLat(), ShardPreferencesHelper.readLng()));
         _locationManager = (LocationManager) MyApplication.getAppContext().getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -66,10 +70,6 @@ public class MapRepository {
             return;
         }
         _locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 3, new GpsHelper(_myLocation));
-        _geoCoder = new Geocoder(MyApplication.getAppContext(), Locale.forLanguageTag("he"));
-        _executorService = Executors.newFixedThreadPool(2);
-        _markerToJesta = new HashMap<>();
-        radiusInKm = new MutableLiveData<>(ShardPreferencesHelper.readRadius());
     }
 
     // endregion

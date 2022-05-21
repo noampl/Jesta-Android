@@ -143,7 +143,7 @@ public class JestaDetailsFragment extends Fragment {
     }
 
     private void validateDoneBtn(String status) {
-        if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null){
+        if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null && status != null){
             if (status.equals(FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString()) &&
                 !_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())){
                 _binding.doneBtn.setVisibility(View.VISIBLE);
@@ -204,7 +204,10 @@ public class JestaDetailsFragment extends Fragment {
         _binding.statusLayout.setOnClickListener(v -> {
             if (_binding.getTransaction() != null) {
                 if (_jestaDetailsViewModel.get_userId().equals(_binding.getTransaction().getFavorOwnerId().get_id())) {
-                    // TODO Navigation to user profile with handeld ID
+                    JestaDetailsFragmentDirections.ActionJestaDetailsFragmentToNavUserProfile action =
+                    JestaDetailsFragmentDirections.actionJestaDetailsFragmentToNavUserProfile();
+                    action.setUserId(_binding.getTransaction().getHandledByUserId().get_id());
+                    Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
                 }
             }
         });

@@ -277,8 +277,8 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/profile_image_layout"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_weight="0"
                     app:cardCornerRadius="250dp"
                     app:layout_constraintEnd_toEndOf="@+id/people_amount_icon"
@@ -288,9 +288,10 @@
 
                     <ImageView
                         android:id="@+id/user_icon"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_weight="0"
+                        android:layout_gravity="center"
                         android:src="@drawable/ic_baseline_account_circle_24"
                         app:layout_constraintEnd_toEndOf="@+id/people_amount_icon"
                         app:layout_constraintStart_toStartOf="@id/title"

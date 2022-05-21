@@ -291,3 +291,18 @@ query GetAllFavorTransactionByFavorIdWhenOwner($favorId: String!) {
 mutation CloseTransaction($favorTransactionId: String!) {
     userChangeJestaTransactionToClosed(favorTransactionId: $favorTransactionId)
 }
+
+query GetAllUserHandledFavorTransactionByStatus($status: FavorTransactionStatus, $handledByUserId: String) {
+    getAllUserHandledFavorTransactionByStatus(status: $status, handledByUserId: $handledByUserId) {
+        _id
+        status
+        handledByUserId{
+            _id
+            firstName
+            lastName
+        }
+        handlerComment
+        dateLastModified
+        rating
+    }
+}

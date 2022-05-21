@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -255,14 +256,12 @@ public class ProfileSettingsFragment extends Fragment {
         autoCompleteSrcAddr.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onError(@NonNull Status status) {
-                System.out.println("peleg - error " + status.getStatusMessage());
+               Log.e("OnPlaceSelectedListener", status.getStatusMessage());
             }
 
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 _usersViewModel.get_myUser().getValue().set_fullAddress(place.getAddress());
-                System.out.println("peleg - set full address " + _usersViewModel.get_myUser().getValue().get_address().fullAddress);
-                System.out.println("peleg - set full address 2 " + place.getAddress());
                 _usersViewModel.updateUser();
             }
         });
