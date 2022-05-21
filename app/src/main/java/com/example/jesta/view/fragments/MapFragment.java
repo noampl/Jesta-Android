@@ -13,10 +13,13 @@ import androidx.navigation.Navigation;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
+
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,12 +54,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             LatLng sydney = _mapViewModel.getMyLocation().getValue();
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 9));
             _mapViewModel.setGoogleMap(googleMap);
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                locationPermissionRequest.launch(new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                });
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // NOTE: Permission is handled in startup.
                 return;
             }
             googleMap.setMyLocationEnabled(true);
@@ -67,6 +66,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private MapViewModel _mapViewModel;
     private FragmentMapBinding _binding;
     private GoogleMap.OnMarkerClickListener _markerClickListener;
+    private Snackbar _snackbarLocationRequest;
 
     ActivityResultLauncher<String[]> locationPermissionRequest =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
@@ -74,11 +74,27 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                         Boolean coarseLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false);
                         if (fineLocationGranted != null && fineLocationGranted) {
                             // Precise location access granted.
+                            this.permissionSafeInit();
                         } else if (coarseLocationGranted != null && coarseLocationGranted) {
                             // Only approximate location access granted.
+                            this.permissionSafeInit();
                         } else {
                             // No location access granted.
-                            Snackbar.make(_binding.getRoot(), "יש לאפשר הרשאת מיקום.", Snackbar.LENGTH_LONG).show();
+                            _snackbarLocationRequest = Snackbar.make(_binding.getRoot(), R.string.location_permission_is_needed, Snackbar.LENGTH_INDEFINITE)
+                                    .setActionTextColor(getResources().getColor(R.color.red))
+                                    .setAction(R.string.allow, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            // Takes the user to the application settings screen:
+                                            Intent appSettingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                            Uri uri = Uri.fromParts("package", getString(R.string.app_package), null);
+                                            appSettingsIntent.setData(uri);
+                                            startActivity(appSettingsIntent);
+
+                                            initRequestPermission();
+                                        }
+                                    });
+                            _snackbarLocationRequest.show();
                         }
                     }
             );
@@ -89,9 +105,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false);
         return _binding.getRoot();
     }
@@ -99,14 +113,16 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        _markerClickListener = this;
-        _mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(callback);
-        }
-        init();
+
+        // Request permissions:
+        this.initRequestPermission();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        this.initRequestPermission();
     }
 
     @Override
@@ -116,14 +132,44 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         _mapViewModel.getGoogleMap().clear();
     }
 
+        if (_mapViewModel != null)
+            _mapViewModel.set_radius(null);
+    }
 
     // endregion
 
     // region Private Methods
 
-    private void init() {
+    private void initRequestPermission() {
+        // Checks the user has location permission:
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            locationPermissionRequest.launch(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
+            return;
+        } else {
+            permissionSafeInit();
+        }
+    }
+
+    private void permissionSafeInit() {
+        if (_snackbarLocationRequest != null && _snackbarLocationRequest.isShown()) {
+            _snackbarLocationRequest.dismiss();
+        }
+
+        _markerClickListener = this;
+        _mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(callback);
+        }
+
         _mapViewModel.getRemoteJestas();
         _mapViewModel.set_navigationHelper(this);
+
         initCircle();
         initObservers();
         initListeners();

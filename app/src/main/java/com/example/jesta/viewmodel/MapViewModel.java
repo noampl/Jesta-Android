@@ -161,8 +161,8 @@ public class MapViewModel extends ViewModel {
         if (radiusInKm != null){
             radius = radiusInKm.getValue();
         }
-
         GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), new Optional.Present<Double>(radius));
+
     }
 
     public void markerClicked(String jestaId, String transactionId) {

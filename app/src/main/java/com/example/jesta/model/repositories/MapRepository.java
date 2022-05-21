@@ -40,7 +40,7 @@ public class MapRepository {
     private GoogleMap _googleMap;
     private final MutableLiveData<LatLng> _myLocation;
     private final LocationManager _locationManager;
-    private HashMap<Marker,GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable > _markerToJesta;
+    private HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> _markerToJesta;
     private Geocoder _geoCoder;
     private ExecutorService _executorService;
     private MutableLiveData<Double> radiusInKm;
@@ -59,13 +59,11 @@ public class MapRepository {
     }
 
     private MapRepository() {
-        _myLocation = new MutableLiveData<>(new LatLng(ShardPreferencesHelper.readLat(),ShardPreferencesHelper.readLng()));
+        _myLocation = new MutableLiveData<>(new LatLng(ShardPreferencesHelper.readLat(), ShardPreferencesHelper.readLng()));
         _locationManager = (LocationManager) MyApplication.getAppContext().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // TODO ask for permission
+        if (ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // NOTE: Permission is handled in startup.
+            return;
         }
         _locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 3, new GpsHelper(_myLocation));
         _geoCoder = new Geocoder(MyApplication.getAppContext(), Locale.forLanguageTag("he"));
@@ -98,12 +96,12 @@ public class MapRepository {
         this._googleMap = _googleMap;
     }
 
-    public MutableLiveData<LatLng> getMyLocation(){
+    public MutableLiveData<LatLng> getMyLocation() {
         return _myLocation;
     }
 
 
-    public HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable > getMarkerTOJesta() {
+    public HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> getMarkerTOJesta() {
         return _markerToJesta;
     }
 
@@ -112,9 +110,9 @@ public class MapRepository {
     // region Public Method
 
     public void getAddressByName(String address) {
-        _executorService.execute(()->{
+        _executorService.execute(() -> {
             try {
-               List<Address> addressList = _geoCoder.getFromLocationName(address, 10);
+                List<Address> addressList = _geoCoder.getFromLocationName(address, 10);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -122,19 +120,19 @@ public class MapRepository {
         });
     }
 
-    public Address setAddressByCurrentLocation(){
+    public Address setAddressByCurrentLocation() {
         return getAddressByLocation(_myLocation.getValue());
     }
 
     public Address getAddressByLocation(LatLng latLng) {
         List<Address> addressList = new ArrayList<>();
         try {
-             addressList = _geoCoder.getFromLocation(latLng.latitude, latLng.longitude,10);
+            addressList = _geoCoder.getFromLocation(latLng.latitude, latLng.longitude, 10);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
-       return addressList.get(0);
+        return addressList.get(0);
     }
 
     public void saveLocation(double latitude, double longitude) {
