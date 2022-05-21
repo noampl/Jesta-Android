@@ -20,6 +20,10 @@ public class Transaction {
     private String comment;
 
     // endregion
+    public Transaction(String _id){
+        this._id = _id;
+    }
+
 
     public Transaction(String _id, FavorTransactionStatus status, Jesta favorId, User favorOwnerId, User handledByUserId, String dateLastModified, double rating) {
         this._id = _id;
@@ -111,7 +115,6 @@ public class Transaction {
         this.dateLastModified = dateLastModified;
     }
 
-
     // endregion
 
     @Override
@@ -119,11 +122,11 @@ public class Transaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
-        return _id.equals(that._id) && status.equals(that.status) && favorId.equals(that.favorId) && favorOwnerId.equals(that.favorOwnerId) && handledByUserId.equals(that.handledByUserId) && dateLastModified.equals(that.dateLastModified);
+        return _id.equals(that._id) && status.equals(that.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_id, status, favorId, favorOwnerId, handledByUserId, dateLastModified);
+        return Objects.hash(_id);
     }
 }

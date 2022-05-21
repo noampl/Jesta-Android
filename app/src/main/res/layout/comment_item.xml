@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="transaction"
+            type="com.example.jesta.model.enteties.Transaction" />
+
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layoutDirection="rtl"
+        >
+
+        <ImageView
+            android:id="@+id/star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_baseline_star_rate_24"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:visibility="@{transaction.rating > 0 ? View.VISIBLE : View.INVISIBLE}"
+           />
+
+        <TextView
+            android:id="@+id/rate_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/side_mini_margin"
+            android:text="@{String.valueOf(transaction.rating)}"
+            app:layout_constraintTop_toTopOf="@id/star"
+            app:layout_constraintEnd_toStartOf="@id/star"
+            app:layout_constraintBottom_toBottomOf="@id/star"
+            android:visibility="@{transaction.rating > 0 ? View.VISIBLE : View.INVISIBLE}"
+            />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="@{transaction.handledByUserId.fullName}"
+            app:layout_constraintStart_toEndOf="@id/date"
+            app:layout_constraintTop_toTopOf="@id/date"
+            app:layout_constraintBottom_toBottomOf="@id/date"
+            android:layout_marginStart="@dimen/side_mini_margin"
+            />
+
+        <TextView
+            android:id="@+id/comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/user_name"
+            android:text="@{transaction.comment}"
+            app:layout_constraintTop_toBottomOf="@id/user_name"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:layout_marginTop="@dimen/side_mini_margin"
+            />
+
+        <ImageView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/star"
+            app:layout_constraintBottom_toBottomOf="@id/star"
+            android:layout_marginStart="@dimen/margin_side"
+            android:src="@drawable/ic_baseline_waiting_jesta"
+            app:tint="@color/black"
+            />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/comment"
+            android:layout_marginTop="@dimen/margin_vertical"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
