@@ -71,6 +71,7 @@ public class UsersViewModel extends ViewModel {
 
     public void set_dialogConsumerHelper(IDialogConsumerHelper _dialogConsumerHelper) {
         this._dialogConsumerHelper = _dialogConsumerHelper;
+        UsersRepository.getInstance().set_dialogConsumerHelper(_dialogConsumerHelper);
     }
     // endregion
 

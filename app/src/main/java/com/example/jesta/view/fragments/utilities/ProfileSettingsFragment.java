@@ -1,5 +1,6 @@
 package com.example.jesta.view.fragments.utilities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import android.content.DialogInterface;
@@ -187,8 +188,8 @@ public class ProfileSettingsFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             _usersViewModel.deleteAccount();
+                            Navigation.findNavController(requireActivity(), R.id.main_container).navigate(R.id.nav_map);
                             dialogInterface.dismiss();
-                            // TODO navigate back to map
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -260,6 +261,8 @@ public class ProfileSettingsFragment extends Fragment {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 _usersViewModel.get_myUser().getValue().set_fullAddress(place.getAddress());
+                System.out.println("peleg - set full address " + _usersViewModel.get_myUser().getValue().get_address().fullAddress);
+                System.out.println("peleg - set full address 2 " + place.getAddress());
                 _usersViewModel.updateUser();
             }
         });

@@ -22,6 +22,7 @@ query GetUser($email: String) {
             fullAddress
         }
         imagePath
+        description
     }
 }
 
