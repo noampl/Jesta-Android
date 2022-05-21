@@ -363,6 +363,7 @@
             android:clickable="@{transaction == null}"
             android:textColor="@color/white"
             app:btnStatus="@{transactionStatus}"
+            android:visibility="@{jestaDetails.ownerId._id.equals(userId) ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@+id/status_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/half_guidline" />
@@ -474,8 +475,6 @@
                 android:background="@color/black"
                 android:text="@string/done"
                 android:textColor="@color/white"
-                android:visibility="@{jestaDetails.ownerId._id.equals(userId) ? View.INVISIBLE : View.VISIBLE}"
-                android:clickable="@{!jestaDetails.ownerId._id.equals(userId)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
