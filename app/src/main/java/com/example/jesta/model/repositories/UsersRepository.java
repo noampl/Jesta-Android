@@ -24,6 +24,12 @@ public class UsersRepository {
     private UsersRepository(){
         _myUser = new MutableLiveData<>();
         _isUserChanged = new MutableLiveData<>(false);
+        _dialogConsumerHelper = new IDialogConsumerHelper() {
+            @Override
+            public void consume(String val) {
+                System.out.println("peleg - default consumer " + val);
+            }
+        };
     }
 
     public static UsersRepository getInstance(){
@@ -56,6 +62,9 @@ public class UsersRepository {
         return _dialogConsumerHelper;
     }
 
+    public void set_dialogConsumerHelper(IDialogConsumerHelper _dialogConsumerHelper) {
+        this._dialogConsumerHelper = _dialogConsumerHelper;
+    }
 
     // endregion
 }

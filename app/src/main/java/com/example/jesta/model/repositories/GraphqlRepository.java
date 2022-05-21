@@ -615,7 +615,7 @@ public class GraphqlRepository {
             @Override
             public void onSuccess(@NonNull ApolloResponse<GetUserQuery.Data> dataApolloResponse) {
                 if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null) {
-                    UsersRepository.getInstance().set_myUser(new User(
+                    User user = new User(
                             dataApolloResponse.data.getUser._id,
                             dataApolloResponse.data.getUser.firstName,
                             dataApolloResponse.data.getUser.lastName,
@@ -624,7 +624,9 @@ public class GraphqlRepository {
                             dataApolloResponse.data.getUser.phone,
                             dataApolloResponse.data.getUser.role,
                             dataApolloResponse.data.getUser.imagePath,
-                            dataApolloResponse.data.getUser.address));
+                            dataApolloResponse.data.getUser.address);
+                    user.setDescription(dataApolloResponse.data.getUser.description);
+                    UsersRepository.getInstance().set_myUser(user);
                 } else {
                     Log.e("getUser", dataApolloResponse.errors.get(0).getMessage());
                 }
