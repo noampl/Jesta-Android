@@ -128,8 +128,11 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @Override
     public void onPause() {
         super.onPause();
-        _mapViewModel.set_radius(null);
-        _mapViewModel.getGoogleMap().clear();
+
+        if (_mapViewModel != null) {
+            _mapViewModel.set_radius(null);
+            _mapViewModel.getGoogleMap().clear();
+        }
     }
 
     // endregion
