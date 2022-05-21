@@ -41,11 +41,11 @@ public class MapViewModel extends ViewModel {
 
     public MapViewModel() {
         _mapFinish = new MutableLiveData<>(false);
+        radiusInKm = MapRepository.getInstance().getRadiusInKm();
         _googleMap = MapRepository.getInstance().getGoogleMap();
         _myLocation = MapRepository.getInstance().getMyLocation();
         _jestas = JestaRepository.getInstance().get_jestas();
         _markerToJesta = MapRepository.getInstance().getMarkerTOJesta();
-        radiusInKm = MapRepository.getInstance().getRadiusInKm();
         _radius = MapRepository.getInstance().get_circle();
     }
 
@@ -157,10 +157,16 @@ public class MapViewModel extends ViewModel {
         List<Double> coordinates = new ArrayList<>();
         coordinates.add(_myLocation.getValue().latitude);
         coordinates.add(_myLocation.getValue().longitude);
-        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), new Optional.Present<Double>(radiusInKm.getValue()));
+        double radius = 50;
+        if (radiusInKm != null){
+            radius = radiusInKm.getValue();
+        }
+
+        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), new Optional.Present<Double>(radius));
     }
 
     public void markerClicked(String jestaId, String transactionId) {
+        System.out.println("peleg - transaction Id is " + transactionId);
         String[] args = {jestaId, transactionId};
         _navigationHelper.navigate(args);
     }

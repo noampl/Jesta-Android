@@ -62,15 +62,15 @@ public class RadiusSelectorDialogFragment extends DialogFragment {
     private void initBtn(){
         double radius = _mapViewModel.getRadiusInKm().getValue();
 
-        if (radius == 0.5){
+        if (radius == 5){
             _binding.first.setCardBackgroundColor(Color.BLACK);
             _binding.firstVal.setTextColor(Color.WHITE);
         }
-        else if (radius == 1){
+        else if (radius == 10){
             _binding.second.setCardBackgroundColor(Color.BLACK);
             _binding.secoandVal.setTextColor(Color.WHITE);
         }
-        else if (radius == 10){
+        else if (radius == 20){
             _binding.third.setCardBackgroundColor(Color.BLACK);
             _binding.thirdVal.setTextColor(Color.WHITE);
         }
@@ -85,15 +85,15 @@ public class RadiusSelectorDialogFragment extends DialogFragment {
 
     private void intListeners() {
         _binding.first.setOnClickListener(v -> {
-            selectRadius(0.5);
+            selectRadius(5);
 
         });
         _binding.second.setOnClickListener(v -> {
-            selectRadius(1);
+            selectRadius(10);
 
         });
         _binding.third.setOnClickListener(v -> {
-            selectRadius(10);
+            selectRadius(20);
 
         });
         _binding.fourth.setOnClickListener(v -> {

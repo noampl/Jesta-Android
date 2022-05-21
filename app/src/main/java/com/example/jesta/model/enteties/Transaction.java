@@ -1,6 +1,6 @@
 package com.example.jesta.model.enteties;
 
-import com.example.jesta.GetUserQuery;
+
 import com.example.jesta.common.enums.FavorTransactionStatus;
 
 

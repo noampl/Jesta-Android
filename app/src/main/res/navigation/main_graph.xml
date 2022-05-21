@@ -9,7 +9,7 @@
         android:id="@+id/nav_map"
         android:name="com.example.jesta.view.fragments.MapFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_map" >
+        tools:layout="@layout/fragment_map">
         <action
             android:id="@+id/action_nav_map_to_addJestaFragment"
             app:destination="@id/addJestaFragment" />
@@ -38,7 +38,7 @@
         android:id="@+id/nav_requested_jestas"
         android:name="com.example.jesta.view.fragments.jestas.RequestedJestasFragment"
         android:label="@string/requested_jestas"
-        tools:layout="@layout/fragment_requested_jestas" >
+        tools:layout="@layout/fragment_requested_jestas">
         <action
             android:id="@+id/action_nav_request_jestas_to_jestaDetailsFragment"
             app:destination="@id/jestaDetailsFragment" />
@@ -52,7 +52,7 @@
         android:id="@+id/nav_notification"
         android:name="com.example.jesta.view.fragments.NotificationFragment"
         android:label="@string/notification"
-        tools:layout="@layout/fragment_notification" >
+        tools:layout="@layout/fragment_notification">
         <action
             android:id="@+id/action_nav_notification_to_jestaDetailsFragment"
             app:destination="@id/jestaDetailsFragment" />
@@ -82,7 +82,7 @@
         android:id="@+id/nav_done_jestas"
         android:name="com.example.jesta.view.fragments.jestas.DoneJestasFragment"
         android:label="@string/done_jestas"
-        tools:layout="@layout/fragment_done_jestas" >
+        tools:layout="@layout/fragment_done_jestas">
         <action
             android:id="@+id/action_nav_done_jestas_to_jestaDetailsFragment"
             app:destination="@id/jestaDetailsFragment" />
@@ -91,7 +91,7 @@
         android:id="@+id/nav_todo_jestas"
         android:name="com.example.jesta.view.fragments.jestas.TodoJestaFragment"
         android:label="@string/todo_jestas"
-        tools:layout="@layout/fragment_todo_jesta" >
+        tools:layout="@layout/fragment_todo_jesta">
         <action
             android:id="@+id/action_nav_todo_jestas_to_jestaDetailsFragment"
             app:destination="@id/jestaDetailsFragment" />
@@ -100,7 +100,7 @@
         android:id="@+id/nav_waiting_jestas"
         android:name="com.example.jesta.view.fragments.jestas.WaitingJestasFragment"
         android:label="@string/waiting_jestas"
-        tools:layout="@layout/fragment_waiting_jestas" >
+        tools:layout="@layout/fragment_waiting_jestas">
         <action
             android:id="@+id/action_nav_waiting_jestas_to_jestaDetailsFragment"
             app:destination="@id/jestaDetailsFragment" />
@@ -119,7 +119,7 @@
         android:id="@+id/nav_profile_settings"
         android:name="com.example.jesta.view.fragments.utilities.ProfileSettingsFragment"
         android:label="@string/settings"
-        tools:layout="@layout/fragment_profile_settings" >
+        tools:layout="@layout/fragment_profile_settings">
         <action
             android:id="@+id/action_nav_profile_settings_to_oneInputDialogFragment"
             app:destination="@id/oneInputDialogFragment" />
@@ -131,7 +131,7 @@
         android:id="@+id/oneInputDialogFragment"
         android:name="com.example.jesta.view.dialogs.OneInputDialogFragment"
         android:label="fragment_one_input_dialog"
-        tools:layout="@layout/fragment_one_input_dialog" >
+        tools:layout="@layout/fragment_one_input_dialog">
         <argument
             android:name="text"
             app:argType="string"
@@ -141,8 +141,8 @@
             app:argType="string" />
         <argument
             android:name="filedType"
-            app:argType="integer"
-            android:defaultValue="2" />
+            android:defaultValue="2"
+            app:argType="integer" />
         <argument
             android:name="title"
             app:argType="string" />
@@ -156,7 +156,7 @@
         android:id="@+id/jestaDetailsFragment"
         android:name="com.example.jesta.view.fragments.jestas.JestaDetailsFragment"
         android:label="@string/jesta_details"
-        tools:layout="@layout/fragment_jesta_details" >
+        tools:layout="@layout/fragment_jesta_details">
         <action
             android:id="@+id/action_jestaDetailsFragment_to_nav_map"
             app:destination="@id/nav_map" />
@@ -168,18 +168,21 @@
             app:destination="@id/oneInputDialogFragment" />
         <argument
             android:name="transactionId"
+            android:defaultValue="1"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="1" />
+            app:nullable="true" />
         <action
             android:id="@+id/action_jestaDetailsFragment_to_nav_user_profile"
             app:destination="@id/nav_user_profile" />
+        <action
+            android:id="@+id/action_jestaDetailsFragment_to_ratingDialogFragment"
+            app:destination="@id/ratingDialogFragment" />
     </fragment>
     <dialog
         android:id="@+id/ratingDialogFragment"
         android:name="com.example.jesta.view.dialogs.RatingDialogFragment"
         android:label="@string/write_rating"
-        tools:layout="@layout/fragment_rating_dialog" >
+        tools:layout="@layout/fragment_rating_dialog">
         <argument
             android:name="transactionId"
             app:argType="string" />
@@ -188,24 +191,24 @@
             app:destination="@id/nav_map" />
         <argument
             android:name="rating"
-            app:argType="float"
-            android:defaultValue="-1" />
+            android:defaultValue="-1"
+            app:argType="float" />
     </dialog>
     <fragment
         android:id="@+id/nav_user_profile"
         android:name="com.example.jesta.view.fragments.utilities.UserProfileFragment"
         android:label="@string/user_details"
-        tools:layout="@layout/fragment_user_profile" >
+        tools:layout="@layout/fragment_user_profile">
         <argument
             android:name="userId"
-            app:argType="string"
-            android:defaultValue="1"/>
+            android:defaultValue="1"
+            app:argType="string" />
     </fragment>
     <dialog
         android:id="@+id/ratingResultDialog"
         android:name="com.example.jesta.view.dialogs.RatingResultDialog"
         android:label="dialog_my_raiting"
-        tools:layout="@layout/dialog_my_raiting" >
+        tools:layout="@layout/dialog_my_raiting">
         <argument
             android:name="comment"
             app:argType="string" />

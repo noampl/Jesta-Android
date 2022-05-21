@@ -39,7 +39,7 @@
 
             <TextView
                 android:id="@+id/first_val"
-                android:text="@string/_500_m"
+                android:text="@string/_5_km"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -63,7 +63,7 @@
 
             <TextView
                 android:id="@+id/secoand_val"
-                android:text="@string/_1_km"
+                android:text="@string/_10_km"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -86,7 +86,7 @@
 
             <TextView
                 android:id="@+id/third_val"
-                android:text="@string/_10_km"
+                android:text="@string/_20_km"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

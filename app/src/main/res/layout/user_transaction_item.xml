@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/side_mini_margin"
-            android:text="@{String.valueOf(transation.rating)}"
+            android:text="@{String.valueOf(transation.handledByUserId._rating)}"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@id/handler_rating_icon"
             app:layout_constraintEnd_toStartOf="@id/handler_rating_icon"
@@ -73,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/side_mini_margin"
-            android:text="מאושר"
+            app:textStatus="@{transation}"
             app:layout_constraintStart_toEndOf="@id/half_guidline"
             app:layout_constraintTop_toTopOf="@id/status_title" />
 

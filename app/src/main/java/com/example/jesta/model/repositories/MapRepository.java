@@ -65,7 +65,7 @@ public class MapRepository {
                 PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(MyApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            return ;
+            // TODO ask for permission
         }
         _locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 3, new GpsHelper(_myLocation));
         _geoCoder = new Geocoder(MyApplication.getAppContext(), Locale.forLanguageTag("he"));
