@@ -32,6 +32,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -523,8 +524,10 @@ public class JestaBindingAdapters {
 
     @BindingAdapter("registeredSince")
     public static void registeredSince(TextView textView, String date) {
-        // TODO: implement method
-        textView.setText("כיום"); // TODO: use strings here
+        long timestamp = Long.parseLong(date);
+        Date registered = new Date(timestamp);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        textView.setText(dateFormat.format(registered));
     }
 
     // region Private methods

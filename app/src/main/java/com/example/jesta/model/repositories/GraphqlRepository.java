@@ -630,6 +630,7 @@ public class GraphqlRepository {
                             dataApolloResponse.data.getUser.role,
                             dataApolloResponse.data.getUser.imagePath,
                             dataApolloResponse.data.getUser.address);
+                    user.setDateRegistered(dataApolloResponse.data.getUser.created_date.toString());
                     user.setDescription(dataApolloResponse.data.getUser.description);
                     UsersRepository.getInstance().set_myUser(user);
                 } else {
@@ -874,6 +875,7 @@ public class GraphqlRepository {
                     user.set_numOfJestasDone(u.numberOfExecutedJesta);
                     user.set_isTopJestioner(u.mostVolunteered);
                     user.setDescription(u.description);
+                    user.setDateRegistered(u.created_date);
                     user.set_rating(u.rating);
                     UsersRepository.getInstance().set_myUser(user);
                 }

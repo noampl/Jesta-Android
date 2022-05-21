@@ -35,7 +35,7 @@ public class UsersViewModel extends ViewModel {
 
     // region C'tor
 
-    public UsersViewModel(){
+    public UsersViewModel() {
         _myUser = UsersRepository.getInstance().get_myUser();
         _isUserUpdated = UsersRepository.getInstance().get_isUserChanged();
         _dialogConsumerHelper = UsersRepository.getInstance().get_dialogConsumerHelper();
@@ -53,7 +53,7 @@ public class UsersViewModel extends ViewModel {
         this._myUser.setValue(_myUser);
     }
 
-    public String getUserPassword(){
+    public String getUserPassword() {
         return ShardPreferencesHelper.readPassword();
     }
 
@@ -79,6 +79,7 @@ public class UsersViewModel extends ViewModel {
 
     /**
      * Gets datapicker result and convert it to display text
+     *
      * @param selection The date selected;
      * @return The date in dd/MM/yy
      */
@@ -100,14 +101,14 @@ public class UsersViewModel extends ViewModel {
                 new Optional.Present<>(myUser.get_firstName()), new Optional.Present<>(myUser.get_lastName()),
                 new Optional.Present<>(myUser.get_birthday()), new Optional.Present<>(myUser.get_email()),
                 null, new Optional.Present<>(myUser.get_phone()),
-                new Optional.Present<>(myUser.get_address().fullAddress),null,null,
+                new Optional.Present<>(myUser.get_address() == null ? null : myUser.get_address().fullAddress), null, null,
                 new Optional.Present<>(myUser.getDescription()));
         GraphqlRepository.getInstance().UpdateUser(new Optional.Present<>(userUpdateInput));
     }
 
-    public void updateRemotePassword(String password){
-        UserUpdateInput userUpdateInput = new UserUpdateInput(null,null,null,
-                null,new Optional.Present<>(password),null,null,null,null, null);
+    public void updateRemotePassword(String password) {
+        UserUpdateInput userUpdateInput = new UserUpdateInput(null, null, null,
+                null, new Optional.Present<>(password), null, null, null, null, null);
         GraphqlRepository.getInstance().UpdateUser(new Optional.Present<>(userUpdateInput));
     }
 
@@ -118,13 +119,13 @@ public class UsersViewModel extends ViewModel {
         // TODO clear firebase token
     }
 
-    public void updateUserImage(Source source){
-            DefaultUpload upload = new DefaultUpload.Builder()
-                    .content(Okio.buffer(source))
-                    .fileName("_" + _myUser.getValue().get_id() + Consts.JPG)
-                    .build();
-            new Optional.Present<Upload>(upload);
-            GraphqlRepository.getInstance().uploadPhoto(new Optional.Present<Upload>(upload), _myUser.getValue().get_id());
+    public void updateUserImage(Source source) {
+        DefaultUpload upload = new DefaultUpload.Builder()
+                .content(Okio.buffer(source))
+                .fileName("_" + _myUser.getValue().get_id() + Consts.JPG)
+                .build();
+        new Optional.Present<Upload>(upload);
+        GraphqlRepository.getInstance().uploadPhoto(new Optional.Present<Upload>(upload), _myUser.getValue().get_id());
     }
 
     // endregion

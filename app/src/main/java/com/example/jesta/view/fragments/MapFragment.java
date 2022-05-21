@@ -128,8 +128,11 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @Override
     public void onPause() {
         super.onPause();
-        _mapViewModel.set_radius(null);
-        _mapViewModel.getGoogleMap().clear();
+
+        if (_mapViewModel != null) {
+            _mapViewModel.set_radius(null);
+            _mapViewModel.getGoogleMap().clear();
+        }
     }
 
     // endregion
@@ -208,8 +211,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         });
         _binding.jestaLst.setAdapter(adapter);
 
-
-        // TODO: noam check, without this I get null reference exception in startup
         if (_mapViewModel.getRadiusInKm() != null) {
             _mapViewModel.getRadiusInKm().observe(getViewLifecycleOwner(), r -> {
                 if (_mapViewModel.getGoogleMap() != null) {

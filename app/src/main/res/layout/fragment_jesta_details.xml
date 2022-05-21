@@ -46,11 +46,11 @@
 
         <ImageView
             android:id="@+id/carousel"
-            app:setJestaImages="@{jestaDetails.imagesPath}"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="@color/gray200"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:setJestaImages="@{jestaDetails.imagesPath}" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scollView"
@@ -232,6 +232,8 @@
                     android:layout_marginStart="@dimen/side_mini_margin"
                     android:text="@{String.valueOf(jestaDetails.numOfPeopleNeeded)}"
                     android:textColor="@color/black"
+                    android:visibility="@{jestaDetails.numOfPeopleNeeded > 0 ? View.VISIBLE : View.GONE}"
+
                     app:layout_constraintBottom_toBottomOf="@id/people_amount_icon"
                     app:layout_constraintStart_toEndOf="@id/people_amount_icon"
                     app:layout_constraintTop_toTopOf="@id/people_amount_icon" />
@@ -241,6 +243,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_vertical"
+                    android:visibility="@{jestaDetails.numOfPeopleNeeded > 0 ? View.VISIBLE : View.GONE}"
                     app:layout_constraintTop_toBottomOf="@id/people_amount_icon" />
 
                 <TextView
@@ -272,32 +275,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_vertical"
+                    android:layout_marginBottom="16dp"
                     android:visibility="@{jestaDetails.paymentAmount > 0 ? View.VISIBLE : View.GONE}"
                     app:layout_constraintTop_toBottomOf="@id/nis_ic" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/profile_image_layout"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
                     android:layout_weight="0"
                     app:cardCornerRadius="250dp"
-                    app:layout_constraintEnd_toEndOf="@+id/people_amount_icon"
                     app:layout_constraintStart_toStartOf="@id/title"
-                    app:layout_constraintTop_toBottomOf="@id/cost_divider"
-                    android:layout_gravity="center">
+                    app:layout_constraintTop_toBottomOf="@+id/cost_divider">
 
                     <ImageView
                         android:id="@+id/user_icon"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:layout_weight="0"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_baseline_account_circle_24"
                         app:layout_constraintEnd_toEndOf="@+id/people_amount_icon"
                         app:layout_constraintStart_toStartOf="@id/title"
                         app:layout_constraintTop_toBottomOf="@id/cost_divider"
-                        app:profileImage="@{jestaDetails.ownerId.imagePath}"
-                        />
+                        app:profileImage="@{jestaDetails.ownerId.imagePath}" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -305,9 +308,8 @@
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/side_mini_margin"
+                    android:layout_marginStart="12dp"
                     android:textColor="@color/black"
-                    android:layout_marginEnd="4dp"
                     app:firstName="@{jestaDetails.ownerId.firstName}"
                     app:layout_constraintBottom_toBottomOf="@+id/profile_image_layout"
                     app:layout_constraintStart_toEndOf="@+id/profile_image_layout"
@@ -318,39 +320,39 @@
                     android:id="@+id/user_divider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vertical"
+                    android:layout_marginTop="16dp"
                     app:layout_constraintTop_toBottomOf="@+id/profile_image_layout" />
 
-<!--                <TextView-->
-<!--                    android:id="@+id/finish_status_title"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@id/user_divider"-->
-<!--                    android:text="@string/status"-->
-<!--                    android:layout_marginTop="@dimen/margin_vertical"-->
-<!--                    android:textColor="@color/black"-->
-<!--                    android:layout_marginStart="@dimen/margin_side"-->
-<!--                    />-->
+                <!--                <TextView-->
+                <!--                    android:id="@+id/finish_status_title"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@id/user_divider"-->
+                <!--                    android:text="@string/status"-->
+                <!--                    android:layout_marginTop="@dimen/margin_vertical"-->
+                <!--                    android:textColor="@color/black"-->
+                <!--                    android:layout_marginStart="@dimen/margin_side"-->
+                <!--                    />-->
 
-<!--                <TextView-->
-<!--                    android:id="@+id/finish_status_val"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    app:layout_constraintTop_toTopOf="@id/finish_status_title"-->
-<!--                    app:layout_constraintStart_toEndOf="@id/finish_status_title"-->
-<!--                    android:layout_marginStart="@dimen/side_mini_margin"-->
-<!--                    app:transaction="@{transaction}"-->
-<!--                    app:status="@{transactionStatus}"-->
-<!--                    app:userId="@{userId}"-->
-<!--                    />-->
+                <!--                <TextView-->
+                <!--                    android:id="@+id/finish_status_val"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    app:layout_constraintTop_toTopOf="@id/finish_status_title"-->
+                <!--                    app:layout_constraintStart_toEndOf="@id/finish_status_title"-->
+                <!--                    android:layout_marginStart="@dimen/side_mini_margin"-->
+                <!--                    app:transaction="@{transaction}"-->
+                <!--                    app:status="@{transactionStatus}"-->
+                <!--                    app:userId="@{userId}"-->
+                <!--                    />-->
 
-<!--                <com.google.android.material.divider.MaterialDivider-->
-<!--                    android:id="@+id/finish_status_divider"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="@dimen/margin_vertical"-->
-<!--                    app:layout_constraintTop_toBottomOf="@id/finish_status_val" />-->
+                <!--                <com.google.android.material.divider.MaterialDivider-->
+                <!--                    android:id="@+id/finish_status_divider"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginTop="@dimen/margin_vertical"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@id/finish_status_val" />-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -473,8 +475,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@color/black"
+                android:clickable="@{!jestaDetails.ownerId._id.equals(userId)}"
                 android:text="@string/done"
                 android:textColor="@color/white"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
