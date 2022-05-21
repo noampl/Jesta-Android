@@ -132,10 +132,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         _mapViewModel.getGoogleMap().clear();
     }
 
-        if (_mapViewModel != null)
-            _mapViewModel.set_radius(null);
-    }
-
     // endregion
 
     // region Private Methods
