@@ -92,6 +92,10 @@ public class GraphqlRepository {
         return instance;
     }
 
+    public static void cleanInstance() {
+        instance = new GraphqlRepository();
+    }
+
     private GraphqlRepository() {
         _apolloClient = new ApolloClient.Builder()
                 .serverUrl(SERVER_URL)

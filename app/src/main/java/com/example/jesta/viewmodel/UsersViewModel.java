@@ -114,6 +114,7 @@ public class UsersViewModel extends ViewModel {
     public void logout() {
         ShardPreferencesHelper.logout();
         GraphqlRepository.getInstance().getIsLoggedIn().setValue(false);
+        GraphqlRepository.cleanInstance();
         // TODO clear firebase token
     }
 
