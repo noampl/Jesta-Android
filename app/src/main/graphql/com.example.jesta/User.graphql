@@ -23,6 +23,7 @@ query GetUser($email: String) {
         }
         imagePath
         description
+        created_date
     }
 }
 
@@ -46,6 +47,7 @@ query GetUserById($id: String) {
         role
         numberOfExecutedJesta
         description
+        created_date
     }
 }
 

@@ -130,12 +130,12 @@ public class GraphqlRepository {
             if (doneTransaction != null) {
                 resTransaction.addAll(doneTransaction);
             }
-             closedTransaction = synchronizegetExecuterFavorTransaction(com.example.jesta.type.FavorTransactionStatus.CLOSED);
-            if (closedTransaction != null){
+            closedTransaction = synchronizegetExecuterFavorTransaction(com.example.jesta.type.FavorTransactionStatus.CLOSED);
+            if (closedTransaction != null) {
                 resTransaction.addAll(closedTransaction);
             }
             finishTransaction = synchronizegetExecuterFavorTransaction(com.example.jesta.type.FavorTransactionStatus.EXECUTOR_FINISH_JESTA);
-            if (finishTransaction != null){
+            if (finishTransaction != null) {
                 resTransaction.addAll(finishTransaction);
             }
             JestasListsRepository.getInstance().setTransactions(resTransaction);
@@ -625,6 +625,7 @@ public class GraphqlRepository {
                             dataApolloResponse.data.getUser.role,
                             dataApolloResponse.data.getUser.imagePath,
                             dataApolloResponse.data.getUser.address);
+                    user.setDateRegistered(dataApolloResponse.data.getUser.created_date.toString());
                     user.setDescription(dataApolloResponse.data.getUser.description);
                     UsersRepository.getInstance().set_myUser(user);
                 } else {
@@ -869,6 +870,7 @@ public class GraphqlRepository {
                     user.set_numOfJestasDone(u.numberOfExecutedJesta);
                     user.set_isTopJestioner(u.mostVolunteered);
                     user.setDescription(u.description);
+                    user.setDateRegistered(u.created_date);
                     UsersRepository.getInstance().set_myUser(user);
                 }
             }
