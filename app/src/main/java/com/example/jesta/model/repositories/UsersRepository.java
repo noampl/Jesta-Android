@@ -38,6 +38,10 @@ public class UsersRepository {
         return instance;
     }
 
+    public static void cleanInstance() {
+        instance = new UsersRepository();
+    }
+
     // endregion
 
     // region Properties

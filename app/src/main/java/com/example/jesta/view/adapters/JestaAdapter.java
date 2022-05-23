@@ -16,6 +16,7 @@ import com.example.jesta.GetJestasInRadiusQuery;
 import com.example.jesta.R;
 import com.example.jesta.databinding.JestaItemBinding;
 import com.example.jesta.model.enteties.Jesta;
+import com.example.jesta.viewmodel.CreateJestaViewModel;
 import com.example.jesta.viewmodel.MapViewModel;
 import com.google.android.gms.maps.model.LatLng;
 

@@ -87,7 +87,7 @@ public class DoneJestasFragment extends Fragment {
                 transactions.forEach(t-> jestas.add(new Jesta(t.getFavorId().get_id(),
                         t.getFavorId().getStatus(), t.getFavorId().getOwnerId(),
                         new Address(t.getFavorId().getSourceAddress().getFullAddress(), t.getFavorId().getSourceAddress().getCoordinates()),
-                        t.getFavorId().getNumOfPeople(), t.getFavorId().getDateToExecute(),t.getFavorId().getDateToFinishExecute())));
+                        t.getFavorId().getNumOfPeople(), t.getFavorId().getDateToExecute(),t.getFavorId().getDateToFinishExecute(), t.getFavorId().getCategories())));
 
                 adapter.submitList(jestas);
 //                adapter.notifyDataSetChanged();

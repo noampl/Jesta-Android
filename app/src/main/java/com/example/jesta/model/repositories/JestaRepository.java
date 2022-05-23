@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
+import com.example.jesta.model.enteties.Category;
 import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.type.PaymentType;
 import com.google.android.gms.maps.model.LatLng;
@@ -26,7 +27,8 @@ public class JestaRepository {
 
     // region Members
 
-    private final MutableLiveData<Integer> _category;
+    private final MutableLiveData<Category> _selectedParentCategory;
+    private final MutableLiveData<Category> _selectedSubCategory;
     private final MutableLiveData<String> _description;
     private final MutableLiveData<Integer> _numOfPeople;
     private final MutableLiveData<Pair<Uri, Source>> image1;
@@ -65,7 +67,8 @@ public class JestaRepository {
     }
 
     private JestaRepository(){
-        _category = new MutableLiveData<>(0);
+        _selectedParentCategory = new MutableLiveData<>();
+        _selectedSubCategory = new MutableLiveData<>();
         _description = new MutableLiveData<>("");
         _numOfPeople = new MutableLiveData<>(0);
         image1 = new MutableLiveData<>();
@@ -89,10 +92,17 @@ public class JestaRepository {
         _detailsTransaction = new MutableLiveData<>();
     }
 
+    public static void cleanInstance() {
+        instance = new JestaRepository();
+    }
+
     // endregion
 
     // region Properties
 
+    public MutableLiveData<Category> get_selectedSubCategory() {
+        return _selectedSubCategory;
+    }
     public MutableLiveData<Transaction> get_detailsTransaction() {
         return _detailsTransaction;
     }
@@ -113,8 +123,8 @@ public class JestaRepository {
         this._tabsNavigationHelper = _tabsNavigationHelper;
     }
 
-    public MutableLiveData<Integer> get_category() {
-        return _category;
+    public MutableLiveData<Category> get_selectedParentCategory() {
+        return _selectedParentCategory;
     }
 
     public MutableLiveData<String> get_description() {

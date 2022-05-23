@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
 import com.example.jesta.common.AlertDialogRtlHelper;
 import com.example.jesta.common.IntentUtils;
@@ -91,12 +92,26 @@ public class JestaDetailsFragment extends Fragment {
     private void initObserver() {
         _jestaDetailsViewModel.get_jestaDetails().observe(getViewLifecycleOwner(), favor -> {
             _binding.setJestaDetails(favor);
-            if (favor != null && favor.ownerId != null) {
-                User user = new User(favor.ownerId._id, favor.ownerId.firstName, favor.ownerId.lastName);
-                user.set_rating(favor.ownerId.rating);
-                user.set_phone(favor.ownerId.phone);
-                _binding.setOwner(user);
+            if (favor != null) {
+                if (favor.ownerId != null) {
+                    User user = new User(favor.ownerId._id, favor.ownerId.firstName, favor.ownerId.lastName);
+                    user.set_rating(favor.ownerId.rating);
+                    user.set_phone(favor.ownerId.phone);
+                    _binding.setOwner(user);
+                }
+                if (favor.categoryId != null && favor.categoryId.size() > 0){
+                    String title = "";
+
+                    if (favor.categoryId.size() > 1){
+                        title = favor.categoryId.get(1).name + " " + favor.categoryId.get(0).name;
+                    }
+                    else{
+                        title = favor.categoryId.get(0).name;
+                    }
+                    _binding.setCategoryTitle(title);
+                }
             }
+
         });
         _jestaDetailsViewModel.get_myLocation().observe(getViewLifecycleOwner(), latLng ->
                 _binding.setMyLocation(latLng));

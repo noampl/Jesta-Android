@@ -37,6 +37,10 @@
             name="owner"
             type="com.example.jesta.model.enteties.User" />
 
+        <variable
+            name="categoryTitle"
+            type="String" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -70,10 +74,10 @@
                     android:layout_marginStart="@dimen/margin_side"
                     android:layout_marginTop="@dimen/margin_vertical"
                     android:paddingTop="16dp"
-                    android:text="הובלות טלויזיה"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
+                    android:text="@{categoryTitle}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/carousel"
                     tools:ignore="NotSibling" />

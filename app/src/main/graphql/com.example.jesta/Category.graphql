@@ -1,0 +1,13 @@
+query GetAllCategories {
+    getAllParentCategories {
+        _id
+        name
+    }
+}
+
+query GetAllSubCategoriesByParentId($parentCategoryId: String) {
+    getAllSubCategoriesByParentCategory(parentCategoryId: $parentCategoryId) {
+        _id
+        name
+    }
+}

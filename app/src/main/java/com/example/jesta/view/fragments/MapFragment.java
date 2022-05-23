@@ -190,7 +190,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                 jestas.forEach(j -> jestaList.add(new Jesta(j._id, j.status, j.ownerId,
                         new Address(j.sourceAddress.fullAddress, j.sourceAddress.location.coordinates),
                         j.numOfPeopleNeeded, j.dateToExecute != null ? j.dateToExecute.toString() : null
-                        , j.dateToFinishExecute != null ? j.dateToFinishExecute.toString() : null)));
+                        , j.dateToFinishExecute != null ? j.dateToFinishExecute.toString() : null, j.categoryId)));
                 adapter.submitList(jestaList);
                 adapter.notifyDataSetChanged();
                 if (_mapViewModel.getGoogleMap() != null) {

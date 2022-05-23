@@ -6,6 +6,7 @@
     tools:context=".view.fragments.jestas.addition.WhatFragment">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="viewModel"
             type="com.example.jesta.viewmodel.CreateJestaViewModel" />
@@ -44,10 +45,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/gray100"
-                android:selectedItemPosition="@{viewModel._category}"
                 />
 
         </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/subcategory_spinner_card"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/spinner_card">
+
+            <Spinner
+                android:id="@+id/subcategory_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gray100"
+                />
+
+        </com.google.android.material.card.MaterialCardView>
+
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/description_card"
@@ -57,17 +78,20 @@
             app:cardBackgroundColor="@color/gray100"
             app:layout_constraintEnd_toEndOf="@id/spinner_card"
             app:layout_constraintStart_toStartOf="@id/spinner_card"
-            app:layout_constraintTop_toBottomOf="@id/spinner_card">
+            app:layout_constraintTop_toBottomOf="@id/subcategory_spinner_card">
 
             <EditText
                 android:id="@+id/description_edit_txt"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:onTextChanged="@{viewModel::OnDescriptionChange}"
                 android:text="@{viewModel._description}"
                 android:hint="@string/short_description"
+                android:textColor="@color/black"
+                android:paddingBottom="85dp"
                 android:paddingStart="5dp" />
+
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
