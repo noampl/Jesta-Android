@@ -1148,8 +1148,8 @@ public class GraphqlRepository {
             transaction.setStatus(FavorTransactionStatus.valueOf(t.status));
             transaction.setComment(t.handlerComment);
             transaction.setRating(t.rating != null ? t.rating : 0);
-            transaction.setHandledByUserId(new User(t.handledByUserId._id,
-                    t.handledByUserId.firstName, t.handledByUserId.lastName));
+            transaction.setFavorOwnerId(new User(t.favorOwnerId._id,
+                    t.favorOwnerId.firstName, t.favorOwnerId.lastName));
             transactions.add(transaction);
         });
         System.out.println("peleg - comment size is " + transactions.size());
