@@ -299,7 +299,7 @@ query GetAllUserHandledFavorTransactionByStatus($status: FavorTransactionStatus,
     getAllUserHandledFavorTransactionByStatus(status: $status, handledByUserId: $handledByUserId) {
         _id
         status
-        handledByUserId{
+        favorOwnerId{
             _id
             firstName
             lastName

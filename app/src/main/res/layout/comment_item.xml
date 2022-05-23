@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:text="@{transaction.handledByUserId.fullName}"
+            android:text="@{transaction.favorOwnerId.fullName}"
             app:layout_constraintStart_toEndOf="@id/date"
             app:layout_constraintTop_toTopOf="@id/date"
             app:layout_constraintBottom_toBottomOf="@id/date"
