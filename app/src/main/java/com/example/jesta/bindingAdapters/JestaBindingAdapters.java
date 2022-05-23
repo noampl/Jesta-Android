@@ -576,7 +576,7 @@ public class JestaBindingAdapters {
         } else if (date.getTime() == MaterialDatePicker.todayInUtcMilliseconds() + DAY_IN_MS) {
             res = view.getContext().getString(R.string.tommorow);
         } else {
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yy");
             res = sdf.format(date);
         }
         return res;
