@@ -82,6 +82,7 @@ public class GraphqlRepository {
     private final MutableLiveData<Boolean> _isLoggedIn;
     private final MutableLiveData<String> _serverError;
     private final AtomicInteger _categoryCounter;
+    private final MutableLiveData<String> _serverInteractionResult;
 
     // endregion
 
@@ -103,6 +104,7 @@ public class GraphqlRepository {
         _apolloClient = new ApolloClient.Builder()
                 .serverUrl(SERVER_URL)
                 .build();
+        _serverInteractionResult = new MutableLiveData<>(Consts.INVALID_STRING);
         _executorService = Executors.newFixedThreadPool(4);
         _isLoggedIn = new MutableLiveData<>();
         _serverError = new MutableLiveData<>();
@@ -115,10 +117,8 @@ public class GraphqlRepository {
                     e.printStackTrace();
                 }
             }
-            System.out.println("peleg - loggdin");
             _isLoggedIn.postValue(true);
         }).start();
-
     }
 
     // endregion
@@ -137,6 +137,9 @@ public class GraphqlRepository {
         return _serverError;
     }
 
+    public MutableLiveData<String> get_serverInteractionResult() {
+        return _serverInteractionResult;
+    }
     // endregion
 
     // region Server Interactions Method
@@ -175,26 +178,38 @@ public class GraphqlRepository {
             _isLoggedIn.setValue(false);
             return;
         }
-        // First way to preform the task async
-        _executorService.execute(() -> {
-            ApolloCall<LoginMutation.Data> mutationCall = _apolloClient.mutation(new LoginMutation(email, password));
-            Single<ApolloResponse<LoginMutation.Data>> responseSingle = Rx3Apollo.single(mutationCall);
-            ApolloResponse<LoginMutation.Data> response = responseSingle.blockingGet();
+        ApolloCall<LoginMutation.Data> mutationCall = _apolloClient.mutation(new LoginMutation(email, password));
+        Single<ApolloResponse<LoginMutation.Data>> responseSingle = Rx3Apollo.single(mutationCall);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<LoginMutation.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+            }
 
-            // Check if the server return good answer
-            if (!response.hasErrors() && response.data != null) {
-                _apolloClient = _apolloClient.newBuilder().addHttpHeader(Consts.AUTHORIZATION, response.data.connectUser.token).build();
-                getParentCategories();
-                getMyUserInformation(email);
-                ShardPreferencesHelper.writeToken(response.data.connectUser.token);
-                ShardPreferencesHelper.writeEmail(email);
-                ShardPreferencesHelper.writePassword(password);
-                ShardPreferencesHelper.writeId(response.data.connectUser.userId);
-            } else {
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<LoginMutation.Data> dataApolloResponse) {
+                // Check if the server return good answer
+                if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null) {
+                    ShardPreferencesHelper.writeToken(dataApolloResponse.data.connectUser.token);
+                    ShardPreferencesHelper.writeEmail(email);
+                    ShardPreferencesHelper.writePassword(password);
+                    ShardPreferencesHelper.writeId(dataApolloResponse.data.connectUser.userId);
+                    // Note that all server query should be after this line
+                    _apolloClient = _apolloClient.newBuilder().addHttpHeader(Consts.AUTHORIZATION, dataApolloResponse.data.connectUser.token).build();
+                    getMyUserInformation(email);
+                    getParentCategories();
+                } else {
+                    _isLoggedIn.postValue(false);
+                    _serverError.postValue(dataApolloResponse.errors.get(0).getMessage());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
                 _isLoggedIn.postValue(false);
-                _serverError.postValue(response.errors.get(0).getMessage());
+                _serverError.postValue(e.getMessage());
             }
         });
+
     }
 
     /**
@@ -253,14 +268,17 @@ public class GraphqlRepository {
             public void onSuccess(@NonNull ApolloResponse<CreateFavorWithImageMutation.Data> dataApolloResponse) {
                 if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null) {
                     System.out.println("peleg - createJesta");
+                    _serverInteractionResult.postValue(Consts.SUCCESS);
                 } else {
                     Log.d("peleg - CreateJesta", dataApolloResponse.errors.get(0).getMessage());
+                    _serverInteractionResult.postValue(dataApolloResponse.errors.get(0).getMessage());
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.e("peleg - CreateJesta", e.getMessage());
+                _serverInteractionResult.postValue(e.getMessage());
             }
         });
     }
@@ -286,15 +304,18 @@ public class GraphqlRepository {
                 if (!dataApolloResponse.hasErrors()) {
                     Log.d("UpdateUser", "Success");
                     UsersRepository.getInstance().set_isUserChanged(true);
+                    _serverInteractionResult.postValue(Consts.SUCCESS);
                 } else {
                     Log.d("UpdateUser", "Failed " + dataApolloResponse.errors.get(0));
                     UsersRepository.getInstance().set_isUserChanged(false);
+                    _serverInteractionResult.postValue(dataApolloResponse.errors.get(0).getMessage());
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.d("UpdateUser", e.getMessage());
+                _serverInteractionResult.postValue(e.getMessage());
             }
         });
     }
@@ -390,18 +411,23 @@ public class GraphqlRepository {
             @Override
             public void onSuccess(@NonNull ApolloResponse<ApproveFavorSuggestionMutation.Data> dataApolloResponse) {
                 if (dataApolloResponse.hasErrors()) {
-                    for (Error e : dataApolloResponse.errors)
+                    for (Error e : dataApolloResponse.errors){
                         Log.e("ApproveFavorSuggestion", e.getMessage());
-                    // TODO consider raise an error to user
+                        JestaRepository.getInstance().set_approveServerMsg(e.getMessage());
+                    }
                 } else {
                     Log.d("ApproveFavorSuggestion", "mutation success " + dataApolloResponse.data.handleFavorTransactionRequest);
                     getAllFavorTransaction();
+                    JestaRepository.getInstance().set_approveServerMsg(Consts.SUCCESS);
                 }
+                JestaRepository.getInstance().set_jestaDetailsLoading(false);
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.e("ApproveFavorSuggestion", e.getMessage());
+                JestaRepository.getInstance().set_approveServerMsg(e.getMessage());
+                JestaRepository.getInstance().set_jestaDetailsLoading(false);
             }
         });
     }
@@ -500,12 +526,16 @@ public class GraphqlRepository {
             ApolloResponse<CancelFavorTransactionMutation.Data> dataApolloResponse = responseSingle.blockingGet();
 
             if (dataApolloResponse.hasErrors()) {
-                for (Error e : dataApolloResponse.errors)
+                for (Error e : dataApolloResponse.errors){
                     Log.e("cancelFavorTransaction", e.getMessage());
+                    JestaRepository.getInstance().set_rejectServerMsg(e.getMessage());
+                }
             } else {
                 Log.d("cancelFavorTransaction", "Cancel transaction " + transactionId);
                 JestaRepository.getInstance().set_favorTransactionStatus(FavorTransactionStatus.CANCELED.toString());
+                JestaRepository.getInstance().set_rejectServerMsg(Consts.SUCCESS);
             }
+            JestaRepository.getInstance().set_jestaDetailsLoading(false);
         });
 
     }
@@ -598,7 +628,7 @@ public class GraphqlRepository {
                         Jesta jesta = new Jesta(j._id, j.status, j.ownerId,
                                 new Address(j.sourceAddress.fullAddress, j.sourceAddress.location.coordinates),
                                 j.numOfPeopleNeeded, j.dateToExecute != null ? j.dateToExecute.toString() : null,
-                                j.dateToFinishExecute != null ? j.dateToFinishExecute.toString() : null);
+                                j.dateToFinishExecute != null ? j.dateToFinishExecute.toString() : null, j.categoryId);
                         jestaListMap.put(jesta, transactions);
                     });
                     JestasListsRepository.getInstance().set_jestasMap(jestaListMap);
@@ -710,9 +740,8 @@ public class GraphqlRepository {
 
                 if (transaction != null) {
                     JestaRepository.getInstance().set_favorTransactionStatus(transaction.status);
-                } else {
-//                    JestaRepository.getInstance().set_favorTransactionStatus(null);
                 }
+                    JestaRepository.getInstance().set_jestaDetailsLoading(false);
             }
         });
     }

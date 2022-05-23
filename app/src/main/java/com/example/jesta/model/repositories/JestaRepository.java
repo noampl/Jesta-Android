@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.jesta.GetFavorsByRadiosTimeAndDateQuery;
 import com.example.jesta.GetJestaQuery;
+import com.example.jesta.common.Consts;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
 import com.example.jesta.model.enteties.Category;
 import com.example.jesta.model.enteties.Transaction;
@@ -52,6 +53,12 @@ public class JestaRepository {
     private final MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> _jestas;
     private final MutableLiveData<String> _favorTransactionStatus;
     private final MutableLiveData<Transaction> _detailsTransaction;
+    private final MutableLiveData<Boolean> _jestaDetailsLoading;
+    private final MutableLiveData<String> _rejectServerMsg;
+    private final MutableLiveData<String> _approveServerMsg;
+    private final MutableLiveData<String> _suggestHelpServerMsg;
+    private final MutableLiveData<String> _doneServerMsg;
+
 
     // endregion
 
@@ -60,13 +67,13 @@ public class JestaRepository {
 
     private static JestaRepository instance = null;
 
-    public static JestaRepository getInstance(){
+    public static JestaRepository getInstance() {
         if (instance == null)
             instance = new JestaRepository();
         return instance;
     }
 
-    private JestaRepository(){
+    private JestaRepository() {
         _selectedParentCategory = new MutableLiveData<>();
         _selectedSubCategory = new MutableLiveData<>();
         _description = new MutableLiveData<>("");
@@ -90,6 +97,11 @@ public class JestaRepository {
         _isSuggestHelp = new MutableLiveData<>(false);
         _favorTransactionStatus = new MutableLiveData<>();
         _detailsTransaction = new MutableLiveData<>();
+        _jestaDetailsLoading = new MutableLiveData<>(true);
+        _rejectServerMsg = new MutableLiveData<>(Consts.INVALID_STRING);
+        _approveServerMsg = new MutableLiveData<>(Consts.INVALID_STRING);
+        _suggestHelpServerMsg = new MutableLiveData<>(Consts.INVALID_STRING);
+        _doneServerMsg = new MutableLiveData<>(Consts.INVALID_STRING);
     }
 
     public static void cleanInstance() {
@@ -99,10 +111,50 @@ public class JestaRepository {
     // endregion
 
     // region Properties
+    public void set_doneServerMsg(String msg) {
+        _doneServerMsg.postValue(msg);
+    }
+
+    public void set_rejectServerMsg(String msg) {
+        _rejectServerMsg.postValue(msg);
+    }
+
+    public void set_approveServerMsg(String msg) {
+        _approveServerMsg.postValue(msg);
+    }
+
+    public void set_suggestHelpServerMsg(String msg) {
+        _suggestHelpServerMsg.postValue(msg);
+    }
+
+    public MutableLiveData<String> get_rejectServerMsg() {
+        return _rejectServerMsg;
+    }
+
+    public MutableLiveData<String> get_approveServerMsg() {
+        return _approveServerMsg;
+    }
+
+    public MutableLiveData<String> get_suggestHelpServerMsg() {
+        return _suggestHelpServerMsg;
+    }
+
+    public MutableLiveData<String> get_doneServerMsg() {
+        return _doneServerMsg;
+    }
+
+    public MutableLiveData<Boolean> get_jestaDetailsLoading() {
+        return _jestaDetailsLoading;
+    }
+
+    public void set_jestaDetailsLoading(boolean isLoading){
+        _jestaDetailsLoading.postValue(isLoading);
+    }
 
     public MutableLiveData<Category> get_selectedSubCategory() {
         return _selectedSubCategory;
     }
+
     public MutableLiveData<Transaction> get_detailsTransaction() {
         return _detailsTransaction;
     }
@@ -183,17 +235,19 @@ public class JestaRepository {
         return _amount;
     }
 
-    public MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> get_jestas(){return _jestas;}
+    public MutableLiveData<List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable>> get_jestas() {
+        return _jestas;
+    }
 
     public MutableLiveData<GetJestaQuery.GetFavor> get_jestaDetails() {
         return _jestaDetails;
     }
 
-    public void set_jestas(List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> jestas){
+    public void set_jestas(List<GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> jestas) {
         _jestas.postValue(jestas);
     }
 
-    public void set_jestaDetails(GetJestaQuery.GetFavor jestaDetails){
+    public void set_jestaDetails(GetJestaQuery.GetFavor jestaDetails) {
         _jestaDetails.postValue(jestaDetails);
     }
 
@@ -201,11 +255,11 @@ public class JestaRepository {
         return _comment;
     }
 
-    public void set_isSuggestHelp(Boolean bool){
+    public void set_isSuggestHelp(Boolean bool) {
         _isSuggestHelp.postValue(bool);
     }
 
-    public void set_favorTransactionStatus(String status){
+    public void set_favorTransactionStatus(String status) {
         _favorTransactionStatus.postValue(status);
     }
 
@@ -215,7 +269,7 @@ public class JestaRepository {
     // region Public Methods
 
     public void setSourceAddressByCurrentLocation() {
-        _executorService.execute(()->{
+        _executorService.execute(() -> {
             Address address = MapRepository.getInstance().setAddressByCurrentLocation();
             _source.postValue(Place.builder().setAddress(address.getAddressLine(0))
                     .setLatLng(new LatLng(address.getLatitude(), address.getLongitude())).build());

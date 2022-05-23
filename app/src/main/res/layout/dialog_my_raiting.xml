@@ -25,14 +25,14 @@
     >
 
     <ImageView
-        android:id="@+id/start"
+        android:id="@+id/star"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_star_rate_24"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="@dimen/margin_vertical"
-        android:layout_marginStart="@dimen/margin_side"
+        android:layout_marginEnd="@dimen/margin_side"
 
         />
 
@@ -40,26 +40,25 @@
         android:id="@+id/rate_val"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/start"
-        app:layout_constraintTop_toTopOf="@id/start"
-        app:layout_constraintBottom_toBottomOf="@id/start"
+        app:layout_constraintEnd_toStartOf="@id/star"
+        app:layout_constraintTop_toTopOf="@id/star"
+        app:layout_constraintBottom_toBottomOf="@id/star"
         android:text="@{rate}"
-        android:textColor="@color/black"
-        android:layout_marginStart="@dimen/side_mini_margin"
+        android:layout_marginEnd="@dimen/side_mini_margin"
         />
 
     <TextView
         android:id="@+id/comment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/rate_val"
+        app:layout_constraintStart_toStartOf="@id/close"
         app:layout_constraintTop_toTopOf="@id/rate_val"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rate_val"
         android:layout_marginEnd="@dimen/margin_side"
-        android:layout_marginStart="@dimen/margin_side"
         android:text="@{comment}"
-        android:layoutDirection="rtl"
-        />
+        android:textColor="@color/black"
+        android:paddingStart="@dimen/side_mini_margin"
+        tools:ignore="RtlSymmetry" />
 
     <Button
         android:id="@+id/close"

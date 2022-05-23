@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.apollographql.apollo3.api.Optional;
 import com.example.jesta.GetJestaQuery;
+import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.interfaces.IDialogConsumerHelper;
 import com.example.jesta.interfaces.INavigationHelper;
@@ -28,6 +29,12 @@ public class JestaDetailsViewModel extends ViewModel {
     private INavigationHelper _navigationHelper;
     private String _userId;
     private final MutableLiveData<Transaction> _detailsTransaction;
+    private final MutableLiveData<Boolean> _isJestaDetailsLoading;
+    private final MutableLiveData<String> _rejectServerMsg;
+    private final MutableLiveData<String> _approveServerMsg;
+    private final MutableLiveData<String> _suggestHelpServerMsg;
+    private final MutableLiveData<String> _doneServerMsg;
+
     // endregion
 
     // region C'Tor
@@ -37,15 +44,60 @@ public class JestaDetailsViewModel extends ViewModel {
         this._myLocation = MapRepository.getInstance().getMyLocation();
         this._dialogConsumerHelper = UsersRepository.getInstance().get_dialogConsumerHelper();
         this._comment = JestaRepository.getInstance().get_comment();
-        this._isSuggestHelp =JestaRepository.getInstance().get_isSuggestHelp();
+        this._isSuggestHelp = JestaRepository.getInstance().get_isSuggestHelp();
         this._favorTransactionStatus = JestaRepository.getInstance().get_favorTransactionStatus();
         this._userId = ShardPreferencesHelper.readId();
         this._detailsTransaction = JestaRepository.getInstance().get_detailsTransaction();
+        this._isJestaDetailsLoading = JestaRepository.getInstance().get_jestaDetailsLoading();
+        this._approveServerMsg = JestaRepository.getInstance().get_approveServerMsg();
+        this._rejectServerMsg = JestaRepository.getInstance().get_rejectServerMsg();
+        this._suggestHelpServerMsg = JestaRepository.getInstance().get_suggestHelpServerMsg();
+        this._doneServerMsg = JestaRepository.getInstance().get_doneServerMsg();
     }
 
     // endregion
 
     // region Properties
+
+    public void set_doneServerMsg(String msg) {
+        _doneServerMsg.setValue(msg);
+    }
+
+    public void set_rejectServerMsg(String msg) {
+        _rejectServerMsg.setValue(msg);
+    }
+
+    public void set_approveServerMsg(String msg) {
+        _approveServerMsg.setValue(msg);
+    }
+
+    public void set_suggestHelpServerMsg(String msg) {
+        _suggestHelpServerMsg.setValue(msg);
+    }
+
+    public MutableLiveData<String> get_rejectServerMsg() {
+        return _rejectServerMsg;
+    }
+
+    public MutableLiveData<String> get_approveServerMsg() {
+        return _approveServerMsg;
+    }
+
+    public MutableLiveData<String> get_suggestHelpServerMsg() {
+        return _suggestHelpServerMsg;
+    }
+
+    public MutableLiveData<String> get_doneServerMsg() {
+        return _doneServerMsg;
+    }
+
+    public MutableLiveData<Boolean> get_isJestaDetailsLoading() {
+        return _isJestaDetailsLoading;
+    }
+
+    public void set_isJestaDetailsLoading(boolean isLoading) {
+        _isJestaDetailsLoading.setValue(isLoading);
+    }
 
     public INavigationHelper get_navigationHelper() {
         return _navigationHelper;
@@ -55,7 +107,7 @@ public class JestaDetailsViewModel extends ViewModel {
         this._navigationHelper = _navigationHelper;
     }
 
-    public void set_favorTransactionStatus(String status){
+    public void set_favorTransactionStatus(String status) {
         _favorTransactionStatus.postValue(status);
     }
 
@@ -95,7 +147,7 @@ public class JestaDetailsViewModel extends ViewModel {
         return _isSuggestHelp;
     }
 
-    public void set_isSuggestHelp(boolean bool){
+    public void set_isSuggestHelp(boolean bool) {
         _isSuggestHelp.setValue(bool);
     }
 
@@ -107,7 +159,7 @@ public class JestaDetailsViewModel extends ViewModel {
         return _detailsTransaction;
     }
 
-    public void set_detailsTransaction(Transaction transaction){
+    public void set_detailsTransaction(Transaction transaction) {
         _detailsTransaction.setValue(transaction);
     }
 
@@ -117,9 +169,10 @@ public class JestaDetailsViewModel extends ViewModel {
 
     /**
      * Get The Jesta Details by an Id
+     *
      * @param id The Id
      */
-    public void getDetails(String id){
+    public void getDetails(String id) {
         GraphqlRepository.getInstance().getJestaDetails(id);
     }
 
@@ -142,10 +195,22 @@ public class JestaDetailsViewModel extends ViewModel {
 
     /**
      * Get Transaction By Id
+     *
      * @param transactionId the transaction ID
      */
     public void getTransaction(String transactionId) {
         GraphqlRepository.getInstance().getTransactionById(transactionId);
+    }
+
+    public void close() {
+        set_jestaDetails(null);
+        set_favorTransactionStatus(null);
+        set_detailsTransaction(null);
+        set_isJestaDetailsLoading(true);
+        set_doneServerMsg(Consts.INVALID_STRING);
+        set_rejectServerMsg(Consts.INVALID_STRING);
+        set_approveServerMsg(Consts.INVALID_STRING);
+        set_suggestHelpServerMsg(Consts.INVALID_STRING);
     }
 
     // endregion

@@ -53,6 +53,7 @@ public class DoneJestasFragment extends Fragment {
         _jestasListsViewModel = new ViewModelProvider(this).get(JestasListsViewModel.class);
         _mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
         _mapViewModel.set_navigationHelper(navigationHelper);
+        _binding.genericList.swiper.setRefreshing(true);
 
         init();
         return _binding.getRoot();

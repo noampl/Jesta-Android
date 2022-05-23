@@ -31,6 +31,7 @@ public class ShardPreferencesHelper {
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         );
     }
+
     // region Write
 
     public static void writeToken(String token){

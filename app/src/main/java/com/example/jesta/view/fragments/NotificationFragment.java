@@ -38,8 +38,8 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         @Override
         public void navigate(String[] args) {
             NotificationFragmentDirections.ActionNavNotificationToRatingDialogFragment action =
-            NotificationFragmentDirections.actionNavNotificationToRatingDialogFragment(args[0]);
-            Navigation.findNavController(requireActivity(),R.id.main_container).navigate((NavDirections) action);
+                    NotificationFragmentDirections.actionNavNotificationToRatingDialogFragment(args[0]);
+            Navigation.findNavController(requireActivity(), R.id.main_container).navigate((NavDirections) action);
         }
     };
     private final IDeepLinkHelper _deepLinkHelper = new IDeepLinkHelper() {
@@ -49,7 +49,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
                 String lat = args.get(0);
                 String lng = args.get(1);
                 // Launch Waze to look for Hawaii:
-                String url = "https://www.waze.com/ul?ll=" + lat + "%2C"+lng+"&navigate=yes&zoom=17";
+                String url = "https://www.waze.com/ul?ll=" + lat + "%2C" + lng + "&navigate=yes&zoom=17";
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             } catch (ActivityNotFoundException ex) {
@@ -64,7 +64,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         @Override
         public void navigate(String[] args) {
             NotificationFragmentDirections.ActionNavNotificationToRatingResultDialog action =
-                    NotificationFragmentDirections.actionNavNotificationToRatingResultDialog(args[0], args[1], args[2]);
+                    NotificationFragmentDirections.actionNavNotificationToRatingResultDialog(args[1], args[0], args[2]);
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
 
 
@@ -78,8 +78,9 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_notification,container,false);
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_notification, container, false);
         _notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
+        _binding.swiper.setRefreshing(true);
         _notificationViewModel.set_iNavigationHelper(this);
         _notificationViewModel.set_ratingDialogOpener(_ratingDialogOpener);
         _notificationViewModel.set_deepLingHelper(_deepLinkHelper);
@@ -109,26 +110,26 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
 
     // region Private Methods
 
-    private void init(){
+    private void init() {
         initAdapter();
         initSwiper();
     }
 
-    private void initAdapter(){
+    private void initAdapter() {
         NotificationAdapter adapter = new NotificationAdapter(_notificationViewModel);
         _notificationViewModel.get_notificationTransaction().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
                 adapter.submitList(transactions); // TODO add here sort by lastDate
-             }
+            }
         });
         _binding.notificationLst.setAdapter(adapter);
         _binding.notificationLst.setLayoutManager(new CustomLeanerManager(requireContext()));
     }
 
-    private void initSwiper(){
-        _binding.swiper.setOnRefreshListener(()-> _notificationViewModel.fetchTransaction());
-        _notificationViewModel.get_isTransactionLoading().observe(getViewLifecycleOwner(),b -> _binding.swiper.setRefreshing(b));
+    private void initSwiper() {
+        _binding.swiper.setOnRefreshListener(() -> _notificationViewModel.fetchTransaction());
+        _notificationViewModel.get_isTransactionLoading().observe(getViewLifecycleOwner(), b -> _binding.swiper.setRefreshing(b));
     }
 
     @Override
@@ -136,7 +137,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         NotificationFragmentDirections.ActionNavNotificationToJestaDetailsFragment action =
                 NotificationFragmentDirections.actionNavNotificationToJestaDetailsFragment(args[0]);
         action.setTransactionId(args[1]);
-        Navigation.findNavController(requireActivity(),R.id.main_container).navigate((NavDirections) action);
+        Navigation.findNavController(requireActivity(), R.id.main_container).navigate((NavDirections) action);
     }
 
     // endregion
