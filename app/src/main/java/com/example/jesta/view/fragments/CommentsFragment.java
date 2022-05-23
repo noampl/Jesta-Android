@@ -34,7 +34,7 @@ public class CommentsFragment extends Fragment {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_comments, container, false);
         _commentsViewModel = new ViewModelProvider(this).get(CommentsViewModel.class);
         _userId = CommentsFragmentArgs.fromBundle(getArguments()).getUserId();
-
+        _binding.swiper.setRefreshing(true);
         if (_userId == null || _userId.equals("1")){
             _userId = _commentsViewModel.getCurrentUserId();
         }

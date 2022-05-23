@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.jesta.R;
+import com.example.jesta.common.Consts;
 import com.example.jesta.databinding.FragmentSummaryBinding;
 import com.example.jesta.viewmodel.CreateJestaViewModel;
 
@@ -33,6 +34,14 @@ public class SummaryFragment extends Fragment {
 
         init();
         return _binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (_createJestaViewModel != null){
+            _createJestaViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
+        }
     }
 
     private void init(){
@@ -60,7 +69,6 @@ public class SummaryFragment extends Fragment {
             }
             if(_createJestaViewModel.createJesta()){
                 _createJestaViewModel.clearData();
-                Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
             }
             else{
                 Toast.makeText(requireContext(),"ERROR",Toast.LENGTH_SHORT).show();
@@ -74,6 +82,17 @@ public class SummaryFragment extends Fragment {
         });
         _createJestaViewModel.get_endDate().observe(getViewLifecycleOwner(), date -> {
             _binding.setDstDate(date);
+        });
+        _createJestaViewModel.get_serverInteractionResult().observe(getViewLifecycleOwner(),msg ->{
+            if (msg.equals(Consts.INVALID_STRING))
+                return;
+            if (msg.equals(Consts.SUCCESS)){
+                Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
+                _createJestaViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
+            }
+            else{
+                //TODO Ohad show error
+            }
         });
     }
 }

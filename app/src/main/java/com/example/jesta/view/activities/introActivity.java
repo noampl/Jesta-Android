@@ -51,6 +51,7 @@ public class introActivity extends AppCompatActivity {
         if (!Places.isInitialized()) {
             Places.initialize(MyApplication.getAppContext(), getString(R.string.google_maps_key), Locale.forLanguageTag("he"));
         }
+        System.out.println("peleg - start initlogin");
         viewModel.initLogin();
 
     }

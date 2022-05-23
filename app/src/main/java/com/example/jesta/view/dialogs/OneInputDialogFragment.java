@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.jesta.R;
+import com.example.jesta.common.Consts;
 import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentOneInputDialogBinding;
 import com.example.jesta.viewmodel.UsersViewModel;
@@ -57,6 +58,13 @@ public class OneInputDialogFragment extends DialogFragment {
         return _binding.getRoot();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (_userViewModel != null)
+            _userViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
+    }
+
     // endregion
 
     // region Private Methods
@@ -67,6 +75,7 @@ public class OneInputDialogFragment extends DialogFragment {
         _title = OneInputDialogFragmentArgs.fromBundle(getArguments()).getTitle();
         initDialog();
         initBinding();
+        initObserver();
     }
 
     private void initDialog() {
@@ -74,7 +83,6 @@ public class OneInputDialogFragment extends DialogFragment {
             String newVal = _binding.inputEditTxt.getText().toString();
             if (!newVal.equals("")) {
                 _userViewModel.get_dialogConsumerHelper().consume(newVal);
-                _dialog.dismiss();
             }
         });
         _binding.cancelButton.setOnClickListener(view -> _dialog.dismiss());
@@ -103,5 +111,19 @@ public class OneInputDialogFragment extends DialogFragment {
         _binding.setLifecycleOwner(getViewLifecycleOwner());
     }
 
+
+    private void initObserver() {
+        _userViewModel.get_serverInteractionResult().observe(getViewLifecycleOwner(), msg -> {
+            if (msg.equals(Consts.INVALID_STRING))
+                return;
+            if (msg.equals(Consts.SUCCESS)) {
+                _dialog.dismiss();
+                _userViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
+            } else {
+                // TODO Ohad raise an error
+            }
+
+        });
+    }
     // endregion
 }

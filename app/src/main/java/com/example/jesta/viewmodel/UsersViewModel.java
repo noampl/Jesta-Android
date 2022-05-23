@@ -35,6 +35,7 @@ public class UsersViewModel extends ViewModel {
     private final MutableLiveData<User> _myUser;
     private final MutableLiveData<Boolean> _isUserUpdated;
     private IDialogConsumerHelper _dialogConsumerHelper;
+    private final MutableLiveData<String> _serverInteractionResult;
 
     // endregion
 
@@ -44,11 +45,20 @@ public class UsersViewModel extends ViewModel {
         _myUser = UsersRepository.getInstance().get_myUser();
         _isUserUpdated = UsersRepository.getInstance().get_isUserChanged();
         _dialogConsumerHelper = UsersRepository.getInstance().get_dialogConsumerHelper();
+        _serverInteractionResult = GraphqlRepository.getInstance().get_serverInteractionResult();
     }
 
     // endregion
 
     // region Properties
+
+    public void set_serverInteractionResult(String result){
+        _serverInteractionResult.setValue(result);
+    }
+
+    public MutableLiveData<String> get_serverInteractionResult() {
+        return _serverInteractionResult;
+    }
 
     public MutableLiveData<User> get_myUser() {
         return _myUser;

@@ -189,7 +189,7 @@ public class ProfileSettingsFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             _usersViewModel.deleteAccount();
-                            Navigation.findNavController(requireActivity(), R.id.main_container).navigate(R.id.nav_map);
+                            Navigation.findNavController(requireActivity(), R.id.main_container).navigate(R.id.nav_map); // TODO figure if need to add server interaction msg
                             dialogInterface.dismiss();
                         }
                     })

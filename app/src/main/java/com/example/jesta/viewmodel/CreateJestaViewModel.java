@@ -59,6 +59,8 @@ public class CreateJestaViewModel extends ViewModel {
     private final MutableLiveData<Integer> _amount;
     private List<Upload> _images;
     private final ConcurrentHashMap<Category,List<Category>> categories;
+    private final MutableLiveData<String> _serverInteractionResult;
+
 
     // endregion
 
@@ -84,11 +86,20 @@ public class CreateJestaViewModel extends ViewModel {
         _amount = JestaRepository.getInstance().get_amount();
         _images = new ArrayList<>();
         categories = CategoriesRepository.getInstance().getMapCategoryToSubCategory();
+        _serverInteractionResult =GraphqlRepository.getInstance().get_serverInteractionResult();
     }
 
     // endregion
 
     // region Properties
+
+    public MutableLiveData<String> get_serverInteractionResult() {
+        return _serverInteractionResult;
+    }
+
+    public void set_serverInteractionResult(String result){
+        _serverInteractionResult.setValue(result);
+    }
 
     public MutableLiveData<Category> get_selectedSubCategory() {
         return _selectedSubCategory;

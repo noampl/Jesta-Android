@@ -30,7 +30,6 @@ public class LoginRegisterViewModel extends ViewModel {
 
     // region Members
 
-    private final ApolloClient _apolloClient;
     private final MutableLiveData<Boolean> isLoggedIn;
     private final MutableLiveData<String> _serverErrorMsg;
 
@@ -39,7 +38,6 @@ public class LoginRegisterViewModel extends ViewModel {
     // region C'tor
 
     public LoginRegisterViewModel() {
-        this._apolloClient = GraphqlRepository.getInstance().getApolloClient();
         isLoggedIn = GraphqlRepository.getInstance().getIsLoggedIn();
         _serverErrorMsg = GraphqlRepository.getInstance().getServerErrorMsg();
     }
@@ -76,6 +74,7 @@ public class LoginRegisterViewModel extends ViewModel {
             ShardPreferencesHelper.init();
             GraphqlRepository.getInstance().login(ShardPreferencesHelper.readEmail(), ShardPreferencesHelper.readPassword());
         } catch (GeneralSecurityException | IOException e) {
+            System.out.println("peleg - faild login");
             e.printStackTrace();
             isLoggedIn.setValue(false);
         }

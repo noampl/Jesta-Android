@@ -80,6 +80,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
                              Bundle savedInstanceState) {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_notification,container,false);
         _notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
+        _binding.swiper.setRefreshing(true);
         _notificationViewModel.set_iNavigationHelper(this);
         _notificationViewModel.set_ratingDialogOpener(_ratingDialogOpener);
         _notificationViewModel.set_deepLingHelper(_deepLinkHelper);

@@ -8,7 +8,7 @@ public class Consts {
     public static final String PASSWORD = "Password";
     public static final String INVALID_STRING = "None";
     public static final String TOKEN_PREFIX ="Bearer";
-
+    public static final String SUCCESS = "Success";
 
     // region Validation
 
@@ -46,7 +46,7 @@ public class Consts {
     /**
      * Peleg local Server Address, need to change the ip for each user
      */
-    public static final String SERVER_PRE_FIX = "http://192.168.153.138:4111/";
+    public static final String SERVER_PRE_FIX = "http://192.168.1.20:4111/";
     // Remote server ip is 193.106.55.114
 
     // endregion
