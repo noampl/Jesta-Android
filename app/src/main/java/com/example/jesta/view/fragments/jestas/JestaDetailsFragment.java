@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
 import com.example.jesta.common.AlertDialogRtlHelper;
+import com.example.jesta.common.Consts;
 import com.example.jesta.common.IntentUtils;
 import com.example.jesta.common.enums.FavorTransactionStatus;
 import com.example.jesta.common.enums.FiledType;
@@ -31,6 +32,8 @@ import com.example.jesta.viewmodel.JestaDetailsViewModel;
 import com.example.jesta.viewmodel.NotificationViewModel;
 import com.example.jesta.viewmodel.UsersViewModel;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.function.Function;
 
 
 public class JestaDetailsFragment extends Fragment {
@@ -67,9 +70,7 @@ public class JestaDetailsFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        _jestaDetailsViewModel.set_jestaDetails(null);
-        _jestaDetailsViewModel.set_favorTransactionStatus(null);
-        _jestaDetailsViewModel.set_detailsTransaction(null);
+        _jestaDetailsViewModel.close();
     }
 
     // endregion
@@ -99,13 +100,12 @@ public class JestaDetailsFragment extends Fragment {
                     user.set_phone(favor.ownerId.phone);
                     _binding.setOwner(user);
                 }
-                if (favor.categoryId != null && favor.categoryId.size() > 0){
+                if (favor.categoryId != null && favor.categoryId.size() > 0) {
                     String title = "";
 
-                    if (favor.categoryId.size() > 1){
+                    if (favor.categoryId.size() > 1) {
                         title = favor.categoryId.get(1).name + " " + favor.categoryId.get(0).name;
-                    }
-                    else{
+                    } else {
                         title = favor.categoryId.get(0).name;
                     }
                     _binding.setCategoryTitle(title);
@@ -130,6 +130,14 @@ public class JestaDetailsFragment extends Fragment {
                 System.out.println("peleg - set status " + transaction.getStatus().toString());
             }
         });
+
+        _jestaDetailsViewModel.get_isJestaDetailsLoading().observe(getViewLifecycleOwner(), b -> {
+            _binding.setIsLoading(b);
+        });
+        _jestaDetailsViewModel.get_approveServerMsg().observe(getViewLifecycleOwner(), this::serverMsgHandler);
+
+        _jestaDetailsViewModel.get_rejectServerMsg().observe(getViewLifecycleOwner(), this::serverMsgHandler);
+
     }
 
     private void validateButtons(String status) {
@@ -229,7 +237,7 @@ public class JestaDetailsFragment extends Fragment {
             if (_binding.getTransaction() != null &&
                     _binding.getTransaction().getStatus() == FavorTransactionStatus.PENDING_FOR_OWNER) {
                 _notificationViewModel.approveSuggestion(_transactionId);
-                Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
+                _binding.loadingBar.setVisibility(View.VISIBLE);
             } else {
                 JestaDetailsFragmentDirections.ActionJestaDetailsFragmentToRatingDialogFragment action =
                         JestaDetailsFragmentDirections.actionJestaDetailsFragmentToRatingDialogFragment(_transactionId);
@@ -248,7 +256,7 @@ public class JestaDetailsFragment extends Fragment {
                         })
                         .setPositiveButton(R.string.yes, ((dialog, which) -> {
                             _notificationViewModel.cancelSuggetstion(_transactionId);
-                            Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
+                            _binding.loadingBar.setVisibility(View.VISIBLE);
                         }))
                         .show();
             }
@@ -296,6 +304,17 @@ public class JestaDetailsFragment extends Fragment {
             }
         });
         AlertDialogRtlHelper.make(builder).show();
+    }
+
+    private void serverMsgHandler(String msg) {
+        if (msg.equals(Consts.INVALID_STRING))
+            return;
+        if (msg.equals(Consts.SUCCESS)) {
+            Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
+        } else {
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+            //TODO ohad change to snakbar?
+        }
     }
 
     // endregion

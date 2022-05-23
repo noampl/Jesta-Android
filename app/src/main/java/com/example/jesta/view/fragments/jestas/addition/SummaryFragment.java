@@ -67,12 +67,7 @@ public class SummaryFragment extends Fragment {
             if (_createJestaViewModel.getImage2().getValue()!= null){
                 _createJestaViewModel.initUploadImage(_createJestaViewModel.getImage2().getValue().second);
             }
-            if(_createJestaViewModel.createJesta()){
-                _createJestaViewModel.clearData();
-            }
-            else{
-                Toast.makeText(requireContext(),"ERROR",Toast.LENGTH_SHORT).show();
-            }
+            _createJestaViewModel.createJesta();
         });
     }
 
@@ -89,8 +84,10 @@ public class SummaryFragment extends Fragment {
             if (msg.equals(Consts.SUCCESS)){
                 Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
                 _createJestaViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
+                _createJestaViewModel.clearData();
             }
             else{
+                Toast.makeText(requireContext(),msg,Toast.LENGTH_SHORT).show();
                 //TODO Ohad show error
             }
         });

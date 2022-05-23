@@ -15,6 +15,8 @@ import com.example.jesta.databinding.FragmentCommentsBinding;
 import com.example.jesta.view.adapters.CommentsAdapter;
 import com.example.jesta.viewmodel.CommentsViewModel;
 
+import java.util.ArrayList;
+
 
 public class CommentsFragment extends Fragment {
 
@@ -35,7 +37,7 @@ public class CommentsFragment extends Fragment {
         _commentsViewModel = new ViewModelProvider(this).get(CommentsViewModel.class);
         _userId = CommentsFragmentArgs.fromBundle(getArguments()).getUserId();
         _binding.swiper.setRefreshing(true);
-        if (_userId == null || _userId.equals("1")){
+        if (_userId == null || _userId.equals("1")) {
             _userId = _commentsViewModel.getCurrentUserId();
         }
 
@@ -43,29 +45,36 @@ public class CommentsFragment extends Fragment {
         return _binding.getRoot();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        _commentsViewModel.set_comments(new ArrayList<>());
+    }
+
     // endregion
 
     // region Private Methods
 
-    private void init(){
+    private void init() {
         _commentsViewModel.fetchComments(_userId);
         initObservers();
         initSwiper();
     }
 
-    private void initObservers(){
+    private void initObservers() {
         CommentsAdapter adapter = new CommentsAdapter();
-        _commentsViewModel.get_comments().observe(getViewLifecycleOwner(), comm ->{
-            System.out.println("peleg - comm size is " + comm.size());
-            adapter.submitList(comm);
-            adapter.notifyDataSetChanged();
-            _binding.swiper.setRefreshing(false);
+        _commentsViewModel.get_comments().observe(getViewLifecycleOwner(), comm -> {
+            if (comm != null && comm.size() > 0){
+                adapter.submitList(comm);
+                adapter.notifyDataSetChanged();
+                _binding.swiper.setRefreshing(false);
+            }
         });
         _binding.list.setAdapter(adapter);
     }
 
-    private void initSwiper(){
-        _binding.swiper.setOnRefreshListener(()->{
+    private void initSwiper() {
+        _binding.swiper.setOnRefreshListener(() -> {
             _commentsViewModel.fetchComments(_userId);
         });
     }

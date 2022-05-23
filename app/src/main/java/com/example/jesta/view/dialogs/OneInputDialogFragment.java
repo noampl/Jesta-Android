@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.jesta.R;
 import com.example.jesta.common.Consts;
@@ -120,6 +121,7 @@ public class OneInputDialogFragment extends DialogFragment {
                 _dialog.dismiss();
                 _userViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
             } else {
+                Toast.makeText(requireContext(),msg,Toast.LENGTH_SHORT).show();
                 // TODO Ohad raise an error
             }
 

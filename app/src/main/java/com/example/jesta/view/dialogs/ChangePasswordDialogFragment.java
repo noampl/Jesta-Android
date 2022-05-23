@@ -14,8 +14,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.jesta.R;
+import com.example.jesta.common.Consts;
 import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentChangePasswordDialogBinding;
 import com.example.jesta.databinding.FragmentOneInputDialogBinding;
@@ -48,7 +50,7 @@ public class ChangePasswordDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        _binding = DataBindingUtil.inflate(inflater,R.layout.fragment_change_password_dialog, container, false);
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_change_password_dialog, container, false);
         _dialog.setView(_binding.getRoot());
         _usersViewModel = new ViewModelProvider(this).get(UsersViewModel.class);
         _loginRegisterViewModel = new ViewModelProvider(this).get(LoginRegisterViewModel.class);
@@ -57,54 +59,74 @@ public class ChangePasswordDialogFragment extends DialogFragment {
         return _binding.getRoot();
     }
 
-
-    private void init(){
-        initListeners();
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        _usersViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
     }
 
-    private void initListeners(){
+    // endregion
+
+    // region Private Methods
+
+    private void init() {
+        initListeners();
+        initObserver();
+    }
+
+    private void initListeners() {
         _binding.cancelButton.setOnClickListener(view -> _dialog.dismiss());
         _binding.submit.setOnClickListener(view -> {
             String newPassword;
             // check pld password;
-            if (!_binding.oldPasswordEditTxt.getText().toString().equals(_usersViewModel.getUserPassword())){
+            if (!_binding.oldPasswordEditTxt.getText().toString().equals(_usersViewModel.getUserPassword())) {
                 _binding.oldPasswordLayout.setError(getString(R.string.password_not_the_same));
                 zeroError(_binding.oldPasswordLayout);
                 return;
             }
             newPassword = _binding.passwordEditTxt.getText().toString();
-            if (!_loginRegisterViewModel.doesPasswordValid(newPassword)){
+            if (!_loginRegisterViewModel.doesPasswordValid(newPassword)) {
                 _binding.passwordLayout.setError(getString(R.string.password_error));
                 zeroError(_binding.passwordLayout);
                 return;
             }
-            if (!_loginRegisterViewModel.doesPasswordsMatch(newPassword,_binding.confirmPasswordEditTxt.getText().toString())){
+            if (!_loginRegisterViewModel.doesPasswordsMatch(newPassword, _binding.confirmPasswordEditTxt.getText().toString())) {
                 _binding.confirmPasswordLayout.setError(getString(R.string.password_not_the_same));
                 zeroError(_binding.confirmPasswordLayout);
                 return;
             }
             _usersViewModel.updateRemotePassword(newPassword);
-            _dialog.dismiss();
         });
     }
 
 
-    private void zeroError(TextInputLayout layout){
-        if (layout == _binding.passwordLayout){
+    private void zeroError(TextInputLayout layout) {
+        if (layout == _binding.passwordLayout) {
             _binding.confirmPasswordLayout.setError(null);
             _binding.oldPasswordLayout.setError(null);
-        }
-        else if (layout == _binding.confirmPasswordLayout){
+        } else if (layout == _binding.confirmPasswordLayout) {
             _binding.oldPasswordLayout.setError(null);
             _binding.passwordLayout.setError(null);
-        }
-        else if(layout == _binding.oldPasswordLayout){
+        } else if (layout == _binding.oldPasswordLayout) {
             _binding.confirmPasswordLayout.setError(null);
             _binding.passwordLayout.setError(null);
-        }
-        else{
+        } else {
             Log.e("ChangePasswordDialog", "Unknown layout has arrrived " + layout);
         }
     }
+
+    private void initObserver() {
+        _usersViewModel.get_serverInteractionResult().observe(getViewLifecycleOwner(), msg -> {
+            if (msg.equals(Consts.INVALID_STRING))
+                return;
+            if (msg.equals(Consts.SUCCESS)) {
+                _dialog.dismiss();
+            } else {
+                // TODO Ohad raise propper error
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     // endregion
 }

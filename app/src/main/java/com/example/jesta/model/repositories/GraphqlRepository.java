@@ -315,6 +315,7 @@ public class GraphqlRepository {
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.d("UpdateUser", e.getMessage());
+                _serverInteractionResult.postValue(e.getMessage());
             }
         });
     }
@@ -410,18 +411,23 @@ public class GraphqlRepository {
             @Override
             public void onSuccess(@NonNull ApolloResponse<ApproveFavorSuggestionMutation.Data> dataApolloResponse) {
                 if (dataApolloResponse.hasErrors()) {
-                    for (Error e : dataApolloResponse.errors)
+                    for (Error e : dataApolloResponse.errors){
                         Log.e("ApproveFavorSuggestion", e.getMessage());
-                    // TODO consider raise an error to user
+                        JestaRepository.getInstance().set_approveServerMsg(e.getMessage());
+                    }
                 } else {
                     Log.d("ApproveFavorSuggestion", "mutation success " + dataApolloResponse.data.handleFavorTransactionRequest);
                     getAllFavorTransaction();
+                    JestaRepository.getInstance().set_approveServerMsg(Consts.SUCCESS);
                 }
+                JestaRepository.getInstance().set_jestaDetailsLoading(false);
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.e("ApproveFavorSuggestion", e.getMessage());
+                JestaRepository.getInstance().set_approveServerMsg(e.getMessage());
+                JestaRepository.getInstance().set_jestaDetailsLoading(false);
             }
         });
     }
@@ -520,12 +526,16 @@ public class GraphqlRepository {
             ApolloResponse<CancelFavorTransactionMutation.Data> dataApolloResponse = responseSingle.blockingGet();
 
             if (dataApolloResponse.hasErrors()) {
-                for (Error e : dataApolloResponse.errors)
+                for (Error e : dataApolloResponse.errors){
                     Log.e("cancelFavorTransaction", e.getMessage());
+                    JestaRepository.getInstance().set_rejectServerMsg(e.getMessage());
+                }
             } else {
                 Log.d("cancelFavorTransaction", "Cancel transaction " + transactionId);
                 JestaRepository.getInstance().set_favorTransactionStatus(FavorTransactionStatus.CANCELED.toString());
+                JestaRepository.getInstance().set_rejectServerMsg(Consts.SUCCESS);
             }
+            JestaRepository.getInstance().set_jestaDetailsLoading(false);
         });
 
     }
@@ -730,9 +740,8 @@ public class GraphqlRepository {
 
                 if (transaction != null) {
                     JestaRepository.getInstance().set_favorTransactionStatus(transaction.status);
-                } else {
-//                    JestaRepository.getInstance().set_favorTransactionStatus(null);
                 }
+                    JestaRepository.getInstance().set_jestaDetailsLoading(false);
             }
         });
     }
