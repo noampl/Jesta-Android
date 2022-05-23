@@ -1,6 +1,5 @@
 package com.example.jesta.model.repositories;
 
-import android.location.Location;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -19,10 +18,12 @@ import com.example.jesta.CloseTransactionMutation;
 import com.example.jesta.CreateFavorTransactionRequestMutation;
 import com.example.jesta.CreateFavorWithImageMutation;
 import com.example.jesta.ExecutorFinishFavorMutation;
+import com.example.jesta.GetAllCategoriesQuery;
 import com.example.jesta.GetAllExecutorFavorTransactionByStatusQuery;
 import com.example.jesta.GetAllFavorTransactionByFavorIdWhenOwnerQuery;
 import com.example.jesta.GetAllFavorTransactionQuery;
 import com.example.jesta.GetAllOwnerFavorTransactionByStatusQuery;
+import com.example.jesta.GetAllSubCategoriesByParentIdQuery;
 import com.example.jesta.GetAllTransactionNotificationsQuery;
 import com.example.jesta.GetAllUserFavorTransactionByFavorIdQuery;
 import com.example.jesta.GetAllUserFavorsQuery;
@@ -39,6 +40,7 @@ import com.example.jesta.UpdateUserMutation;
 import com.example.jesta.UpdateUserPhotoMutation;
 import com.example.jesta.common.enums.FavorTransactionStatus;
 import com.example.jesta.model.enteties.Address;
+import com.example.jesta.model.enteties.Category;
 import com.example.jesta.model.enteties.Jesta;
 import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.model.enteties.User;
@@ -47,16 +49,16 @@ import com.example.jesta.type.UserCreateInput;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.type.UserUpdateInput;
-import com.google.android.gms.common.SignInButton;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -79,6 +81,7 @@ public class GraphqlRepository {
     private final ExecutorService _executorService;
     private final MutableLiveData<Boolean> _isLoggedIn;
     private final MutableLiveData<String> _serverError;
+    private final AtomicInteger _categoryCounter;
 
     // endregion
 
@@ -103,6 +106,18 @@ public class GraphqlRepository {
         _executorService = Executors.newFixedThreadPool(4);
         _isLoggedIn = new MutableLiveData<>();
         _serverError = new MutableLiveData<>();
+        _categoryCounter = new AtomicInteger(1);
+        new Thread(() -> {
+            while (_categoryCounter.get() > 0) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("peleg - loggdin");
+            _isLoggedIn.postValue(true);
+        }).start();
 
     }
 
@@ -168,14 +183,13 @@ public class GraphqlRepository {
 
             // Check if the server return good answer
             if (!response.hasErrors() && response.data != null) {
+                _apolloClient = _apolloClient.newBuilder().addHttpHeader(Consts.AUTHORIZATION, response.data.connectUser.token).build();
+                getParentCategories();
+                getMyUserInformation(email);
                 ShardPreferencesHelper.writeToken(response.data.connectUser.token);
                 ShardPreferencesHelper.writeEmail(email);
                 ShardPreferencesHelper.writePassword(password);
                 ShardPreferencesHelper.writeId(response.data.connectUser.userId);
-
-                _isLoggedIn.postValue(true);
-                _apolloClient = _apolloClient.newBuilder().addHttpHeader(Consts.AUTHORIZATION, response.data.connectUser.token).build();
-                getMyUserInformation(email);
             } else {
                 _isLoggedIn.postValue(false);
                 _serverError.postValue(response.errors.get(0).getMessage());
@@ -204,9 +218,9 @@ public class GraphqlRepository {
                 // The server return answer, check if this a good answer
                 if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null) {
                     ShardPreferencesHelper.writeToken(dataApolloResponse.data.signUpUser.token);
-                    _isLoggedIn.postValue(true);
                     _apolloClient.newBuilder().addHttpHeader("Authorization", dataApolloResponse.data.signUpUser.token).build(); // Check if this is working
                     getMyUserInformation(userCreateInput.email);
+                    getParentCategories();
                 } else {
                     _isLoggedIn.postValue(false);
                     _serverError.postValue(dataApolloResponse.errors.get(0).getMessage());
@@ -738,7 +752,7 @@ public class GraphqlRepository {
                         transactions.add(new Transaction(t._id, FavorTransactionStatus.valueOf(t.status), new Jesta(t.favorId._id, t.favorId.status,
                                 t.favorId.ownerId, new Address(t.favorId.sourceAddress.fullAddress, t.favorId.sourceAddress.location.coordinates),
                                 t.favorId.numOfPeopleNeeded, t.favorId.dateToExecute != null ? t.favorId.dateToExecute.toString() : null,
-                                t.favorId.dateToFinishExecute != null ? t.favorId.dateToFinishExecute.toString() : null),
+                                t.favorId.dateToFinishExecute != null ? t.favorId.dateToFinishExecute.toString() : null, t.favorId.categoryId),
                                 new User(t.favorOwnerId._id, t.favorOwnerId.firstName, t.favorOwnerId.lastName),
                                 new User(t.handledByUserId._id, t.handledByUserId.firstName, t.handledByUserId.lastName,
                                         t.handledByUserId.rating != null ? t.handledByUserId.rating : 0.0, t.handledByUserId.imagePath),
@@ -775,7 +789,7 @@ public class GraphqlRepository {
                         transactions.add(new Transaction(t._id, FavorTransactionStatus.valueOf(t.status), new Jesta(t.favorId._id, t.favorId.status,
                                 t.favorId.ownerId, new Address(t.favorId.sourceAddress.fullAddress, t.favorId.sourceAddress.location.coordinates),
                                 t.favorId.numOfPeopleNeeded, t.favorId.dateToExecute != null ? t.favorId.dateToExecute.toString() : null,
-                                t.favorId.dateToFinishExecute != null ? t.favorId.dateToFinishExecute.toString() : null),
+                                t.favorId.dateToFinishExecute != null ? t.favorId.dateToFinishExecute.toString() : null, t.favorId.categoryId),
                                 new User(t.favorOwnerId._id, t.favorOwnerId.firstName, t.favorOwnerId.lastName),
                                 new User(t.handledByUserId._id, t.handledByUserId.firstName, t.handledByUserId.lastName,
                                         t.handledByUserId.rating != null ? t.handledByUserId.rating : 0.0, t.handledByUserId.imagePath),
@@ -884,6 +898,73 @@ public class GraphqlRepository {
             @Override
             public void onError(@NonNull Throwable e) {
 
+            }
+        });
+    }
+
+    public void getParentCategories() {
+        ApolloCall<GetAllCategoriesQuery.Data> query = _apolloClient.query(new GetAllCategoriesQuery());
+        Single<ApolloResponse<GetAllCategoriesQuery.Data>> responseSingle = Rx3Apollo.single(query);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<GetAllCategoriesQuery.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<GetAllCategoriesQuery.Data> dataApolloResponse) {
+                if (dataApolloResponse.hasErrors()) {
+                    for (Error e : dataApolloResponse.errors) {
+                        Log.e("getCategories", e.getMessage());
+                    }
+                } else {
+                    HashMap<Category, List<Category>> categories = new HashMap<>();
+                    dataApolloResponse.data.getAllParentCategories.forEach(c -> {
+                        _categoryCounter.incrementAndGet();
+                        categories.put(new Category(c._id, c.name), new ArrayList<>());
+                    });
+                    _categoryCounter.decrementAndGet();
+                    CategoriesRepository.getInstance().setMapCategoryToSubCategory(categories);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("getCategories", e.getMessage());
+            }
+        });
+    }
+
+    public void getChildCategoryByParent(Category parent) {
+        ApolloCall<GetAllSubCategoriesByParentIdQuery.Data> query = _apolloClient.query(new GetAllSubCategoriesByParentIdQuery(new Optional.Present<>(parent.get_id())));
+        Single<ApolloResponse<GetAllSubCategoriesByParentIdQuery.Data>> responseSingle = Rx3Apollo.single(query);
+        responseSingle.subscribe(new SingleObserver<ApolloResponse<GetAllSubCategoriesByParentIdQuery.Data>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(@NonNull ApolloResponse<GetAllSubCategoriesByParentIdQuery.Data> dataApolloResponse) {
+
+                if (dataApolloResponse.hasErrors()) {
+                    for (Error e : dataApolloResponse.errors) {
+                        Log.e("getChildCategoryBtParent", e.getMessage());
+                    }
+                } else {
+                    List<Category> categories = new ArrayList<>();
+                    dataApolloResponse.data.getAllSubCategoriesByParentCategory.forEach(c -> {
+                        categories.add(new Category(c._id, c.name));
+                    });
+                    CategoriesRepository.getInstance().addSubCategories(categories, parent);
+                }
+                _categoryCounter.decrementAndGet();
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("getChildCategoryBtParent", e.getMessage());
+                _categoryCounter.decrementAndGet();
             }
         });
     }
@@ -1040,7 +1121,7 @@ public class GraphqlRepository {
             transactions.add(new Transaction(t._id, FavorTransactionStatus.valueOf(t.status), new Jesta(t.favorId._id, t.favorId.status,
                     t.favorId.ownerId, new Address(t.favorId.sourceAddress.fullAddress, t.favorId.sourceAddress.location.coordinates),
                     t.favorId.numOfPeopleNeeded, t.favorId.dateToExecute != null ? t.favorId.dateToExecute.toString() : null,
-                    t.favorId.dateToFinishExecute != null ? t.favorId.dateToFinishExecute.toString() : null),
+                    t.favorId.dateToFinishExecute != null ? t.favorId.dateToFinishExecute.toString() : null, t.favorId.categoryId),
                     new User(t.favorOwnerId._id, t.favorOwnerId.firstName, t.favorOwnerId.lastName),
                     new User(t.handledByUserId._id, t.handledByUserId.firstName, t.handledByUserId.lastName,
                             t.handledByUserId.rating != null ? t.handledByUserId.rating : 0.0, t.handledByUserId.imagePath),

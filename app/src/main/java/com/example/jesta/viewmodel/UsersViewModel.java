@@ -12,8 +12,13 @@ import com.apollographql.apollo3.api.Upload;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.interfaces.IDialogConsumerHelper;
+import com.example.jesta.model.enteties.Jesta;
 import com.example.jesta.model.enteties.User;
+import com.example.jesta.model.repositories.CommentsRepository;
 import com.example.jesta.model.repositories.GraphqlRepository;
+import com.example.jesta.model.repositories.JestaRepository;
+import com.example.jesta.model.repositories.JestasListsRepository;
+import com.example.jesta.model.repositories.NotificationRepository;
 import com.example.jesta.model.repositories.UsersRepository;
 import com.example.jesta.type.UserUpdateInput;
 
@@ -116,6 +121,11 @@ public class UsersViewModel extends ViewModel {
         ShardPreferencesHelper.logout();
         GraphqlRepository.getInstance().getIsLoggedIn().setValue(false);
         GraphqlRepository.cleanInstance();
+        UsersRepository.cleanInstance();
+        CommentsRepository.cleanInstance();
+        JestaRepository.cleanInstance();
+        JestasListsRepository.cleanInstance();
+        NotificationRepository.cleanInstance();
         // TODO clear firebase token
     }
 

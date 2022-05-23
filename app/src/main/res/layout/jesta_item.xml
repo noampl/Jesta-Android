@@ -41,11 +41,11 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:text="נקיון הבית"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/margin_vertical"
             android:layout_marginStart="@dimen/margin_side"
             android:textColor="?attr/colorPrimary"
+            app:category="@{jesta}"
             />
 
         <TextView

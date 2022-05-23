@@ -45,7 +45,7 @@ public class WaitingJestasFragment extends Fragment {
         @Override
         public void navigate(String[] args) {
             WaitingJestasFragmentDirections.ActionNavWaitingJestasToJestaDetailsFragment action =
-            WaitingJestasFragmentDirections.actionNavWaitingJestasToJestaDetailsFragment(args[0]);
+                    WaitingJestasFragmentDirections.actionNavWaitingJestasToJestaDetailsFragment(args[0]);
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
         }
     };
@@ -77,13 +77,13 @@ public class WaitingJestasFragment extends Fragment {
 
     // region Private Methods
 
-    private void init(){
+    private void init() {
         _jestasListsViewModel.fetchWatingJestas();
         initObservers();
         initListeners();
     }
 
-    private void initObservers(){
+    private void initObservers() {
         JestaAdapter adapter = new JestaAdapter(getViewLifecycleOwner(), _mapViewModel);
         _jestasListsViewModel.get_transactions().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @SuppressLint("NotifyDataSetChanged")
@@ -93,11 +93,13 @@ public class WaitingJestasFragment extends Fragment {
                     return;
                 List<Jesta> jestas = new ArrayList<>();
                 List<String> transactionId = new ArrayList<>();
-                transactions.forEach(t-> {jestas.add(new Jesta(t.getFavorId().get_id(),
-                        t.getFavorId().getStatus(), t.getFavorId().getOwnerId(),
-                        new Address(t.getFavorId().getSourceAddress().getFullAddress(), t.getFavorId().getSourceAddress().getCoordinates()),
-                        t.getFavorId().getNumOfPeople(), t.getFavorId().getDateToExecute(),t.getFavorId().getDateToFinishExecute()));
-                transactionId.add(t.get_id());
+                transactions.forEach(t -> {
+                    jestas.add(new Jesta(t.getFavorId().get_id(),
+                            t.getFavorId().getStatus(), t.getFavorId().getOwnerId(),
+                            new Address(t.getFavorId().getSourceAddress().getFullAddress(), t.getFavorId().getSourceAddress().getCoordinates()),
+                            t.getFavorId().getNumOfPeople(), t.getFavorId().getDateToExecute(), t.getFavorId().getDateToFinishExecute(), t.getFavorId().getCategories()));
+                    transactionId.add(t.get_id());
+                    System.out.println("peleg - added catagory " + t.getFavorId().getCategories().size());
                 });
 
                 adapter.submitList(jestas);
@@ -109,7 +111,7 @@ public class WaitingJestasFragment extends Fragment {
         _binding.genericList.list.setAdapter(adapter);
     }
 
-    private void initListeners(){
+    private void initListeners() {
         // TODO Implement this
         _binding.genericList.swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

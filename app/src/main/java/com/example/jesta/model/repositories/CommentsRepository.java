@@ -29,6 +29,10 @@ public class CommentsRepository {
         return instance;
     }
 
+    public static void cleanInstance() {
+        instance = new CommentsRepository();
+    }
+
     // endregion
 
     // region Properties

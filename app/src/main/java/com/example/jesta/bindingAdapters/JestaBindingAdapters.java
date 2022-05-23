@@ -24,8 +24,12 @@ import com.example.jesta.R;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.Utilities;
 import com.example.jesta.common.enums.FavorTransactionStatus;
+import com.example.jesta.model.enteties.Category;
+import com.example.jesta.model.enteties.Jesta;
 import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.model.enteties.User;
+import com.example.jesta.model.repositories.CategoriesRepository;
+import com.example.jesta.viewmodel.CreateJestaViewModel;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.button.MaterialButton;
@@ -37,7 +41,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class JestaBindingAdapters {
 
@@ -398,6 +402,39 @@ public class JestaBindingAdapters {
         }
         textView.setText(title);
     }
+
+    @BindingAdapter("category")
+    public static void setCategory(TextView textView, CreateJestaViewModel createJestaViewModel) {
+        String title = "";
+        ConcurrentHashMap<Category, List<Category>> categories = createJestaViewModel.getCategories();
+
+        if (createJestaViewModel.get_selectedParentCategory().getValue() != null){
+            if (categories.get(createJestaViewModel.get_selectedParentCategory().getValue()) != null &&
+                    categories.get(createJestaViewModel.get_selectedParentCategory().getValue()).size() > 0) {
+                title = createJestaViewModel.get_selectedParentCategory().getValue().getName() + " " +
+                        createJestaViewModel.get_selectedSubCategory().getValue().getName();
+            }
+            else{
+                title = createJestaViewModel.get_selectedParentCategory().getValue().getName();
+            }
+        }
+        else{
+            return;
+        }
+        textView.setText(title);
+    }
+
+    @BindingAdapter("category")
+    public static void setCategories(TextView textView, Jesta jesta) {
+        if (jesta.getCategories() != null && jesta.getCategories().size() > 0) {
+            if (jesta.getCategories().size() > 1) {
+                textView.setText(CategoriesRepository.getInstance().getCategoryNameById(jesta.getCategories().get(1), jesta.getCategories().get(0)));
+            } else {
+                textView.setText(CategoriesRepository.getInstance().getCategoryNameById(jesta.getCategories().get(0)));
+            }
+        }
+    }
+
 
     @SuppressLint("SetTextI18n")
     @BindingAdapter("userAddress")

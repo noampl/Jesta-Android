@@ -41,6 +41,8 @@ public class TodoJestaFragment extends Fragment {
         public void navigate(String[] args) {
             TodoJestaFragmentDirections.ActionNavTodoJestasToJestaDetailsFragment action =
                     TodoJestaFragmentDirections.actionNavTodoJestasToJestaDetailsFragment(args[0]);
+            if (args.length > 1 && args[1] != null)
+                action.setTransactionId(args[1]);
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
         }
     };
@@ -71,13 +73,13 @@ public class TodoJestaFragment extends Fragment {
 
     // region Private Methods
 
-    private void init(){
+    private void init() {
         _jestasListsViewModel.fetchTodoJestas();
         initObservers();
         initListeners();
     }
 
-    private void initObservers(){
+    private void initObservers() {
         JestaAdapter adapter = new JestaAdapter(getViewLifecycleOwner(), _mapViewModel);
         _jestasListsViewModel.get_transactions().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @SuppressLint("NotifyDataSetChanged")
@@ -86,20 +88,25 @@ public class TodoJestaFragment extends Fragment {
                 if (transactions == null)
                     return;
                 List<Jesta> jestas = new ArrayList<>();
-                transactions.forEach(t-> jestas.add(new Jesta(t.getFavorId().get_id(),
-                        t.getFavorId().getStatus(), t.getFavorId().getOwnerId(),
-                        new Address(t.getFavorId().getSourceAddress().getFullAddress(), t.getFavorId().getSourceAddress().getCoordinates()),
-                        t.getFavorId().getNumOfPeople(), t.getFavorId().getDateToExecute(),t.getFavorId().getDateToFinishExecute())));
+                List<String> transactionId = new ArrayList<>();
+                transactions.forEach(t -> {
+                    jestas.add(new Jesta(t.getFavorId().get_id(),
+                            t.getFavorId().getStatus(), t.getFavorId().getOwnerId(),
+                            new Address(t.getFavorId().getSourceAddress().getFullAddress(), t.getFavorId().getSourceAddress().getCoordinates()),
+                            t.getFavorId().getNumOfPeople(), t.getFavorId().getDateToExecute(), t.getFavorId().getDateToFinishExecute(), t.getFavorId().getCategories()));
+                    transactionId.add(t.get_id());
+                });
 
                 adapter.submitList(jestas);
-//                adapter.notifyDataSetChanged();
+                adapter.setTransactionId(transactionId);
+                adapter.notifyDataSetChanged();
                 _binding.genericList.swiper.setRefreshing(false);
             }
         });
         _binding.genericList.list.setAdapter(adapter);
     }
 
-    private void initListeners(){
+    private void initListeners() {
         // TODO Implement this
         _binding.genericList.swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

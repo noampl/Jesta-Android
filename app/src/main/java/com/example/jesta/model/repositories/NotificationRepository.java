@@ -37,6 +37,10 @@ public class NotificationRepository {
         return instance;
     }
 
+    public static void cleanInstance() {
+        instance = new NotificationRepository();
+    }
+
     // endregion
 
     // region Public Method

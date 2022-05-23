@@ -12,7 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.util.Pair;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -25,47 +25,55 @@ import android.widget.ImageView;
 
 import com.example.jesta.R;
 import com.example.jesta.databinding.FragmentWhatBinding;
+import com.example.jesta.model.enteties.Category;
 import com.example.jesta.viewmodel.CreateJestaViewModel;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.stream.Collectors;
 
 import okio.Okio;
 import okio.Source;
 
 public class WhatFragment extends Fragment {
 
-   // region Members
+    // region Members
 
     private FragmentWhatBinding _binding;
     private CreateJestaViewModel _createJestaViewModel;
+    private ArrayAdapter<String> parentCategoryAdapter;
+    private ArrayAdapter<String> subCategoryAdapter;
 
     // endregion
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        _binding = DataBindingUtil.inflate(inflater,R.layout.fragment_what,container,false);
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_what, container, false);
         _createJestaViewModel = new ViewModelProvider(this).get(CreateJestaViewModel.class);
         init();
 
         return _binding.getRoot();
     }
 
-    private void init(){
+    private void init() {
         initSpinners();
         initBinding();
         initListeners();
+        initObservers();
     }
 
-    private void initSpinners(){
-        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.category_array, android.R.layout.simple_spinner_item);
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        _binding.categorySpinner.setAdapter(categoryAdapter);
-        _binding.categorySpinner.setSelection(_createJestaViewModel.get_category().getValue());
+    private void initSpinners() {
+        parentCategoryAdapter = new ArrayAdapter(requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                _createJestaViewModel.getCategories().keySet().stream().map(Category::getName).collect(Collectors.toList()));
+
+        _binding.categorySpinner.setAdapter(parentCategoryAdapter);
+        if (_createJestaViewModel.get_selectedParentCategory().getValue() != null) {
+            int position = parentCategoryAdapter.getPosition(_createJestaViewModel.get_selectedParentCategory().getValue().getName());
+            _binding.categorySpinner.setSelection(position);
+        }
 
         ArrayAdapter<CharSequence> peopleAdapter = ArrayAdapter.createFromResource(requireContext(),
                 R.array.people_amount, android.R.layout.simple_spinner_item);
@@ -75,20 +83,48 @@ public class WhatFragment extends Fragment {
 
     }
 
-    private void initBinding(){
+    private void initBinding() {
         _binding.setViewModel(_createJestaViewModel);
         _binding.setLifecycleOwner(getViewLifecycleOwner());
     }
 
-    public void initListeners(){
+    private void initListeners() {
         _binding.categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                _createJestaViewModel.setCategorySelected(i);
+                if (_createJestaViewModel.getCategoryByName((String) adapterView.getSelectedItem()) != null) {
+                    Category selectedParent = _createJestaViewModel.getCategoryByName((String) adapterView.getSelectedItem());
+                    _createJestaViewModel.set_selectedParentCategory(selectedParent);
+
+                    if (_createJestaViewModel.getCategories().get(selectedParent) != null &&
+                            _createJestaViewModel.getCategories().get(selectedParent).size() > 0) {
+                        subCategoryAdapter = new ArrayAdapter(requireContext(),
+                                android.R.layout.simple_spinner_dropdown_item,
+                                _createJestaViewModel.getCategories().get(selectedParent).stream().map(Category::getName).collect(Collectors.toList()));
+                        _binding.subcategorySpinner.setAdapter(subCategoryAdapter);
+                        _binding.subcategorySpinnerCard.setVisibility(View.VISIBLE);
+                    } else {
+                        _binding.subcategorySpinnerCard.setVisibility(View.GONE);
+                    }
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        _binding.subcategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                _createJestaViewModel.set_selectedSubCategory(
+                        _createJestaViewModel.getCategoryByName((String) parent.getSelectedItem())
+                );
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -105,20 +141,35 @@ public class WhatFragment extends Fragment {
             }
         });
 
-        _binding.firstImage.setOnClickListener(v->{
+        _binding.firstImage.setOnClickListener(v ->
+
+        {
             Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickPhoto.setType("image/*");
             photo1Listener.launch(pickPhoto);
         });
-        _binding.secondImage.setOnClickListener(v->{
+        _binding.secondImage.setOnClickListener(v ->
+
+        {
             Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickPhoto.setType("image/*");
             photo2Listener.launch(pickPhoto);
         });
-        _binding.thirdImage.setOnClickListener(v->{
+        _binding.thirdImage.setOnClickListener(v ->
+
+        {
             Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickPhoto.setType("image/*");
             photo3Listener.launch(pickPhoto);
+        });
+    }
+
+    private void initObservers() {
+        _createJestaViewModel.get_selectedParentCategory().observe(getViewLifecycleOwner(), category -> {
+            if (category != null) {
+                int position = parentCategoryAdapter.getPosition(category.getName());
+                _binding.categorySpinner.setSelection(position);
+            }
         });
     }
 
@@ -129,11 +180,11 @@ public class WhatFragment extends Fragment {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                   activityResult(result, _binding.firstImage);
-                   if (result.getResultCode() == Activity.RESULT_OK){
-                       _binding.secondImage.setImageResource(R.drawable.ic_baseline_add_24);
-                       _binding.secondImage.setClickable(true);
-                   }
+                    activityResult(result, _binding.firstImage);
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        _binding.secondImage.setImageResource(R.drawable.ic_baseline_add_24);
+                        _binding.secondImage.setClickable(true);
+                    }
                 }
             }
     );
@@ -144,7 +195,7 @@ public class WhatFragment extends Fragment {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     activityResult(result, _binding.secondImage);
-                    if (result.getResultCode() == Activity.RESULT_OK){
+                    if (result.getResultCode() == Activity.RESULT_OK) {
                         _binding.thirdImage.setImageResource(R.drawable.ic_baseline_add_24);
                         _binding.thirdImage.setClickable(true);
                     }
@@ -162,8 +213,8 @@ public class WhatFragment extends Fragment {
             }
     );
 
-    private void activityResult(ActivityResult result, ImageView imageView){
-        if(result.getResultCode() == Activity.RESULT_OK){
+    private void activityResult(ActivityResult result, ImageView imageView) {
+        if (result.getResultCode() == Activity.RESULT_OK) {
             Intent data = result.getData();
             Uri uri = data != null ? data.getData() : null;
             Picasso.with(imageView.getContext()).load(uri).fit().into(imageView);
@@ -175,17 +226,14 @@ public class WhatFragment extends Fragment {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            if (imageView == _binding.firstImage){
+            if (imageView == _binding.firstImage) {
                 _createJestaViewModel.setImage1(new Pair<Uri, Source>(uri, source));
-            }
-            else if (imageView == _binding.secondImage){
+            } else if (imageView == _binding.secondImage) {
                 _createJestaViewModel.setImage2(new Pair<Uri, Source>(uri, source));
-            }
-            else if (imageView == _binding.thirdImage){
+            } else if (imageView == _binding.thirdImage) {
                 _createJestaViewModel.setImage3(new Pair<Uri, Source>(uri, source));
-            }
-            else{
-                Log.e("WhatFragment","get activity result for unknown imageview ");
+            } else {
+                Log.e("WhatFragment", "get activity result for unknown imageview ");
             }
         }
     }

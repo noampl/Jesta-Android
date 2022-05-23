@@ -40,10 +40,10 @@ public class MapRepository {
     private GoogleMap _googleMap;
     private final MutableLiveData<LatLng> _myLocation;
     private final LocationManager _locationManager;
-    private HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> _markerToJesta;
-    private Geocoder _geoCoder;
-    private ExecutorService _executorService;
-    private MutableLiveData<Double> radiusInKm;
+    private final HashMap<Marker, GetFavorsByRadiosTimeAndDateQuery.GetByRadiosAndDateAndOnlyAvailable> _markerToJesta;
+    private final Geocoder _geoCoder;
+    private final ExecutorService _executorService;
+    private final MutableLiveData<Double> radiusInKm;
     private Circle _circle;
 
     // endregion

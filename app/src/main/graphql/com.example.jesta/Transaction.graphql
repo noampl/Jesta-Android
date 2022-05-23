@@ -15,6 +15,7 @@ query GetAllUserFavorsRequestedTransaction {
                     coordinates
                 }
             }
+            categoryId
         }
         favorOwnerId {
             _id
@@ -47,6 +48,7 @@ query GetAllTransactionNotifications($status: FavorTransactionStatus, $getAllOwn
                     coordinates
                 }
             }
+            categoryId
         }
         favorOwnerId {
             _id
@@ -76,6 +78,7 @@ query GetAllTransactionNotifications($status: FavorTransactionStatus, $getAllOwn
                     coordinates
                 }
             }
+            categoryId
         }
         favorOwnerId {
             _id

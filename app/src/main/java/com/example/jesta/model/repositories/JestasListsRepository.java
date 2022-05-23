@@ -33,6 +33,10 @@ public class JestasListsRepository {
         return instance;
     }
 
+    public static void cleanInstance() {
+        instance = new JestasListsRepository();
+    }
+
     // endregion
 
     // region Properties

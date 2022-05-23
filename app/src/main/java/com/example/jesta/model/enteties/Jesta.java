@@ -1,6 +1,7 @@
 package com.example.jesta.model.enteties;
 
 
+import java.util.List;
 import java.util.Objects;
 
 public class Jesta {
@@ -14,6 +15,7 @@ public class Jesta {
     private int numOfPeople;
     private String dateToExecute;
     private String dateToFinishExecute;
+    private List<String> categories;
 
     // endregion
 
@@ -37,6 +39,18 @@ public class Jesta {
         this.dateToFinishExecute = dateToFinishExecute;
     }
 
+    public Jesta(String _id, String status, String ownerId, Address sourceAddress, int numOfPeople,
+                 String dateToExecute, String dateToFinishExecute, List<String> categories) {
+        this._id = _id;
+        this.status = status;
+        this.ownerId = ownerId;
+        this.sourceAddress = sourceAddress;
+        this.numOfPeople = numOfPeople;
+        this.dateToExecute = dateToExecute;
+        this.dateToFinishExecute = dateToFinishExecute;
+        this.categories = categories;
+    }
+
     public Jesta(String id, String status, String ownerId) {
         this._id = id;
         this.status = status;
@@ -46,6 +60,14 @@ public class Jesta {
     // endregion
 
     // region Properties
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
 
     public String get_id() {
         return _id;

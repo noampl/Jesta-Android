@@ -44,10 +44,10 @@
             app:layout_constraintTop_toBottomOf="@id/title"
             android:layout_marginTop="@dimen/margin_vertical"
             android:layout_marginStart="@dimen/margin_side"
-            android:text="הובלת טלויזיה"
             android:textColor="@color/black"
             android:textSize="17sp"
             android:textStyle="bold"
+            app:category="@{viewModel}"
             />
 
         <TextView

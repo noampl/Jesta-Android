@@ -3,6 +3,7 @@ package com.example.jesta.viewmodel;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.CompoundButton;
 
 import androidx.core.util.Pair;
@@ -14,6 +15,8 @@ import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Upload;
 import com.example.jesta.common.Consts;
 import com.example.jesta.interfaces.ITabsNavigationHelper;
+import com.example.jesta.model.enteties.Category;
+import com.example.jesta.model.repositories.CategoriesRepository;
 import com.example.jesta.model.repositories.GraphqlRepository;
 import com.example.jesta.model.repositories.JestaRepository;
 import com.example.jesta.model.repositories.UsersRepository;
@@ -29,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import okio.Okio;
 import okio.Source;
@@ -36,7 +40,8 @@ import okio.Source;
 public class CreateJestaViewModel extends ViewModel {
 
     // region Members
-    private final MutableLiveData<Integer> _category;
+    private final MutableLiveData<Category> _selectedParentCategory;
+    private final MutableLiveData<Category> _selectedSubCategory;
     private ITabsNavigationHelper navigationHelper;
     private final MutableLiveData<String> _description;
     private final MutableLiveData<Pair<Uri, Source>> image1;
@@ -53,6 +58,7 @@ public class CreateJestaViewModel extends ViewModel {
     private final MutableLiveData<Integer> _numOfPeople;
     private final MutableLiveData<Integer> _amount;
     private List<Upload> _images;
+    private final ConcurrentHashMap<Category,List<Category>> categories;
 
     // endregion
 
@@ -72,32 +78,45 @@ public class CreateJestaViewModel extends ViewModel {
         _source = JestaRepository.getInstance().get_source();
         _destention = JestaRepository.getInstance().get_destination();
         _paymentType = JestaRepository.getInstance().get_paymentType();
-        _category = JestaRepository.getInstance().get_category();
+        _selectedParentCategory = JestaRepository.getInstance().get_selectedParentCategory();
+        _selectedSubCategory = JestaRepository.getInstance().get_selectedSubCategory();
         _numOfPeople = JestaRepository.getInstance().get_numOfPeople();
         _amount = JestaRepository.getInstance().get_amount();
         _images = new ArrayList<>();
+        categories = CategoriesRepository.getInstance().getMapCategoryToSubCategory();
     }
 
     // endregion
 
     // region Properties
 
+    public MutableLiveData<Category> get_selectedSubCategory() {
+        return _selectedSubCategory;
+    }
+
+    public void set_selectedSubCategory(Category category) {
+        _selectedSubCategory.setValue(category);
+    }
+
+    public ConcurrentHashMap<Category,List<Category>> getCategories() {
+        return categories;
+    }
 
     public ITabsNavigationHelper getNavigationHelper() {
         return navigationHelper;
     }
 
-    public void setNavigationHelper(ITabsNavigationHelper iTabsNavigationHelper){
+    public void setNavigationHelper(ITabsNavigationHelper iTabsNavigationHelper) {
         JestaRepository.getInstance().set_tabsNavigationHelper(iTabsNavigationHelper);
         navigationHelper = iTabsNavigationHelper;
     }
 
-    public MutableLiveData<Integer> get_category() {
-        return _category;
+    public MutableLiveData<Category> get_selectedParentCategory() {
+        return _selectedParentCategory;
     }
 
-    public void set_category(Integer _category) {
-        this._category.setValue(_category);
+    public void set_selectedParentCategory(Category _selectedParentCategory) {
+        this._selectedParentCategory.setValue(_selectedParentCategory);
     }
 
     public MutableLiveData<Integer> get_numOfPeople() {
@@ -217,10 +236,6 @@ public class CreateJestaViewModel extends ViewModel {
 
     // region Public Methods
 
-    public void setCategorySelected(int i) {
-        set_category(i);
-    }
-
     public void setOnAmountSpinnerSelected(int i) {
         set_numOfPeople(i);
     }
@@ -229,20 +244,21 @@ public class CreateJestaViewModel extends ViewModel {
      * React to reapt checks
      *
      * @param compoundButton The btn who changes
-     * @param b - the val of the btn
+     * @param b              - the val of the btn
      */
-    public void onRepeatChecked(CompoundButton compoundButton, boolean b){
+    public void onRepeatChecked(CompoundButton compoundButton, boolean b) {
         set_isRepeatedly(b);
     }
 
     /**
      * React to description change events
-     * @param s The new description
+     *
+     * @param s      The new description
      * @param start
      * @param before
      * @param count
      */
-    public void OnDescriptionChange(CharSequence s, int start, int before, int count){
+    public void OnDescriptionChange(CharSequence s, int start, int before, int count) {
         set_description(s.toString());
     }
 
@@ -254,21 +270,23 @@ public class CreateJestaViewModel extends ViewModel {
      * @param before
      * @param count
      */
-    public void onAmountChange(CharSequence s, int start, int before, int count){
+    public void onAmountChange(CharSequence s, int start, int before, int count) {
         if (s != null && !s.toString().equals(""))
             set_amount(Integer.parseInt(s.toString()));
     }
 
     /**
      * Navigate to a different tab in tab layout
+     *
      * @param position The position of the tab in the layout(0 - n-1)
      */
-    public void navigateToTab(int position){
+    public void navigateToTab(int position) {
         navigationHelper.moveTab(position);
     }
 
     /**
      * Gets datapicker result and convert it to display text
+     *
      * @param selection The date selected;
      * @return The date in dd/MM/yy
      */
@@ -280,23 +298,20 @@ public class CreateJestaViewModel extends ViewModel {
     /**
      * Convert hour and minute to string\
      *
-     * @param hour the hour
+     * @param hour   the hour
      * @param minute the min
-     *
      * @return "HH:MM"
      */
     public String convertTimeToText(int hour, int minute) {
         String res = "";
-        if (hour < 10){
+        if (hour < 10) {
             res = "0" + (hour);
-        }
-        else {
+        } else {
             res = "" + (hour);
         }
-        if (minute == 0){
+        if (minute == 0) {
             res = res + ":0" + minute;
-        }
-        else{
+        } else {
             res = res + ":" + minute;
         }
         return res;
@@ -307,13 +322,16 @@ public class CreateJestaViewModel extends ViewModel {
      * Create new jesta by the vm params
      */
     public boolean createJesta() {
-        if (get_category() == null || get_category().getValue() == 0){
+        List<String> categories = categoryConverter();
+        if (categories == null)
             return false;
-        }
-        GraphqlRepository.getInstance().createJesta(jestaConverter(),new Optional.Present<>(_images));
+        GraphqlRepository.getInstance().createJesta(jestaConverter(categories), new Optional.Present<>(_images));
         return true;
     }
 
+    public Category getCategoryByName(String name){
+        return CategoriesRepository.getInstance().getCategoryByName(name);
+    }
     // endregion
 
     // region Private Methods
@@ -323,15 +341,15 @@ public class CreateJestaViewModel extends ViewModel {
      *
      * @return the jesta data
      */
-    private com.apollographql.apollo3.api.Optional<FavorInput> jestaConverter(){
+    private com.apollographql.apollo3.api.Optional<FavorInput> jestaConverter(List<String> categories) {
         return new Optional.Present<>(
                 new FavorInput(UsersRepository.getInstance().get_myUser().getValue().get_id(),
-                               new ArrayList<String>(), new Optional.Present<>(get_numOfPeople().getValue()),
-                               addressConverter(get_source().getValue()),
-                               new Optional.Present<>(addressConverter(get_destention().getValue())),
-                               new Optional.Present<>(get_description().getValue()),new Optional.Present<Double>(Double.valueOf(get_amount().getValue())),
-                               get_paymentType().getValue(),new Optional.Present<>(null) , new Optional.Present<>(concatDateAndTime(get_startDate().getValue(),get_startTime().getValue())),
-                               new Optional.Present<>(concatDateAndTime(get_endDate().getValue(), get_endTime().getValue())),new Optional.Present<>(null)));
+                        categories, new Optional.Present<>(get_numOfPeople().getValue()),
+                        addressConverter(get_source().getValue()),
+                        new Optional.Present<>(addressConverter(get_destention().getValue())),
+                        new Optional.Present<>(get_description().getValue()), new Optional.Present<Double>(Double.valueOf(get_amount().getValue())),
+                        get_paymentType().getValue(), new Optional.Present<>(null), new Optional.Present<>(concatDateAndTime(get_startDate().getValue(), get_startTime().getValue())),
+                        new Optional.Present<>(concatDateAndTime(get_endDate().getValue(), get_endTime().getValue())), new Optional.Present<>(null)));
     }
 
     /**
@@ -352,7 +370,7 @@ public class CreateJestaViewModel extends ViewModel {
 
     }
 
-    private Long concatDateAndTime(Date date, Long hour){
+    private Long concatDateAndTime(Date date, Long hour) {
         if (date == null)
             return null;
         if (hour == null)
@@ -360,15 +378,26 @@ public class CreateJestaViewModel extends ViewModel {
         return date.getTime() + hour;
     }
 
+    private List<String> categoryConverter(){
+        List<String> categories = new ArrayList<>();
+        if (getCategories().get(get_selectedParentCategory().getValue()) != null &&
+                getCategories().get(get_selectedParentCategory().getValue()).size() > 0){
+            categories.add(get_selectedSubCategory().getValue().get_id());
+        }
+        categories.add(get_selectedParentCategory().getValue().get_id());
+        System.out.println("peleg - category size " + categories.size());
+        return categories;
+    }
+
     /**
      * Checks if the needed param are initalized;
      */
     public void validSummaryDetails() {
         if (get_source() == null || get_source().getValue() == null ||
-                get_source().getValue().getAddress() == null || get_source().getValue().getAddress().length() < 2){
+                get_source().getValue().getAddress() == null || get_source().getValue().getAddress().length() < 2) {
             JestaRepository.getInstance().setSourceAddressByCurrentLocation();
         }
-        if (get_startDate().getValue() == null || get_startDate().getValue().getTime() == 0){
+        if (get_startDate().getValue() == null || get_startDate().getValue().getTime() == 0) {
             set_startDate(MaterialDatePicker.todayInUtcMilliseconds());
         }
     }
@@ -378,7 +407,7 @@ public class CreateJestaViewModel extends ViewModel {
                 .content(Okio.buffer(filePath))
                 .fileName("_" + Consts.JPG)
                 .build();
-        if (!_images.contains(upload)){
+        if (!_images.contains(upload)) {
             _images.add(upload);
         }
     }
@@ -395,7 +424,8 @@ public class CreateJestaViewModel extends ViewModel {
         _source.setValue(null);
         _destention.setValue(null);
         _paymentType.setValue(PaymentType.FREE);
-        _category.setValue(0);
+        _selectedParentCategory.setValue(null);
+        _selectedSubCategory.setValue(null);
         _numOfPeople.setValue(0);
         _amount.setValue(0);
     }
