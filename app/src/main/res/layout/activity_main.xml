@@ -34,6 +34,15 @@
                     app:title="@string/app_name"
                     app:titleMarginStart="4dp">
 
+                    <include
+                        android:id="@+id/bell_layout"
+                        android:layout_height="40dp"
+                        android:layout_width="40dp"
+                        android:paddingStart="20dp"
+                        layout="@layout/bell"
+                        android:layout_gravity="end"
+                        tools:ignore="RtlSymmetry" />
+
                     <FrameLayout
                         android:id="@+id/frameToolbarLogo"
                         android:layout_width="match_parent"

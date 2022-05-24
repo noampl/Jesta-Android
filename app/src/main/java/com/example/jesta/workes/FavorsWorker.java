@@ -24,6 +24,7 @@ public class FavorsWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        System.out.println("peleg - worker getting jestas");
         List<Double> center  = new ArrayList<>();
         center.add(MapRepository.getInstance().getMyLocation().getValue().latitude);
         center.add(MapRepository.getInstance().getMyLocation().getValue().longitude);

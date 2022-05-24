@@ -27,7 +27,7 @@ public class NotificationRepository {
 
     private NotificationRepository() {
         _notificationTransaction = new MutableLiveData<>(new ArrayList<>());
-        _isTransactionLoading = new MutableLiveData<>(false);
+        _isTransactionLoading = new MutableLiveData<>(true);
     }
 
     public static NotificationRepository getInstance() {
@@ -53,10 +53,16 @@ public class NotificationRepository {
         _notificationTransaction.postValue(transactions);
     }
 
-    public synchronized void add_notificationTransaction(List<Transaction> transactions) {
-        List<Transaction> transactions1 = new ArrayList<>(Objects.requireNonNull(_notificationTransaction.getValue()));
-        transactions1.addAll(transactions);
-        set_notificationTransaction(transactions1);
+    public void add_notificationTransaction(List<Transaction> transactions) {
+        synchronized (_notificationTransaction) {
+            List<Transaction> transactions1 = new ArrayList<>(Objects.requireNonNull(_notificationTransaction.getValue()));
+            transactions.forEach(t-> {
+                if (!transactions1.contains(t)){
+                    transactions1.add(t);
+                }
+            });
+            set_notificationTransaction(transactions1);
+        }
     }
 
     public MutableLiveData<Boolean> get_isTransactionLoading() {
@@ -67,12 +73,14 @@ public class NotificationRepository {
         _isTransactionLoading.postValue(isTransactionLoading);
     }
 
-    public synchronized void removeTransactionById(String transactionId) {
-        if (_notificationTransaction.getValue().size() > 0) {
-            for (Transaction t : _notificationTransaction.getValue()) {
-                if (t.get_id().equals(transactionId)){
-                    removeTransaction(t);
-                    break;
+    public void removeTransactionById(String transactionId) {
+        synchronized(_notificationTransaction){
+            if (_notificationTransaction.getValue().size() > 0) {
+                for (Transaction t : _notificationTransaction.getValue()) {
+                    if (t.get_id().equals(transactionId)){
+                        removeTransaction(t);
+                        break;
+                    }
                 }
             }
         }

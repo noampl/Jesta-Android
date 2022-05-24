@@ -42,11 +42,17 @@ public class Consts {
 
     // endregion
 
+    // region Formats
+
+    public static final String SERVER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+
+    // endregion
+
     // region Server Path
     /**
      * Peleg local Server Address, need to change the ip for each user
      */
-    public static final String SERVER_PRE_FIX = "http://192.168.1.20:4111/";
+    public static final String SERVER_PRE_FIX = "http://192.168.1.145:4111/";
     // Remote server ip is 193.106.55.114
 
     // endregion
