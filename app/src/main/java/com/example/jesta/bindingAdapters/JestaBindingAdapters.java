@@ -4,6 +4,7 @@ import static com.example.jesta.common.Consts.SERVER_PRE_FIX;
 
 import android.annotation.SuppressLint;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 
 import android.os.Build;
@@ -161,29 +162,25 @@ public class JestaBindingAdapters {
     @BindingAdapter("btnStatus")
     public static void setButton(AppCompatButton btn, String status) {
         if (status == null) {
-            btn.setBackgroundTintList(null);
-            btn.setBackgroundResource(R.color.black);
-            btn.setText(R.string.suggest_help);
-            btn.setTextColor(R.color.white);
             return;
         }
         if (status.equals(FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString())) {
             btn.setBackgroundResource(R.color.green);
             btn.setText(R.string.approve_for_doing);
-            btn.setTextColor(R.color.black);
+            btn.setTextColor(Color.BLACK);
         } else if (status.equals(FavorTransactionStatus.JESTA_DONE.toString()) ||
                 status.equals(FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString())) {
             btn.setBackgroundResource(R.color.green);
             btn.setText(R.string.finished);
-            btn.setTextColor(R.color.black);
+            btn.setTextColor(Color.BLACK);
         } else if (status.equals(FavorTransactionStatus.PENDING_FOR_OWNER.toString())) {
             btn.setBackgroundResource(R.color.light_orange);
             btn.setText(R.string.sent);
-            btn.setTextColor(R.color.black);
+            btn.setTextColor(Color.BLACK);
         } else {
             btn.setBackgroundResource(R.color.black);
             btn.setText(R.string.suggest_help);
-            btn.setTextColor(R.color.white);
+            btn.setTextColor(Color.WHITE);
         }
     }
 
