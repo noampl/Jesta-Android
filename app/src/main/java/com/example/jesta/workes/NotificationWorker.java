@@ -20,6 +20,7 @@ public class NotificationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        System.out.println("peleg - worker getting notification");
         GraphqlRepository.getInstance().getAllFavorTransaction();
         return Result.success();
     }

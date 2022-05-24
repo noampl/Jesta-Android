@@ -146,21 +146,34 @@ public class JestaDetailsFragment extends Fragment {
     }
 
     private void validateStatusBtn(String status) {
+        System.out.println("[eleg - validate btn status is " + status);
         if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null) {
+            System.out.println("[eleg - validate btn status is after" + status);
+            if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
+                _binding.suggestHelp.setVisibility(View.GONE);
+                _binding.sendMsg.setVisibility(View.GONE);
+                System.out.println("peleg - this is the owner sets btn visibility gone");
+            }
             if (status != null) {
                 if (status.equals(FavorTransactionStatus.CLOSED.toString())) {
                     _binding.suggestHelp.setVisibility(View.GONE);
                     _binding.sendMsg.setVisibility(View.GONE);
-                } else if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
-                    _binding.suggestHelp.setVisibility(View.GONE);
-                    _binding.sendMsg.setVisibility(View.GONE);
-                } else {
+                    System.out.println("peleg - status close sets btn visibility gone");
+                }
+                else {
                     _binding.suggestHelp.setVisibility(View.VISIBLE);
                     _binding.sendMsg.setVisibility(View.VISIBLE);
                     _binding.sendMsg.setClickable(true);
                     _binding.suggestHelp.setClickable(true);
+                    System.out.println("peleg - sets btn vidible");
                 }
             }
+        }
+        else{
+            System.out.println("peleg - details null");
+            _binding.suggestHelp.setVisibility(View.GONE);
+            _binding.sendMsg.setVisibility(View.GONE);
+            System.out.println("peleg - details null sets btn visibility gone");
         }
     }
 

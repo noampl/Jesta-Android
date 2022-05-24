@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         initWorkers();
         initObservers();
         initServices();
-//        initListeners();
+        initListeners();
     }
 
     private void initWorkers() {
@@ -134,28 +134,23 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
 
         PeriodicWorkRequest periodicWork = new PeriodicWorkRequest.Builder(FavorsWorker.class, 30, TimeUnit.SECONDS)
                 .addTag("Get_Favors")
-                .setInitialDelay(1,TimeUnit.MINUTES)
+                .setInitialDelay(1, TimeUnit.MINUTES)
                 .build();
         WorkManager.getInstance(this).enqueue(periodicWork);
     }
 
-//    private void initListeners(){
-//        _binding.belllll.bellContainer.setOnClickListener(v->_navController.navigate(R.id.nav_notification));
-//    }
+    private void initListeners() {
+        _binding.bellLayout.bellContainer.setOnClickListener(v -> _navController.navigate(R.id.nav_notification));
+    }
 
     private void initObservers() {
         NotificationViewModel viewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
         viewModel.get_notificationTransaction().observe(this, new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
-                if (transactions != null) {
-                    if (transactions.size() > 0) {
-                        _notificationCard.setVisibility(View.VISIBLE);
-                    } else {
-                        _notificationCard.setVisibility(View.INVISIBLE);
-                    }
-                    _notificationNumber.setText(String.valueOf(transactions.size()));
-                    _binding.mainToolbar.getMenu().findItem(R.id.nav_notification);
+                if (transactions != null && transactions.size() != _binding.bellLayout.getIndex()) {
+                    _binding.bellLayout.setIndex(transactions.size());
+                    _binding.bellLayout.setVisibility(transactions.size() > 0);
                 }
             }
         });
@@ -202,18 +197,7 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        // THis is a patch for getting the action view clickes
-        final Menu m = menu;
-        final MenuItem item = menu.findItem(R.id.nav_notification);
-        item.getActionView().setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                m.performIdentifierAction(item.getItemId(), 0);
-            }
-        });
         return true;
     }
 
@@ -249,9 +233,6 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
                 case R.id.nav_notification:
                     _navController.navigate(R.id.nav_notification);
                     return true;
-//                case R.id.nav_podium:
-//                    _navController.navigate(R.id.nav_podium);
-//                    return true;
                 case R.id.nav_user_profile:
                     _navController.navigate(R.id.nav_user_profile);
                     return true;

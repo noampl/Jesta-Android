@@ -1,5 +1,6 @@
 package com.example.jesta.view.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.R;
+import com.example.jesta.common.Consts;
 import com.example.jesta.common.CustomLeanerManager;
 import com.example.jesta.databinding.FragmentNotificationBinding;
 import com.example.jesta.interfaces.IDeepLinkHelper;
@@ -26,7 +28,13 @@ import com.example.jesta.model.enteties.Transaction;
 import com.example.jesta.view.adapters.NotificationAdapter;
 import com.example.jesta.viewmodel.NotificationViewModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NotificationFragment extends Fragment implements INavigationHelper {
 
@@ -66,8 +74,6 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
             NotificationFragmentDirections.ActionNavNotificationToRatingResultDialog action =
                     NotificationFragmentDirections.actionNavNotificationToRatingResultDialog(args[1], args[0], args[2]);
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
-
-
         }
     };
 
@@ -103,7 +109,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         _notificationViewModel.set_deepLingHelper(null);
         _notificationViewModel.set_ratingDialogOpener(null);
         _notificationViewModel.set_showRateDialog(null);
-
+        _notificationViewModel.setIsTransactionLoading(true);
     }
 
     // endregion
@@ -120,7 +126,21 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         _notificationViewModel.get_notificationTransaction().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
-                adapter.submitList(transactions); // TODO add here sort by lastDate
+                adapter.submitList(transactions.stream().sorted(new Comparator<Transaction>() {
+                    @Override
+                    public int compare(Transaction o1, Transaction o2) {
+                        long result = 0;
+                        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(Consts.SERVER_DATE_FORMAT);
+                        try {
+                            Date date1 = sdf.parse(o1.getDateLastModified());
+                            Date date2 = sdf.parse(o2.getDateLastModified());
+                            result = date2.getTime() - date1.getTime();
+                        } catch (ParseException | NullPointerException e) {
+                            e.printStackTrace();
+                        }
+                        return (int) result;
+                    }
+                }).collect(Collectors.toList()));
             }
         });
         _binding.notificationLst.setAdapter(adapter);

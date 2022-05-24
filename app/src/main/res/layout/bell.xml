@@ -9,6 +9,7 @@
         <variable
             name="index"
             type="int" />
+
         <variable
             name="visibility"
             type="boolean" />
