@@ -163,6 +163,18 @@ public class LoginRegisterViewModel extends ViewModel {
         return Pattern.matches(Consts.EMAIL_VALIDATOR, email);
     }
 
+    /**
+     * Valid phone number
+     *
+     * @param phone The phone to valid
+     * @return True if valid
+     */
+    public boolean doesPhoneValid(String phone) {
+        if (phone == null)
+            return false;
+        return Pattern.matches(Consts.PHONE_VALIDATOR, phone);
+    }
+
     // endregion
 
     // region Private Methods
@@ -181,6 +193,8 @@ public class LoginRegisterViewModel extends ViewModel {
         }
         return bao.toByteArray();
     }
+
+
 
     // endregion
 

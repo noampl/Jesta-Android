@@ -17,6 +17,7 @@
     <string name="password_error">סיסמה חייבת להכיל אותיות קטנות גדולות וספרות לפחות בארוך 8 תווים</string>
     <string name="password_not_the_same">סיסמאות לא זהות</string>
     <string name="email_validation_error">דוא"ל לא חוקי</string>
+    <string name="phone_validation_error">הטלפון חייב להכיל עשרה מספרים</string>
     <string name="profile">פרופיל</string>
     <string name="notification">התראות</string>
     <string name="add_jesta">הוסף ג\'סטה</string>
@@ -40,7 +41,7 @@
     <string name="tab_payment">4. גמול</string>
     <string name="tab_summary">5. סיכום</string>
     <string name="ask_for_jesta">בקשה לג\'סטה</string>
-    <string name="pictuers">תמונות</string>
+    <string name="picture">תמונה</string>
     <string name="how_many_men">כמה אנשים צריך?</string>
     <string name="short_description">תיאור קצר…</string>
     <string name="require_jesta">מה הג\'סטה המבוקשת?</string>

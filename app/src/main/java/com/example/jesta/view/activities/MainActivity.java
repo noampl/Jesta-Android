@@ -95,6 +95,12 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        WorkManager.getInstance(this).cancelAllWork();
+    }
+
     // endregion
 
     // region Private Methods

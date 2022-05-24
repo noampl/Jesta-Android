@@ -233,12 +233,16 @@ public class GraphqlRepository {
                 // The server return answer, check if this a good answer
                 if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null) {
                     ShardPreferencesHelper.writeToken(dataApolloResponse.data.signUpUser.token);
-                    _apolloClient.newBuilder().addHttpHeader("Authorization", dataApolloResponse.data.signUpUser.token).build(); // Check if this is working
+                    ShardPreferencesHelper.writeEmail(userCreateInput.email);
+                    ShardPreferencesHelper.writePassword(userCreateInput.hashedPassword);
+                    _apolloClient = _apolloClient.newBuilder().addHttpHeader(Consts.AUTHORIZATION, dataApolloResponse.data.signUpUser.token).build(); // Check if this is working
                     getMyUserInformation(userCreateInput.email);
                     getParentCategories();
+                    Log.d("register", Consts.SUCCESS);
                 } else {
                     _isLoggedIn.postValue(false);
                     _serverError.postValue(dataApolloResponse.errors.get(0).getMessage());
+                    Log.e("register", dataApolloResponse.errors.get(0).getMessage());
                 }
             }
 
@@ -270,7 +274,7 @@ public class GraphqlRepository {
                     System.out.println("peleg - createJesta");
                     _serverInteractionResult.postValue(Consts.SUCCESS);
                 } else {
-                    Log.d("peleg - CreateJesta", dataApolloResponse.errors.get(0).getMessage());
+                    Log.d("peleg - server return CreateJesta", dataApolloResponse.errors.get(0).getMessage());
                     _serverInteractionResult.postValue(dataApolloResponse.errors.get(0).getMessage());
                 }
             }
@@ -462,7 +466,7 @@ public class GraphqlRepository {
      * @param rate    The Rate (1-5)
      * @param comment Comment about the jestioner handler
      */
-    public void ownerFinishFavor(String id, int rate, String comment) {
+    public void ownerFinishFavor(String id, double rate, String comment) {
         ApolloCall<OwnerNotifyJestaHasBeenDoneMutation.Data> mutation = _apolloClient.mutation(
                 new OwnerNotifyJestaHasBeenDoneMutation(id, new Optional.Present<>(rate), new Optional.Present<>(comment)));
         Single<ApolloResponse<OwnerNotifyJestaHasBeenDoneMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
@@ -923,6 +927,7 @@ public class GraphqlRepository {
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.e("getCategories", e.getMessage());
+                _isLoggedIn.postValue(true);
             }
         });
     }
@@ -1144,7 +1149,6 @@ public class GraphqlRepository {
                     t.favorOwnerId.firstName, t.favorOwnerId.lastName));
             transactions.add(transaction);
         });
-        System.out.println("peleg - comment size is " + transactions.size());
         return transactions;
     }
 

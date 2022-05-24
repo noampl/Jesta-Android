@@ -1,6 +1,7 @@
 package com.example.jesta.view.fragments.login;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,6 +20,7 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.jesta.R;
 import com.example.jesta.common.Consts;
@@ -60,6 +62,7 @@ public class RegisterFragment extends Fragment {
                              Bundle savedInstanceState) {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_register, container, false);
         _loginRegisterViewModel = new ViewModelProvider(this).get(LoginRegisterViewModel.class);
+        _binding.setIsloading(false);
         init();
 
         return _binding.getRoot();
@@ -72,7 +75,7 @@ public class RegisterFragment extends Fragment {
     /**
      * Initialize the app
      */
-    private void init(){
+    private void init() {
         Picasso.with(_binding.confirmPasswordEditTxt.getContext()).load(R.drawable.no_profile_picture).fit().into(_binding.profileImageButton);
         initListeners();
         initObservers();
@@ -81,16 +84,18 @@ public class RegisterFragment extends Fragment {
     /**
      * Register all observers
      */
-    private void initObservers(){
-        _loginRegisterViewModel.getServerErrorMsg().observe(getViewLifecycleOwner(),msg->{
-           if (!msg.equals(Consts.INVALID_STRING)){
-               _binding.email.setError(msg);
-               zeroErrorsMsgs(_binding.email);
-           }
+    private void initObservers() {
+        _loginRegisterViewModel.getServerErrorMsg().observe(getViewLifecycleOwner(), msg -> {
+            if (!msg.equals(Consts.INVALID_STRING)) {
+                _binding.setIsloading(false);
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+                // Todo Ohad
+            }
         });
 
-        _loginRegisterViewModel.getIsLoggedIn().observe(getViewLifecycleOwner(),isLoggedIn->{
-            if (isLoggedIn){
+        _loginRegisterViewModel.getIsLoggedIn().observe(getViewLifecycleOwner(), isLoggedIn -> {
+            if (isLoggedIn) {
+                _binding.setIsloading(false);
                 Intent intent = new Intent(requireActivity(), MainActivity.class);
                 startActivity(intent);
                 requireActivity().finish();
@@ -102,18 +107,20 @@ public class RegisterFragment extends Fragment {
      * Register all listeners
      */
     private void initListeners() {
-        _binding.login.setOnClickListener((v)->
-                Navigation.findNavController(requireActivity(),R.id.login_register_container).popBackStack());
+        _binding.login.setOnClickListener((v) ->
+                Navigation.findNavController(requireActivity(), R.id.login_register_container).popBackStack());
 
-        _binding.profileImageButton.setOnClickListener(v->{
+        _binding.profileImageButton.setOnClickListener(v -> {
             Intent pickPhoto = new Intent(Intent.ACTION_PICK);
             pickPhoto.setType("image/*");
             pickPhotoResultLauncher.launch(pickPhoto);
         });
 
-        _binding.signupBtn.setOnClickListener((v)->{
+        _binding.signupBtn.setOnClickListener((v) -> {
             register();
         });
+
+        _loginRegisterViewModel.setServerErrorMsg(Consts.INVALID_STRING);
     }
 
     // endregion
@@ -123,74 +130,91 @@ public class RegisterFragment extends Fragment {
     /**
      * Register new user
      */
-    private void register(){
+    private void register() {
         // valid password srength
         String pass1 = _binding.passwordEditTxt.getText().toString();
-        if (!_loginRegisterViewModel.doesPasswordValid(pass1)){
+        if (!_loginRegisterViewModel.doesPasswordValid(pass1)) {
             _binding.passwordLayout.setError(getString(R.string.password_error));
             zeroErrorsMsgs(_binding.passwordLayout);
             return;
         }
         // valid passwords match
         String pass2 = _binding.confirmPasswordEditTxt.getText().toString();
-        if (!_loginRegisterViewModel.doesPasswordsMatch(pass1,pass2)){
+        if (!_loginRegisterViewModel.doesPasswordsMatch(pass1, pass2)) {
             _binding.confirmPasswordLayout.setError(getString(R.string.password_not_the_same));
             zeroErrorsMsgs(_binding.confirmPasswordLayout);
             return;
         }
         // valid email address
         String email = _binding.emailEditTxt.getText().toString();
-        if (!_loginRegisterViewModel.doesEmailValid(email)){
+        if (!_loginRegisterViewModel.doesEmailValid(email)) {
             _binding.email.setError(getString(R.string.email_validation_error));
             zeroErrorsMsgs(_binding.email);
             return;
         }
+        // valid phone
+        String phone = _binding.phoneEditTxt.getText().toString();
+        if (!_loginRegisterViewModel.doesPhoneValid(phone)){
+            _binding.phone.setError(getString(R.string.phone_validation_error));
+            zeroErrorsMsgs(_binding.phone);
+        }
 
         String name = _binding.fullNameEditTxt.getText().toString();
         String[] names = name.split(" ");
-        String lastName ="";
-        for (int i= 1 ; i < names.length; i++) {
+        String lastName = "";
+        for (int i = 1; i < names.length; i++) {
             lastName += lastName + " " + names[i];
         }
-
         InputStream inputStream = null;
         Source source = null;
-        try {
-            inputStream = getContext().getContentResolver().openInputStream(_filePath);
-            source = Okio.source(inputStream);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if (_filePath != null) {
+            try {
+                inputStream = getContext().getContentResolver().openInputStream(_filePath);
+                source = Okio.source(inputStream);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
-        _loginRegisterViewModel.register(names[0], lastName,null, _binding.emailEditTxt.getText().toString(),
-                _binding.passwordEditTxt.getText().toString(),null,null, source,
-                Consts.INVALID_INTEGER,Consts.INVALID_INTEGER,null);
+        _loginRegisterViewModel.register(names[0], lastName, null, _binding.emailEditTxt.getText().toString(),
+                _binding.passwordEditTxt.getText().toString(), phone, null, source,
+                Consts.INVALID_INTEGER, Consts.INVALID_INTEGER, null);
+
+        _loginRegisterViewModel.setServerErrorMsg(Consts.INVALID_STRING);
+        _binding.setIsloading(true);
     }
 
     /**
      * Zero all the Input error except of the layout
+     *
      * @param layout The layout of the error
      */
-    public void zeroErrorsMsgs(TextInputLayout layout){
-        if (layout == _binding.passwordLayout){
+    public void zeroErrorsMsgs(TextInputLayout layout) {
+        if (layout == _binding.passwordLayout) {
             _binding.confirmPasswordLayout.setError(null);
             _binding.email.setError(null);
             _binding.fullName.setError(null);
-        }
-        else if(layout == _binding.confirmPasswordLayout){
+            _binding.phone.setError(null);
+        } else if (layout == _binding.confirmPasswordLayout) {
             _binding.email.setError(null);
             _binding.fullName.setError(null);
             _binding.passwordLayout.setError(null);
-        }
-        else if (layout == _binding.email){
+            _binding.phone.setError(null);
+        } else if (layout == _binding.email) {
             _binding.confirmPasswordLayout.setError(null);
             _binding.fullName.setError(null);
             _binding.passwordLayout.setError(null);
-        }
-        else if(layout == _binding.fullName){
+            _binding.phone.setError(null);
+        } else if (layout == _binding.fullName) {
             _binding.confirmPasswordLayout.setError(null);
             _binding.passwordLayout.setError(null);
             _binding.email.setError(null);
+            _binding.phone.setError(null);
+        } else if (layout == _binding.phone){
+            _binding.confirmPasswordLayout.setError(null);
+            _binding.passwordLayout.setError(null);
+            _binding.email.setError(null);
+            _binding.fullName.setError(null);
         }
     }
 
@@ -203,7 +227,7 @@ public class RegisterFragment extends Fragment {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    if(result.getResultCode() == Activity.RESULT_OK){
+                    if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
                         Uri uri = data != null ? data.getData() : null;
                         Picasso.with(_binding.getRoot().getContext()).load(uri).fit().into(_binding.profileImageButton);

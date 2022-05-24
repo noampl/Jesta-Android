@@ -4,6 +4,7 @@ package com.example.jesta.view.fragments.jestas;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -110,6 +111,11 @@ public class JestaDetailsFragment extends Fragment {
                     }
                     _binding.setCategoryTitle(title);
                 }
+                if (favor.ownerId._id.equals(_jestaDetailsViewModel.get_userId())){
+                    _binding.suggestHelp.setVisibility(View.GONE);
+                    _binding.sendMsg.setVisibility(View.GONE);
+                    System.out.println("peleg - favor update, sets btn gone");
+                }
             }
 
         });
@@ -146,9 +152,9 @@ public class JestaDetailsFragment extends Fragment {
     }
 
     private void validateStatusBtn(String status) {
-        System.out.println("[eleg - validate btn status is " + status);
+        System.out.println("peleg - validate btn status is " + status);
         if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null) {
-            System.out.println("[eleg - validate btn status is after" + status);
+            System.out.println("peleg - validate btn status is after" + status);
             if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
                 _binding.suggestHelp.setVisibility(View.GONE);
                 _binding.sendMsg.setVisibility(View.GONE);
@@ -159,8 +165,7 @@ public class JestaDetailsFragment extends Fragment {
                     _binding.suggestHelp.setVisibility(View.GONE);
                     _binding.sendMsg.setVisibility(View.GONE);
                     System.out.println("peleg - status close sets btn visibility gone");
-                }
-                else {
+                } else {
                     _binding.suggestHelp.setVisibility(View.VISIBLE);
                     _binding.sendMsg.setVisibility(View.VISIBLE);
                     _binding.sendMsg.setClickable(true);
@@ -168,12 +173,11 @@ public class JestaDetailsFragment extends Fragment {
                     System.out.println("peleg - sets btn vidible");
                 }
             }
-        }
-        else{
+        } else {
             System.out.println("peleg - details null");
-            _binding.suggestHelp.setVisibility(View.GONE);
-            _binding.sendMsg.setVisibility(View.GONE);
-            System.out.println("peleg - details null sets btn visibility gone");
+            _binding.suggestHelp.setVisibility(View.VISIBLE);
+            _binding.sendMsg.setVisibility(View.VISIBLE);
+            System.out.println("peleg - details null sets btn visibility VISIBLE");
         }
     }
 

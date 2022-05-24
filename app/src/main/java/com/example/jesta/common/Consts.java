@@ -52,7 +52,7 @@ public class Consts {
     /**
      * Peleg local Server Address, need to change the ip for each user
      */
-    public static final String SERVER_PRE_FIX = "http://192.168.1.145:4111/";
+    public static final String SERVER_PRE_FIX = "http://193.106.55.114:4111/";
     // Remote server ip is 193.106.55.114
 
     // endregion

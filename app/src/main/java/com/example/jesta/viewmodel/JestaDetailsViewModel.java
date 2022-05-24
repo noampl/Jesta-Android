@@ -189,7 +189,7 @@ public class JestaDetailsViewModel extends ViewModel {
     }
 
     public void ownerFinishFavor(String transactionId, float rating, String comment) {
-        GraphqlRepository.getInstance().ownerFinishFavor(transactionId, (int) rating, comment);
+        GraphqlRepository.getInstance().ownerFinishFavor(transactionId, rating, comment);
         _navigationHelper.navigate(null);
     }
 

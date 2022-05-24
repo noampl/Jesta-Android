@@ -45,8 +45,6 @@ public class CreateJestaViewModel extends ViewModel {
     private ITabsNavigationHelper navigationHelper;
     private final MutableLiveData<String> _description;
     private final MutableLiveData<Pair<Uri, Source>> image1;
-    private final MutableLiveData<Pair<Uri, Source>> image2;
-    private final MutableLiveData<Pair<Uri, Source>> image3;
     private final MutableLiveData<Date> _startDate;
     private final MutableLiveData<Long> _startTime;
     private final MutableLiveData<Date> _endDate;
@@ -70,8 +68,6 @@ public class CreateJestaViewModel extends ViewModel {
         navigationHelper = JestaRepository.getInstance().get_tabsNavigationHelper();
         _description = JestaRepository.getInstance().get_description();
         image1 = JestaRepository.getInstance().getImage1();
-        image2 = JestaRepository.getInstance().getImage2();
-        image3 = JestaRepository.getInstance().getImage3();
         _startDate = JestaRepository.getInstance().get_startDate();
         _endDate = JestaRepository.getInstance().get_endDate();
         _startTime = JestaRepository.getInstance().get_startTime();
@@ -162,22 +158,6 @@ public class CreateJestaViewModel extends ViewModel {
         this.image1.setValue(image1);
     }
 
-    public MutableLiveData<Pair<Uri, Source>> getImage2() {
-        return image2;
-    }
-
-    public void setImage2(Pair<Uri, Source> image2) {
-        this.image2.setValue(image2);
-    }
-
-    public MutableLiveData<Pair<Uri, Source>> getImage3() {
-        return image3;
-    }
-
-    public void setImage3(Pair<Uri, Source> image3) {
-        this.image3.setValue(image3);
-    }
-
     public MutableLiveData<Date> get_startDate() {
         return _startDate;
     }
@@ -199,7 +179,12 @@ public class CreateJestaViewModel extends ViewModel {
     }
 
     public void set_endDate(Long _endDate) {
-        this._endDate.setValue(new Date(_endDate));
+        if (_endDate != null){
+            this._endDate.setValue(new Date(_endDate));
+        }
+        else{
+            this._endDate.setValue(null);
+        }
     }
 
     public MutableLiveData<Long> get_endTime() {
