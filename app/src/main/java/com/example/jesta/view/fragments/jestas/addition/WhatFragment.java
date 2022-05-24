@@ -148,20 +148,7 @@ public class WhatFragment extends Fragment {
             pickPhoto.setType("image/*");
             photo1Listener.launch(pickPhoto);
         });
-        _binding.secondImage.setOnClickListener(v ->
 
-        {
-            Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            pickPhoto.setType("image/*");
-            photo2Listener.launch(pickPhoto);
-        });
-        _binding.thirdImage.setOnClickListener(v ->
-
-        {
-            Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            pickPhoto.setType("image/*");
-            photo3Listener.launch(pickPhoto);
-        });
     }
 
     private void initObservers() {
@@ -181,34 +168,6 @@ public class WhatFragment extends Fragment {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     activityResult(result, _binding.firstImage);
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        _binding.secondImage.setImageResource(R.drawable.ic_baseline_add_24);
-                        _binding.secondImage.setClickable(true);
-                    }
-                }
-            }
-    );
-
-    private final ActivityResultLauncher<Intent> photo2Listener = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    activityResult(result, _binding.secondImage);
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        _binding.thirdImage.setImageResource(R.drawable.ic_baseline_add_24);
-                        _binding.thirdImage.setClickable(true);
-                    }
-                }
-            }
-    );
-
-    private final ActivityResultLauncher<Intent> photo3Listener = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    activityResult(result, _binding.thirdImage);
                 }
             }
     );
@@ -228,10 +187,7 @@ public class WhatFragment extends Fragment {
             }
             if (imageView == _binding.firstImage) {
                 _createJestaViewModel.setImage1(new Pair<Uri, Source>(uri, source));
-            } else if (imageView == _binding.secondImage) {
-                _createJestaViewModel.setImage2(new Pair<Uri, Source>(uri, source));
-            } else if (imageView == _binding.thirdImage) {
-                _createJestaViewModel.setImage3(new Pair<Uri, Source>(uri, source));
+            }
             } else {
                 Log.e("WhatFragment", "get activity result for unknown imageview ");
             }
@@ -241,4 +197,3 @@ public class WhatFragment extends Fragment {
     // endregion
 
 
-}

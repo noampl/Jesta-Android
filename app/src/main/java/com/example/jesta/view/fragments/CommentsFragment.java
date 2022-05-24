@@ -67,8 +67,8 @@ public class CommentsFragment extends Fragment {
             if (comm != null && comm.size() > 0){
                 adapter.submitList(comm);
                 adapter.notifyDataSetChanged();
-                _binding.swiper.setRefreshing(false);
             }
+            _binding.swiper.setRefreshing(false);
         });
         _binding.list.setAdapter(adapter);
     }

@@ -1,12 +1,9 @@
 package com.example.jesta.view.fragments.utilities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,22 +11,15 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.example.jesta.R;
 import com.example.jesta.common.AlertDialogRtlHelper;
@@ -37,20 +27,13 @@ import com.example.jesta.common.IntentUtils;
 import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentProfileSettingsBinding;
 import com.example.jesta.interfaces.IDialogConsumerHelper;
-import com.example.jesta.type.DateTime;
 import com.example.jesta.view.activities.LoginRegisterActivity;
 import com.example.jesta.viewmodel.UsersViewModel;
-import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 import okio.Okio;
 import okio.Source;
@@ -106,7 +89,7 @@ public class ProfileSettingsFragment extends Fragment {
         public void onActivityResult(ActivityResult result) {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 try {
-                    uploadImage(result.getData().getData()); // TODO figure if this working
+                    uploadImage(result.getData().getData());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -148,7 +131,6 @@ public class ProfileSettingsFragment extends Fragment {
         initBinding();
         initListeners();
         initObservers();
-        initAutoComplete();
     }
 
     private void initBinding() {
@@ -168,9 +150,6 @@ public class ProfileSettingsFragment extends Fragment {
         _binding.phoneCard.setOnClickListener(view -> {
             showDialog(R.string.phone, _binding.phoneTitle.getText().toString(), FiledType.NAME,
                     _binding.phoneTxt.getText().toString(), phoneConsumer);
-        });
-        _binding.birthdayCard.setOnClickListener(view -> {
-            dateDialog();
         });
         _binding.descriptionCard.setOnClickListener(view -> {
             showDialog(R.string.short_description_about_yourself, _binding.descriptionTitle.getText().toString(), FiledType.DESCRIPTION,
@@ -238,35 +217,6 @@ public class ProfileSettingsFragment extends Fragment {
         });
     }
 
-    private void initAutoComplete() {
-        AutocompleteSupportFragment autoCompleteSrcAddr = (AutocompleteSupportFragment)
-                getChildFragmentManager().findFragmentById(R.id.addr_autocomplete_fragment);
-
-        // Removes the search icon:
-        ImageView searchIcon = (ImageView) ((LinearLayout) autoCompleteSrcAddr.getView()).getChildAt(0);
-        searchIcon.setVisibility(View.GONE);
-        // Makes the layout direction RTL:
-        autoCompleteSrcAddr.requireView().setTextDirection(View.TEXT_DIRECTION_RTL);
-
-        autoCompleteSrcAddr.setHint(getString(R.string.address));
-        if (_usersViewModel.get_myUser().getValue() != null && _usersViewModel.get_myUser().getValue().get_address() != null) {
-            autoCompleteSrcAddr.setText(_usersViewModel.get_myUser().getValue().get_address().fullAddress);
-        }
-        autoCompleteSrcAddr.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS));
-        autoCompleteSrcAddr.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onError(@NonNull Status status) {
-               Log.e("OnPlaceSelectedListener", status.getStatusMessage());
-            }
-
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                _usersViewModel.get_myUser().getValue().set_fullAddress(place.getAddress());
-                _usersViewModel.updateUser();
-            }
-        });
-    }
-
     /**
      * Show custom dialog for change paramater settings
      *
@@ -281,21 +231,6 @@ public class ProfileSettingsFragment extends Fragment {
                 ProfileSettingsFragmentDirections.actionNavProfileSettingsToOneInputDialogFragment(text, hint, getString(title));
         action.setFiledType(type.ordinal());
         Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
-    }
-
-    /**
-     * Opens date picker dialog
-     */
-    private void dateDialog() {
-        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker().
-                setTitleText(R.string.birthday).setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-                .build();
-        datePicker.addOnPositiveButtonClickListener(selection -> {
-            String date = _usersViewModel.convertDateSelection(selection);
-            _binding.birthdayTxt.setText(date);
-            _usersViewModel.get_myUser().getValue().set_birthday(date);
-        });
-        datePicker.show(getParentFragmentManager(), getString(R.string.birthday));
     }
 
     /**

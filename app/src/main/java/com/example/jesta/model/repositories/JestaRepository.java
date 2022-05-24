@@ -33,8 +33,6 @@ public class JestaRepository {
     private final MutableLiveData<String> _description;
     private final MutableLiveData<Integer> _numOfPeople;
     private final MutableLiveData<Pair<Uri, Source>> image1;
-    private final MutableLiveData<Pair<Uri, Source>> image2;
-    private final MutableLiveData<Pair<Uri, Source>> image3;
     private final MutableLiveData<Date> _startDate;
     private final MutableLiveData<Long> _startTime;
     private final MutableLiveData<Date> _endDate;
@@ -79,8 +77,6 @@ public class JestaRepository {
         _description = new MutableLiveData<>("");
         _numOfPeople = new MutableLiveData<>(0);
         image1 = new MutableLiveData<>();
-        image2 = new MutableLiveData<>();
-        image3 = new MutableLiveData<>();
         _startDate = new MutableLiveData<>();
         _startTime = new MutableLiveData<>();
         _endDate = new MutableLiveData<>();
@@ -189,14 +185,6 @@ public class JestaRepository {
 
     public MutableLiveData<Pair<Uri, Source>> getImage1() {
         return image1;
-    }
-
-    public MutableLiveData<Pair<Uri, Source>> getImage2() {
-        return image2;
-    }
-
-    public MutableLiveData<Pair<Uri, Source>> getImage3() {
-        return image3;
     }
 
     public MutableLiveData<Date> get_startDate() {

@@ -89,8 +89,6 @@ type Query {
     getAllCategories: [Category]
     getAllParentCategories: [Category]
     getAllSubCategoriesByParentCategory(parentCategoryId: String): [Category]
-    getAllPerforms: [Perform]
-    getPerformsInRadios(center: [Float], radius: Float): [Perform]
     getAllFavorTransactionByFavorIdWhenOwner(favorId: String!): [PopulatedFavorTransaction]
     getAllUserFavorTransactionByFavorId(favorId: String!): FavorTransaction
     getAllFavorTransaction: [FavorTransaction]
@@ -120,16 +118,13 @@ type Mutation {
     createCategory(name: String, parentCategory: String): Category
     updateCategory(nameToChange: String, newParentCategoryId: String, changedName: String): String
     deleteCategory(name: String): String
-    createPerform(perform: PerformInput): Perform
-    deletePerform(performId: String): String
-    updatePerform(performId: String, updatedPerform: UpdatePerformInput): String
     createFavorTransactionRequest(favorId: String!, comment: String): String
     handleFavorTransactionRequest(favorTransactionId: String!, comment: String): String
     cancelFavorTransaction(favorTransactionId: String!): String
     executorNotifyDoneFavor(favorTransactionId: String!): String
-    ownerNotifyJestaHasBeenDone(favorTransactionId: String!, rate: Int, handlerComment: String): String
+    ownerNotifyJestaHasBeenDone(favorTransactionId: String!, rate: Float, handlerComment: String): String
     userChangeJestaTransactionToClosed(favorTransactionId: String!): String
-    rateTransactionWithOptionalComment(favorTransactionId: String!, rate: Int, handlerComment: String): String
+    rateTransactionWithOptionalComment(favorTransactionId: String!, rate: Float, handlerComment: String): String
 }
 
 input CoordinatesInput {
@@ -227,63 +222,6 @@ type Category {
     parentCategory: Category
     name: String
     dateLastModified: DateTime
-}
-
-type ActivityDays {
-    sunday: Boolean
-    monday: Boolean
-    tuesday: Boolean
-    wednesday: Boolean
-    thursday: Boolean
-    friday: Boolean
-    saturday: Boolean
-}
-
-input InputActivityDays {
-    sunday: Boolean
-    monday: Boolean
-    tuesday: Boolean
-    wednesday: Boolean
-    thursday: Boolean
-    friday: Boolean
-    saturday: Boolean
-}
-
-type Perform {
-    _id: String!
-    performerId: String!
-    categoryId: [String!]!
-    addressPreference: Address
-    minimumPaymentAmount: Float
-    activityDays: ActivityDays
-    activityHoursStart: DateTime
-    address: Address
-    dateCreated: DateTime
-    dateLastModified: DateTime
-    preferredPaymentMethod: PaymentType
-}
-
-input PerformInput {
-    performerId: String!
-    categoryId: [String!]!
-    addressPreference: AddressInput
-    minimumPaymentAmount: Float
-    activityDays: InputActivityDays
-    activityHoursStart: DateTime
-    address: AddressInput
-    dateCreated: DateTime
-    dateLastModified: DateTime
-    preferredPaymentMethod: PaymentType
-}
-
-input UpdatePerformInput {
-    categoryId: [String]
-    addressPreference: AddressInput
-    minimumPaymentAmount: Float
-    activityDays: InputActivityDays
-    activityHoursStart: DateTime
-    address: AddressInput
-    preferredPaymentMethod: PaymentType
 }
 
 enum FavorTransactionStatus {

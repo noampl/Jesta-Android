@@ -145,10 +145,9 @@ public class JestaBindingAdapters {
     public static void setVisibility(View view, String status, String currentUser, String ownerId) {
         if (status == null) {
             view.setVisibility(View.GONE);
-            System.out.println("peleg - status is null");
             return;
         }
-        System.out.println("peleg - status is " + status);
+
         if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString().equals(status) ||
                 FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(status) ||
                 (FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(status) && currentUser.equals(ownerId))) {
@@ -408,17 +407,15 @@ public class JestaBindingAdapters {
         String title = "";
         ConcurrentHashMap<Category, List<Category>> categories = createJestaViewModel.getCategories();
 
-        if (createJestaViewModel.get_selectedParentCategory().getValue() != null){
+        if (createJestaViewModel.get_selectedParentCategory().getValue() != null) {
             if (categories.get(createJestaViewModel.get_selectedParentCategory().getValue()) != null &&
                     categories.get(createJestaViewModel.get_selectedParentCategory().getValue()).size() > 0) {
                 title = createJestaViewModel.get_selectedParentCategory().getValue().getName() + " " +
                         createJestaViewModel.get_selectedSubCategory().getValue().getName();
-            }
-            else{
+            } else {
                 title = createJestaViewModel.get_selectedParentCategory().getValue().getName();
             }
-        }
-        else{
+        } else {
             return;
         }
         textView.setText(title);

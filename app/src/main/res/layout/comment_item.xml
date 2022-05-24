@@ -26,7 +26,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/margin_side"
             android:layout_marginTop="@dimen/margin_vertical"
-            android:visibility="@{transaction.rating > 0 ? View.VISIBLE : View.INVISIBLE}"
            />
 
         <TextView
@@ -38,7 +37,6 @@
             app:layout_constraintTop_toTopOf="@id/star"
             app:layout_constraintEnd_toStartOf="@id/star"
             app:layout_constraintBottom_toBottomOf="@id/star"
-            android:visibility="@{transaction.rating > 0 ? View.VISIBLE : View.INVISIBLE}"
             />
 
         <TextView

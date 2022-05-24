@@ -131,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vertical"
-            android:text="@string/pictuers"
+            android:text="@string/picture"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -143,8 +143,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="@dimen/margin_vertical"
-            android:layout_marginEnd="@dimen/margin_side"
-            app:layout_constraintEnd_toStartOf="@+id/card_picture_2"
+            android:layout_marginStart="@dimen/margin_side"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pictures_title"
@@ -162,57 +161,15 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_picture_2"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="@dimen/margin_vertical"
-            android:layout_marginEnd="@dimen/margin_side"
-            app:layout_constraintEnd_toStartOf="@+id/card_picture_3"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/card_picture_1"
-            app:layout_constraintTop_toBottomOf="@id/pictures_title"
-            >
-            <ImageView
-                android:id="@+id/second_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/gray300"
-                android:contentDescription="@string/image_upload"
-                android:clickable="false"
-                />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_picture_3"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="@dimen/margin_vertical"
-            android:layout_marginEnd="@dimen/margin_side"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/card_picture_2"
-            app:layout_constraintTop_toBottomOf="@id/pictures_title"
-            >
-            <ImageView
-                android:id="@+id/third_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/gray300"
-                android:contentDescription="@string/image_upload"
-                android:clickable="false"
-                />
-
-        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/next"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            app:layout_constraintEnd_toEndOf="@id/card_picture_3"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_picture_1"
             android:layout_marginTop="@dimen/margin_vertical"
+            android:layout_marginEnd="@dimen/margin_side"
             app:icon="@drawable/ic_baseline_west_24"
             app:iconGravity="end"
             android:text="@string/cont"

@@ -46,6 +46,7 @@
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_generic_jestas_list.xml" value="0.264" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_help.xml" value="0.20052083333333334" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_jesta_details.xml" value="0.2" />
+        <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_loading_dialog.xml" value="0.20885416666666667" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_login.xml" value="0.24270833333333333" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_main.xml" value="0.2484375" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_map.xml" value="0.4" />
@@ -56,7 +57,7 @@
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_profile_settings.xml" value="0.264" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_radius_selector_dialog.xml" value="0.4" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_rating_dialog.xml" value="0.4" />
-        <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_register.xml" value="0.1" />
+        <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_register.xml" value="0.2" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_requested_jestas.xml" value="0.12395833333333334" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_summary.xml" value="0.34941176470588237" />
         <entry key="..\:/Users/user/source/repos/Jesta/app/src/main/res/layout/fragment_term_of_use.xml" value="0.20052083333333334" />
