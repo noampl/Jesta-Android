@@ -40,6 +40,7 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -474,7 +475,12 @@ public class JestaBindingAdapters {
         if (dstHour != null) {
             dstHourSr = hourConverter(dstHour);
         }
-        String res = srcDateStr + " " + srcHourStr + " - " + dstDateStr + " " + dstHourSr;
+        String res;
+        if ((srcDateStr + " " + srcHourStr + " - " + dstDateStr + " " + dstHourSr).length() > Consts.MAX_LENGTH) {
+            res = srcDateStr + " " + srcHourStr + " -\n" + dstDateStr + " " + dstHourSr;
+        } else {
+            res = srcDateStr + " " + srcHourStr + " - " + dstDateStr + " " + dstHourSr;
+        }
         textView.setText(res);
     }
 
@@ -577,7 +583,7 @@ public class JestaBindingAdapters {
     }
 
     private static String hourConverter(Long hour) {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         return sdf.format(new Date(hour));
     }
 

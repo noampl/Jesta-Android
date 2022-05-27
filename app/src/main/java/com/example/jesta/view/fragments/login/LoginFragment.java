@@ -17,6 +17,7 @@ import com.example.jesta.common.Consts;
 import com.example.jesta.databinding.FragmentLoginBinding;
 import com.example.jesta.view.activities.MainActivity;
 import com.example.jesta.viewmodel.LoginRegisterViewModel;
+import com.google.android.material.textfield.TextInputLayout;
 
 
 public class LoginFragment extends Fragment {
@@ -54,7 +55,7 @@ public class LoginFragment extends Fragment {
     /**
      * Initialize the fragment
      */
-    private void init(){
+    private void init() {
         initListeners();
         initObserver();
     }
@@ -63,20 +64,20 @@ public class LoginFragment extends Fragment {
      * Register all observers
      */
     private void initObserver() {
-        _loginRegisterViewModel.getIsLoggedIn().observe(getViewLifecycleOwner(),(isLoggedIn)->{
-            if (isLoggedIn){
+        _loginRegisterViewModel.getIsLoggedIn().observe(getViewLifecycleOwner(), (isLoggedIn) -> {
+            if (isLoggedIn) {
                 Intent intent = new Intent(requireActivity(), MainActivity.class);
                 startActivity(intent);
                 requireActivity().finish();
             }
         });
-        _loginRegisterViewModel.getServerErrorMsg().observe(getViewLifecycleOwner(), (msg)->{
-            if (!msg.equals(Consts.INVALID_STRING)){
-                if (msg.contains("user")){
+        _loginRegisterViewModel.getServerErrorMsg().observe(getViewLifecycleOwner(), (msg) -> {
+            if (!msg.equals(Consts.INVALID_STRING)) {
+                // TODO ohad raise an error
+                if (msg.contains("user")) {
                     _binding.email.setError(msg);
                     _binding.passwordLayout.setError(null);
-                }
-                else{
+                } else {
                     _binding.passwordLayout.setError(msg);
                     _binding.email.setError(null);
                 }
@@ -89,12 +90,36 @@ public class LoginFragment extends Fragment {
      * Register all listeners
      */
     private void initListeners() {
-        _binding.signUp.setOnClickListener((v)->
-                Navigation.findNavController(requireActivity(),R.id.login_register_container).navigate(R.id.action_loginFragment_to_registerFragment));
+        _binding.signUp.setOnClickListener((v) ->
+                Navigation.findNavController(requireActivity(), R.id.login_register_container).navigate(R.id.action_loginFragment_to_registerFragment));
 
-        _binding.loginBtn.setOnClickListener(v->{
-            _loginRegisterViewModel.login(_binding.emailEditTxt.getText().toString(), _binding.passwordEditTxt.getText().toString());
+        _binding.loginBtn.setOnClickListener(v -> {
+            validLoginParams();
         });
+    }
+
+    private void validLoginParams() {
+        String mail = _binding.emailEditTxt.getText().toString();
+        if (!_loginRegisterViewModel.doesEmailValid(mail)) {
+            _binding.email.setError(getString(R.string.email_validation_error));
+            zeroErrorsMsgs(_binding.email);
+            return;
+        }
+        String pass = _binding.passwordEditTxt.getText().toString();
+        if (!_loginRegisterViewModel.doesPasswordValid(pass)) {
+            _binding.passwordLayout.setError(getString(R.string.password_error));
+            zeroErrorsMsgs(_binding.passwordLayout);
+            return;
+        }
+        _loginRegisterViewModel.login(mail, pass);
+    }
+
+    public void zeroErrorsMsgs(TextInputLayout layout) {
+        if (layout == _binding.passwordLayout) {
+            _binding.email.setError(null);
+        } else if (layout == _binding.email) {
+            _binding.passwordLayout.setError(null);
+        }
     }
 
     // endregion

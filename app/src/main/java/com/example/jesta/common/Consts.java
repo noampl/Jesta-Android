@@ -59,4 +59,5 @@ public class Consts {
 
     public static final long THREE_DAYS = 259200000;
 
+    public static final int MAX_LENGTH = 35;
 }

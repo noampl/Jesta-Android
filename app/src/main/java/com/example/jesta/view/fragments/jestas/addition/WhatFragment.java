@@ -132,7 +132,8 @@ public class WhatFragment extends Fragment {
         _binding.peopleAmountSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                _createJestaViewModel.setOnAmountSpinnerSelected(i);
+                System.out.println("peleg - selectedItem is " + i);
+                _createJestaViewModel.set_numOfPeople(i);
             }
 
             @Override
