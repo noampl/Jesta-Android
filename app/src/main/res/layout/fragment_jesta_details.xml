@@ -263,9 +263,10 @@
                     android:id="@+id/amount_divider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vertical"
+                    android:layout_marginTop="12dp"
                     android:visibility="@{jestaDetails.numOfPeopleNeeded > 0 ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintTop_toBottomOf="@id/people_amount_icon" />
+                    app:layout_constraintTop_toBottomOf="@id/people_amount_icon"
+                    tools:layout_editor_absoluteX="0dp" />
 
                 <TextView
                     android:id="@+id/nis_ic"
@@ -367,6 +368,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
+                android:background="@color/black"
+                android:text="הצעה עזרה"
                 app:btnStatus="@{transactionStatus}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

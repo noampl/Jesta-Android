@@ -1,10 +1,12 @@
 package com.example.jesta.view.fragments.jestas;
 
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -54,6 +56,7 @@ public class JestaDetailsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_jesta_details, container, false);
+
         initVm();
 
         _jestaId = JestaDetailsFragmentArgs.fromBundle(getArguments()).getJestaId();
@@ -212,6 +215,7 @@ public class JestaDetailsFragment extends Fragment {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
                                             _jestaDetailsViewModel.cancelTransaction(_jestaId);
+//                                            _binding.suggestHelp.setTextColor(Color.WHITE);
                                             dialogInterface.dismiss();
                                         }
                                     }
