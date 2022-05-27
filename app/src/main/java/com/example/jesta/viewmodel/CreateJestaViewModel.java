@@ -232,10 +232,6 @@ public class CreateJestaViewModel extends ViewModel {
 
     // region Public Methods
 
-    public void setOnAmountSpinnerSelected(int i) {
-        set_numOfPeople(i);
-    }
-
     /**
      * React to reapt checks
      *
@@ -305,7 +301,7 @@ public class CreateJestaViewModel extends ViewModel {
         } else {
             res = "" + (hour);
         }
-        if (minute == 0) {
+        if (minute < 10) {
             res = res + ":0" + minute;
         } else {
             res = res + ":" + minute;
@@ -340,7 +336,7 @@ public class CreateJestaViewModel extends ViewModel {
     private com.apollographql.apollo3.api.Optional<FavorInput> jestaConverter(List<String> categories) {
         return new Optional.Present<>(
                 new FavorInput(UsersRepository.getInstance().get_myUser().getValue().get_id(),
-                        categories, new Optional.Present<>(get_numOfPeople().getValue()),
+                        categories, new Optional.Present<>(get_numOfPeople().getValue()+1),
                         addressConverter(get_source().getValue()),
                         new Optional.Present<>(addressConverter(get_destention().getValue())),
                         new Optional.Present<>(get_description().getValue()), new Optional.Present<Double>(Double.valueOf(get_amount().getValue())),
@@ -422,7 +418,7 @@ public class CreateJestaViewModel extends ViewModel {
         _paymentType.setValue(PaymentType.FREE);
         _selectedParentCategory.setValue(null);
         _selectedSubCategory.setValue(null);
-        _numOfPeople.setValue(0);
+        _numOfPeople.setValue(1);
         _amount.setValue(0);
     }
 
