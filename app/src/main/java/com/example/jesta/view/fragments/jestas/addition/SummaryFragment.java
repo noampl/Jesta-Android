@@ -76,6 +76,7 @@ public class SummaryFragment extends Fragment {
             if (msg.equals(Consts.INVALID_STRING))
                 return;
             if (msg.equals(Consts.SUCCESS)){
+                //TODO Ohad show success Image
                 Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
                 _createJestaViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
                 _createJestaViewModel.clearData();

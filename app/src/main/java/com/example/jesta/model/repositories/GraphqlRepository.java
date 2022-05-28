@@ -415,7 +415,7 @@ public class GraphqlRepository {
             @Override
             public void onSuccess(@NonNull ApolloResponse<ApproveFavorSuggestionMutation.Data> dataApolloResponse) {
                 if (dataApolloResponse.hasErrors()) {
-                    for (Error e : dataApolloResponse.errors){
+                    for (Error e : dataApolloResponse.errors) {
                         Log.e("ApproveFavorSuggestion", e.getMessage());
                         JestaRepository.getInstance().set_approveServerMsg(e.getMessage());
                     }
@@ -530,7 +530,7 @@ public class GraphqlRepository {
             ApolloResponse<CancelFavorTransactionMutation.Data> dataApolloResponse = responseSingle.blockingGet();
 
             if (dataApolloResponse.hasErrors()) {
-                for (Error e : dataApolloResponse.errors){
+                for (Error e : dataApolloResponse.errors) {
                     Log.e("cancelFavorTransaction", e.getMessage());
                     JestaRepository.getInstance().set_rejectServerMsg(e.getMessage());
                 }
@@ -550,6 +550,8 @@ public class GraphqlRepository {
      * @param token the firebase token
      */
     public void addUserToken(String token) {
+        if (_apolloClient == null)
+            return;
         ApolloCall<AddUserTokenMutation.Data> mutation = _apolloClient.mutation(new AddUserTokenMutation(new Optional.Present<>(token)));
         Single<ApolloResponse<AddUserTokenMutation.Data>> responseSingle = Rx3Apollo.single(mutation);
         responseSingle.subscribe(new SingleObserver<ApolloResponse<AddUserTokenMutation.Data>>() {
@@ -745,7 +747,7 @@ public class GraphqlRepository {
                 if (transaction != null) {
                     JestaRepository.getInstance().set_favorTransactionStatus(transaction.status);
                 }
-                    JestaRepository.getInstance().set_jestaDetailsLoading(false);
+                JestaRepository.getInstance().set_jestaDetailsLoading(false);
             }
         });
     }

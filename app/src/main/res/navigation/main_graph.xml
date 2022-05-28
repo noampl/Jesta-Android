@@ -177,6 +177,9 @@
         <action
             android:id="@+id/action_jestaDetailsFragment_to_ratingDialogFragment"
             app:destination="@id/ratingDialogFragment" />
+        <action
+            android:id="@+id/action_jestaDetailsFragment_to_fullImageFragment"
+            app:destination="@id/fullImageFragment" />
     </fragment>
     <dialog
         android:id="@+id/ratingDialogFragment"
@@ -206,6 +209,9 @@
         <action
             android:id="@+id/action_nav_user_profile_to_commentsFragment"
             app:destination="@id/commentsFragment" />
+        <action
+            android:id="@+id/action_nav_user_profile_to_fullImageFragment"
+            app:destination="@id/fullImageFragment" />
     </fragment>
     <dialog
         android:id="@+id/ratingResultDialog"
@@ -234,6 +240,15 @@
         tools:layout="@layout/fragment_comments" >
         <argument
             android:name="userId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullImageFragment"
+        android:name="com.example.jesta.view.fragments.utilities.FullImageFragment"
+        android:label="@string/picture"
+        tools:layout="@layout/fragment_full_image" >
+        <argument
+            android:name="imagePath"
             app:argType="string" />
     </fragment>
 </navigation>
