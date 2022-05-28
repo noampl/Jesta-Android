@@ -6,10 +6,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/hands_geca38f8e1_1920"
-        android:backgroundTint="#CFFFFFFF"
-        android:backgroundTintMode="src_over">
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/hands_geca38f8e1_1920"
+            android:tintMode="src_over"
+            app:tint="#BFFFFFFF" />
 
         <ImageView
             android:id="@+id/jesta_image"
