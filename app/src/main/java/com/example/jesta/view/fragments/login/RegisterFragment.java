@@ -27,6 +27,7 @@ import com.example.jesta.common.Consts;
 import com.example.jesta.databinding.FragmentRegisterBinding;
 import com.example.jesta.view.activities.MainActivity;
 import com.example.jesta.viewmodel.LoginRegisterViewModel;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.picasso.Picasso;
 
@@ -88,8 +89,12 @@ public class RegisterFragment extends Fragment {
         _loginRegisterViewModel.getServerErrorMsg().observe(getViewLifecycleOwner(), msg -> {
             if (!msg.equals(Consts.INVALID_STRING)) {
                 _binding.setIsloading(false);
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
-                // Todo Ohad
+
+                if (msg.contains(Consts.EXISTS)) {
+                    Snackbar.make(_binding.getRoot(), R.string.email_is_already_taken, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(_binding.getRoot(), R.string.error_occurred, Snackbar.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -154,7 +159,7 @@ public class RegisterFragment extends Fragment {
         }
         // valid phone
         String phone = _binding.phoneEditTxt.getText().toString();
-        if (!_loginRegisterViewModel.doesPhoneValid(phone)){
+        if (!_loginRegisterViewModel.doesPhoneValid(phone)) {
             _binding.phone.setError(getString(R.string.phone_validation_error));
             zeroErrorsMsgs(_binding.phone);
         }
@@ -210,7 +215,7 @@ public class RegisterFragment extends Fragment {
             _binding.passwordLayout.setError(null);
             _binding.email.setError(null);
             _binding.phone.setError(null);
-        } else if (layout == _binding.phone){
+        } else if (layout == _binding.phone) {
             _binding.confirmPasswordLayout.setError(null);
             _binding.passwordLayout.setError(null);
             _binding.email.setError(null);

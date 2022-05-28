@@ -172,5 +172,9 @@
     <string name="default_notification_channel_name">jesta</string>
     <string name="notifications_not_found">לא נמצאו התראות</string>
     <string name="reviews_not_found">לא נמצאו חוות דעת</string>
+    <string name="error_occurred">אופס, אירעה שגיאה, אנא נסה שוב</string>
+    <string name="jesta_created_successfully">הג\'סטה פורסמה בהצלחה</string>
+    <string name="incorrect_email_or_password">דוא\"ל או סיסמה אינם נכונים</string>
+    <string name="email_is_already_taken">הדוא\"ל כבר תפוס</string>
 
 </resources>
