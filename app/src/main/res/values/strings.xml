@@ -170,5 +170,7 @@
     <string name="report">דווח</string>
     <string name="default_notification_channel_id">fcm_default_channel</string>
     <string name="default_notification_channel_name">jesta</string>
+    <string name="notifications_not_found">לא נמצאו התראות</string>
+    <string name="reviews_not_found">לא נמצאו חוות דעת</string>
 
 </resources>

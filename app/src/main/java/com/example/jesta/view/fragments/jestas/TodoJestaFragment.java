@@ -101,6 +101,15 @@ public class TodoJestaFragment extends Fragment {
                 adapter.submitList(jestas);
                 adapter.setTransactionId(transactionId);
                 adapter.notifyDataSetChanged();
+
+                // Checks whether to show the list or an "empty" message:
+                if (transactions.size() > 0) {
+                    _binding.genericList.llNotFound.setVisibility(View.GONE);
+                    _binding.genericList.list.setVisibility(View.VISIBLE);
+                } else {
+                    _binding.genericList.list.setVisibility(View.GONE);
+                    _binding.genericList.llNotFound.setVisibility(View.VISIBLE);
+                }
                 _binding.genericList.swiper.setRefreshing(false);
             }
         });

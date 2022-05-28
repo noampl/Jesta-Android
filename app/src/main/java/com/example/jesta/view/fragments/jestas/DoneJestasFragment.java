@@ -38,7 +38,7 @@ public class DoneJestasFragment extends Fragment {
         @Override
         public void navigate(String[] args) {
             DoneJestasFragmentDirections.ActionNavDoneJestasToJestaDetailsFragment action =
-            DoneJestasFragmentDirections.actionNavDoneJestasToJestaDetailsFragment(args[0]);
+                    DoneJestasFragmentDirections.actionNavDoneJestasToJestaDetailsFragment(args[0]);
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
         }
     };
@@ -70,13 +70,13 @@ public class DoneJestasFragment extends Fragment {
 
     // region Private Methods
 
-    private void init(){
+    private void init() {
         _jestasListsViewModel.fetchDoneJestas();
         initObservers();
         initListeners();
     }
 
-    private void initObservers(){
+    private void initObservers() {
         JestaAdapter adapter = new JestaAdapter(getViewLifecycleOwner(), _mapViewModel);
         _jestasListsViewModel.get_transactions().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @SuppressLint("NotifyDataSetChanged")
@@ -85,20 +85,29 @@ public class DoneJestasFragment extends Fragment {
                 if (transactions == null)
                     return;
                 List<Jesta> jestas = new ArrayList<>();
-                transactions.forEach(t-> jestas.add(new Jesta(t.getFavorId().get_id(),
+                transactions.forEach(t -> jestas.add(new Jesta(t.getFavorId().get_id(),
                         t.getFavorId().getStatus(), t.getFavorId().getOwnerId(),
                         new Address(t.getFavorId().getSourceAddress().getFullAddress(), t.getFavorId().getSourceAddress().getCoordinates()),
-                        t.getFavorId().getNumOfPeople(), t.getFavorId().getDateToExecute(),t.getFavorId().getDateToFinishExecute(), t.getFavorId().getCategories())));
+                        t.getFavorId().getNumOfPeople(), t.getFavorId().getDateToExecute(), t.getFavorId().getDateToFinishExecute(), t.getFavorId().getCategories())));
 
                 adapter.submitList(jestas);
 //                adapter.notifyDataSetChanged();
+
+                // Checks whether to show the list or an "empty" message:
+                if (transactions.size() > 0) {
+                    _binding.genericList.llNotFound.setVisibility(View.GONE);
+                    _binding.genericList.list.setVisibility(View.VISIBLE);
+                } else {
+                    _binding.genericList.list.setVisibility(View.GONE);
+                    _binding.genericList.llNotFound.setVisibility(View.VISIBLE);
+                }
                 _binding.genericList.swiper.setRefreshing(false);
             }
         });
         _binding.genericList.list.setAdapter(adapter);
     }
 
-    private void initListeners(){
+    private void initListeners() {
         _binding.genericList.swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
