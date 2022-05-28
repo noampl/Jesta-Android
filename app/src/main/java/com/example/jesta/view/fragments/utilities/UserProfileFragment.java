@@ -81,6 +81,14 @@ public class UserProfileFragment extends Fragment {
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
         });
 
+        _binding.imgUserPhoto.setOnClickListener(v -> {
+            if (_binding.getUserDetails() != null && _binding.getUserDetails().get_imagePath() != null) {
+                UserProfileFragmentDirections.ActionNavUserProfileToFullImageFragment action =
+                        UserProfileFragmentDirections.actionNavUserProfileToFullImageFragment(
+                                _binding.getUserDetails().get_imagePath());
+                Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
+            }
+        });
     }
 
     //endregion

@@ -114,7 +114,7 @@ public class JestaDetailsFragment extends Fragment {
                     }
                     _binding.setCategoryTitle(title);
                 }
-                if (favor.ownerId._id.equals(_jestaDetailsViewModel.get_userId())){
+                if (favor.ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
                     _binding.suggestHelp.setVisibility(View.GONE);
                     _binding.sendMsg.setVisibility(View.GONE);
                     System.out.println("peleg - favor update, sets btn gone");
@@ -295,6 +295,18 @@ public class JestaDetailsFragment extends Fragment {
                     JestaDetailsFragmentDirections.actionJestaDetailsFragmentToNavUserProfile();
             action.setUserId(_binding.getOwner().get_id());
             Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
+        });
+
+        _binding.carousel.setOnClickListener(v -> {
+            if (_binding.getJestaDetails() != null &&
+                    _binding.getJestaDetails().imagesPath != null &&
+                    _binding.getJestaDetails().imagesPath.size() > 0 &&
+                    _binding.getJestaDetails().imagesPath.get(0).length() > 5) {
+                JestaDetailsFragmentDirections.ActionJestaDetailsFragmentToFullImageFragment action =
+                        JestaDetailsFragmentDirections.actionJestaDetailsFragmentToFullImageFragment(
+                                _binding.getJestaDetails().imagesPath.get(0));
+                Navigation.findNavController(requireActivity(), R.id.main_container).navigate(action);
+            }
         });
     }
 

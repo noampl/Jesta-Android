@@ -58,6 +58,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                 // NOTE: Permission is handled in startup.
                 return;
             }
+            _mapViewModel.getGoogleMap().setOnMarkerClickListener(_markerClickListener);
             googleMap.setMyLocationEnabled(true);
             _mapViewModel.postMapFinish(true);
         }
@@ -132,7 +133,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         if (_mapViewModel != null) {
             _mapViewModel.set_radius(null);
             if (_mapViewModel.getGoogleMap() != null)
-            _mapViewModel.getGoogleMap().clear();
+                _mapViewModel.getGoogleMap().clear();
         }
     }
 
@@ -237,8 +238,11 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
-        openJestaDetails(_mapViewModel.get_markerToJesta().get(marker)._id);
-        return true;
+        if (_mapViewModel.get_markerToJesta().get(marker) != null) {
+            openJestaDetails(_mapViewModel.get_markerToJesta().get(marker)._id);
+            return true;
+        }
+        return false;
     }
 
     // endregion

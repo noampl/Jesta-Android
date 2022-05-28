@@ -168,5 +168,7 @@
     <string name="location_permission_is_needed">יש לאפשר הרשאת מיקום על מנת להמשיך.</string>
     <string name="allow">אפשר</string>
     <string name="report">דווח</string>
+    <string name="default_notification_channel_id">fcm_default_channel</string>
+    <string name="default_notification_channel_name">jesta</string>
 
 </resources>

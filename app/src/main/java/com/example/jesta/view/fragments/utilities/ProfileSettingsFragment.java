@@ -152,7 +152,7 @@ public class ProfileSettingsFragment extends Fragment {
                     _binding.phoneTxt.getText().toString(), phoneConsumer);
         });
         _binding.descriptionCard.setOnClickListener(view -> {
-            showDialog(R.string.short_description_about_yourself, _binding.descriptionTitle.getText().toString(), FiledType.DESCRIPTION,
+            showDialog(R.string.short_description_about_yourself, _binding.descriptionTxt.getText().toString(), FiledType.DESCRIPTION,
                     _binding.descriptionTxt.getText().toString(), descriptionConsumer);
         });
         _binding.imageCard.setOnClickListener(view -> {
