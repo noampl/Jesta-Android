@@ -16,6 +16,7 @@ import com.example.jesta.R;
 import com.example.jesta.common.Consts;
 import com.example.jesta.databinding.FragmentSummaryBinding;
 import com.example.jesta.viewmodel.CreateJestaViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 public class SummaryFragment extends Fragment {
 
@@ -29,7 +30,7 @@ public class SummaryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_summary,container,false);
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_summary, container, false);
         _createJestaViewModel = new ViewModelProvider(this).get(CreateJestaViewModel.class);
 
         init();
@@ -39,51 +40,49 @@ public class SummaryFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (_createJestaViewModel != null){
+        if (_createJestaViewModel != null) {
             _createJestaViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
         }
     }
 
-    private void init(){
+    private void init() {
         _createJestaViewModel.validSummaryDetails();
         initBinding();
         initListeners();
         initObservers();
     }
 
-    private void initBinding(){
+    private void initBinding() {
         _binding.setViewModel(_createJestaViewModel);
         _binding.setLifecycleOwner(getViewLifecycleOwner());
     }
 
-    private void initListeners(){
+    private void initListeners() {
         _binding.finish.setOnClickListener(view -> {
-            if (_createJestaViewModel.getImage1().getValue()!= null){
+            if (_createJestaViewModel.getImage1().getValue() != null) {
                 _createJestaViewModel.initUploadImage(_createJestaViewModel.getImage1().getValue().second);
             }
             _createJestaViewModel.createJesta();
         });
     }
 
-    private void initObservers(){
+    private void initObservers() {
         _createJestaViewModel.get_startDate().observe(getViewLifecycleOwner(), date -> {
             _binding.setSrcDate(date);
         });
         _createJestaViewModel.get_endDate().observe(getViewLifecycleOwner(), date -> {
             _binding.setDstDate(date);
         });
-        _createJestaViewModel.get_serverInteractionResult().observe(getViewLifecycleOwner(),msg ->{
+        _createJestaViewModel.get_serverInteractionResult().observe(getViewLifecycleOwner(), msg -> {
             if (msg.equals(Consts.INVALID_STRING))
                 return;
-            if (msg.equals(Consts.SUCCESS)){
-                //TODO Ohad show success Image
+            if (msg.equals(Consts.SUCCESS)) {
                 Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
                 _createJestaViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
                 _createJestaViewModel.clearData();
-            }
-            else{
-                Toast.makeText(requireContext(),msg,Toast.LENGTH_SHORT).show();
-                //TODO Ohad show error
+                Snackbar.make(_binding.getRoot(), R.string.jesta_created_successfully, Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(_binding.getRoot(), R.string.error_occurred, Snackbar.LENGTH_SHORT).show();
             }
         });
     }

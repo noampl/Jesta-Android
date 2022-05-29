@@ -149,7 +149,20 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
 
     private void initSwiper() {
         _binding.swiper.setOnRefreshListener(() -> _notificationViewModel.fetchTransaction());
-        _notificationViewModel.get_isTransactionLoading().observe(getViewLifecycleOwner(), b -> _binding.swiper.setRefreshing(b));
+        _notificationViewModel.get_isTransactionLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean b) {
+                // Checks whether to show the list or an "empty" message:
+                if (b) {
+                    _binding.llNotFound.setVisibility(View.GONE);
+                    _binding.notificationLst.setVisibility(View.VISIBLE);
+                } else {
+                    _binding.notificationLst.setVisibility(View.GONE);
+                    _binding.llNotFound.setVisibility(View.VISIBLE);
+                }
+                _binding.swiper.setRefreshing(false);
+            }
+        });
     }
 
     @Override

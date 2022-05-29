@@ -338,8 +338,7 @@ public class JestaDetailsFragment extends Fragment {
         if (msg.equals(Consts.SUCCESS)) {
             Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
         } else {
-            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
-            //TODO ohad change to snakbar?
+            Snackbar.make(_binding.getRoot(), R.string.error_occurred, Snackbar.LENGTH_SHORT).show();
         }
     }
 

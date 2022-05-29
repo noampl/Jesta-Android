@@ -23,6 +23,7 @@ import com.example.jesta.common.Consts;
 import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentOneInputDialogBinding;
 import com.example.jesta.viewmodel.UsersViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 import okio._Base64Kt;
 
@@ -121,8 +122,7 @@ public class OneInputDialogFragment extends DialogFragment {
                 _dialog.dismiss();
                 _userViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
             } else {
-                Toast.makeText(requireContext(),msg,Toast.LENGTH_SHORT).show();
-                // TODO Ohad raise an error
+                Snackbar.make(_binding.getRoot(), R.string.error_occurred, Snackbar.LENGTH_SHORT).show();
             }
 
         });
