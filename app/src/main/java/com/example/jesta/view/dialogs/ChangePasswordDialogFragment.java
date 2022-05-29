@@ -24,6 +24,7 @@ import com.example.jesta.databinding.FragmentOneInputDialogBinding;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.viewmodel.LoginRegisterViewModel;
 import com.example.jesta.viewmodel.UsersViewModel;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class ChangePasswordDialogFragment extends DialogFragment {
@@ -122,8 +123,7 @@ public class ChangePasswordDialogFragment extends DialogFragment {
             if (msg.equals(Consts.SUCCESS)) {
                 _dialog.dismiss();
             } else {
-                // TODO Ohad raise propper error
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+                Snackbar.make(_binding.getRoot(), R.string.error_occurred, Snackbar.LENGTH_SHORT).show();
             }
         });
     }

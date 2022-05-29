@@ -64,9 +64,18 @@ public class CommentsFragment extends Fragment {
     private void initObservers() {
         CommentsAdapter adapter = new CommentsAdapter();
         _commentsViewModel.get_comments().observe(getViewLifecycleOwner(), comm -> {
-            if (comm != null && comm.size() > 0){
+            if (comm != null && comm.size() > 0) {
                 adapter.submitList(comm);
                 adapter.notifyDataSetChanged();
+            }
+
+            // Checks whether to show the list or an "empty" message:
+            if (comm.size() > 0) {
+                _binding.llNotFound.setVisibility(View.GONE);
+                _binding.list.setVisibility(View.VISIBLE);
+            } else {
+                _binding.list.setVisibility(View.GONE);
+                _binding.llNotFound.setVisibility(View.VISIBLE);
             }
             _binding.swiper.setRefreshing(false);
         });

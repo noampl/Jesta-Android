@@ -17,6 +17,7 @@ import com.example.jesta.common.Consts;
 import com.example.jesta.databinding.FragmentLoginBinding;
 import com.example.jesta.view.activities.MainActivity;
 import com.example.jesta.viewmodel.LoginRegisterViewModel;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 
@@ -73,13 +74,10 @@ public class LoginFragment extends Fragment {
         });
         _loginRegisterViewModel.getServerErrorMsg().observe(getViewLifecycleOwner(), (msg) -> {
             if (!msg.equals(Consts.INVALID_STRING)) {
-                // TODO ohad raise an error
-                if (msg.contains("user")) {
-                    _binding.email.setError(msg);
-                    _binding.passwordLayout.setError(null);
+                if (msg.contains(Consts.INVALID)) {
+                    Snackbar.make(_binding.getRoot(), R.string.incorrect_email_or_password, Snackbar.LENGTH_SHORT).show();
                 } else {
-                    _binding.passwordLayout.setError(msg);
-                    _binding.email.setError(null);
+                    Snackbar.make(_binding.getRoot(), R.string.error_occurred, Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
