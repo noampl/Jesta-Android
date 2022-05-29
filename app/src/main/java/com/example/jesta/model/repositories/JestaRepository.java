@@ -44,6 +44,7 @@ public class JestaRepository {
     private final MutableLiveData<Integer> _amount;
     private final MutableLiveData<GetJestaQuery.GetFavor> _jestaDetails;
     private final MutableLiveData<Boolean> _isSuggestHelp;
+    private final MutableLiveData<Integer> _numberOfApprovedJestionar;
     private String _comment;
 
     private ITabsNavigationHelper _tabsNavigationHelper;
@@ -98,6 +99,7 @@ public class JestaRepository {
         _approveServerMsg = new MutableLiveData<>(Consts.INVALID_STRING);
         _suggestHelpServerMsg = new MutableLiveData<>(Consts.INVALID_STRING);
         _doneServerMsg = new MutableLiveData<>(Consts.INVALID_STRING);
+        _numberOfApprovedJestionar = new MutableLiveData<>(0);
     }
 
     public static void cleanInstance() {
@@ -107,6 +109,15 @@ public class JestaRepository {
     // endregion
 
     // region Properties
+
+    public void set_numberOfApprovedJestionar(int num){
+        _numberOfApprovedJestionar.postValue(num);
+    }
+
+    public MutableLiveData<Integer> get_numberOfApprovedJestionar() {
+        return _numberOfApprovedJestionar;
+    }
+
     public void set_doneServerMsg(String msg) {
         _doneServerMsg.postValue(msg);
     }

@@ -215,6 +215,8 @@ public class JestaBindingAdapters {
             textView.setText(R.string.executor_finish_jesta);
         } else if (FavorTransactionStatus.CANCELED.toString().equals(status)) {
             textView.setText(R.string.canceled);
+        } else if (FavorTransactionStatus.WAITING_FOR_MORE_APPROVAL.toString().equals(status)){
+            textView.setText(R.string.waiting_for_more_approval);
         }
     }
 
@@ -565,6 +567,17 @@ public class JestaBindingAdapters {
         Date registered = new Date(timestamp);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         textView.setText(dateFormat.format(registered));
+    }
+
+    @BindingAdapter({"requestedAmount", "approvedAmount"})
+    public static void setNumOfJestinar(TextView textView, int requestedAmount, int approvedAmount){
+        if (requestedAmount == 1){
+            textView.setText(String.valueOf(requestedAmount));
+        }
+        else{
+            String title = approvedAmount + "/" + requestedAmount;
+            textView.setText(title);
+        }
     }
 
     // region Private methods

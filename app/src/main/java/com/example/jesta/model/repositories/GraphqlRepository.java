@@ -743,7 +743,6 @@ public class GraphqlRepository {
             if (favor != null) {
                 JestaRepository.getInstance().set_jestaDetails(favor);
                 GetAllUserFavorTransactionByFavorIdQuery.GetAllUserFavorTransactionByFavorId transaction = synchronizeGetTransaction(id);
-
                 if (transaction != null) {
                     JestaRepository.getInstance().set_favorTransactionStatus(transaction.status);
                 }
@@ -758,7 +757,6 @@ public class GraphqlRepository {
     public synchronized void getAllFavorTransaction() {
         if (_apolloClient == null)
             return;
-//        NotificationRepository.getInstance().get_notificationTransaction().getValue().clear();
         NotificationRepository.getInstance().set_notificationTransaction(new ArrayList<>());
         Date threeDayasAgo = new Date(new Date().getTime() - Consts.THREE_DAYS);
 

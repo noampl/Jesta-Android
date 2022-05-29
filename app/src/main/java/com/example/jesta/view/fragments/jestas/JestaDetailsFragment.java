@@ -1,19 +1,15 @@
 package com.example.jesta.view.fragments.jestas;
 
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -21,22 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.jesta.GetJestaQuery;
 import com.example.jesta.R;
 import com.example.jesta.common.AlertDialogRtlHelper;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.IntentUtils;
 import com.example.jesta.common.enums.FavorTransactionStatus;
-import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentJestaDetailsBinding;
-import com.example.jesta.interfaces.IDialogConsumerHelper;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.viewmodel.JestaDetailsViewModel;
 import com.example.jesta.viewmodel.NotificationViewModel;
-import com.example.jesta.viewmodel.UsersViewModel;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.function.Function;
 
 
 public class JestaDetailsFragment extends Fragment {
@@ -86,6 +75,7 @@ public class JestaDetailsFragment extends Fragment {
         initListeners();
         _binding.setUserId(_jestaDetailsViewModel.get_userId());
         _binding.setIsSuggestHelp(_jestaDetailsViewModel.get_isSuggestHelp());
+        _binding.setNumOfApprovedJestionar(_jestaDetailsViewModel.get_numberOfApprovedJestionar());
         _binding.setLifecycleOwner(getViewLifecycleOwner());
     }
 
@@ -122,6 +112,7 @@ public class JestaDetailsFragment extends Fragment {
             }
 
         });
+
         _jestaDetailsViewModel.get_myLocation().observe(getViewLifecycleOwner(), latLng ->
                 _binding.setMyLocation(latLng));
 
@@ -143,6 +134,7 @@ public class JestaDetailsFragment extends Fragment {
         _jestaDetailsViewModel.get_isJestaDetailsLoading().observe(getViewLifecycleOwner(), b -> {
             _binding.setIsLoading(b);
         });
+
         _jestaDetailsViewModel.get_approveServerMsg().observe(getViewLifecycleOwner(), this::serverMsgHandler);
 
         _jestaDetailsViewModel.get_rejectServerMsg().observe(getViewLifecycleOwner(), this::serverMsgHandler);
@@ -155,32 +147,34 @@ public class JestaDetailsFragment extends Fragment {
     }
 
     private void validateStatusBtn(String status) {
-        System.out.println("peleg - validate btn status is " + status);
-        if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null) {
-            System.out.println("peleg - validate btn status is after" + status);
-            if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
-                _binding.suggestHelp.setVisibility(View.GONE);
-                _binding.sendMsg.setVisibility(View.GONE);
-                System.out.println("peleg - this is the owner sets btn visibility gone");
-            }
-            if (status != null) {
-                if (status.equals(FavorTransactionStatus.CLOSED.toString())) {
+        synchronized (_binding.suggestHelp) {
+            System.out.println("peleg - validate btn status is " + status);
+            if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null) {
+                System.out.println("peleg - validate btn status is after" + status);
+                if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
                     _binding.suggestHelp.setVisibility(View.GONE);
                     _binding.sendMsg.setVisibility(View.GONE);
-                    System.out.println("peleg - status close sets btn visibility gone");
-                } else {
-                    _binding.suggestHelp.setVisibility(View.VISIBLE);
-                    _binding.sendMsg.setVisibility(View.VISIBLE);
-                    _binding.sendMsg.setClickable(true);
-                    _binding.suggestHelp.setClickable(true);
-                    System.out.println("peleg - sets btn vidible");
+                    System.out.println("peleg - this is the owner sets btn visibility gone");
                 }
+                else if (status != null) {
+                    if (status.equals(FavorTransactionStatus.CLOSED.toString())) {
+                        _binding.suggestHelp.setVisibility(View.GONE);
+                        _binding.sendMsg.setVisibility(View.GONE);
+                        System.out.println("peleg - status close sets btn visibility gone");
+                    } else {
+                        _binding.suggestHelp.setVisibility(View.VISIBLE);
+                        _binding.sendMsg.setVisibility(View.VISIBLE);
+                        _binding.sendMsg.setClickable(true);
+                        _binding.suggestHelp.setClickable(true);
+                        System.out.println("peleg - sets btn vidible");
+                    }
+                }
+            } else {
+                System.out.println("peleg - details null");
+                _binding.suggestHelp.setVisibility(View.VISIBLE);
+                _binding.sendMsg.setVisibility(View.VISIBLE);
+                System.out.println("peleg - details null sets btn visibility VISIBLE");
             }
-        } else {
-            System.out.println("peleg - details null");
-            _binding.suggestHelp.setVisibility(View.VISIBLE);
-            _binding.sendMsg.setVisibility(View.VISIBLE);
-            System.out.println("peleg - details null sets btn visibility VISIBLE");
         }
     }
 
@@ -215,7 +209,6 @@ public class JestaDetailsFragment extends Fragment {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
                                             _jestaDetailsViewModel.cancelTransaction(_jestaId);
-//                                            _binding.suggestHelp.setTextColor(Color.WHITE);
                                             dialogInterface.dismiss();
                                         }
                                     }

@@ -64,7 +64,7 @@
     <string name="src_address">כתובת מוצא</string>
     <string name="dst_address">כתובת יעד</string>
     <string name="how_to_pay">איך לגמול למי שיבצע זאת?</string>
-    <string name="move_it_forward">אעביר את זה האלה</string>
+    <string name="move_it_forward">אעביר את זה הלאה</string>
     <string name="pay_for_it">אשלם על זה</string>
     <string name="amount_ins">סכום בשקלים</string>
     <string name="summary_requested_jesta">לסיכום, הג\'סטה המבוקשת:</string>
@@ -85,6 +85,7 @@
     <string name="enter_address">הכנס כתובת</string>
     <string name="cancel">ביטול</string>
     <string name="canceled">מבוטלת</string>
+    <string name="waiting_for_more_approval">ממתינה לעוד ג\'סטיונרים</string>
     <string name="submit">אישור</string>
     <string name="are_u_sure_delete_user">האם אתה בתוך שברצונך למחוק את המשתמש?</string>
     <string name="are_u_sure_logout_user">האם אתה בתוך שברצונך להתנתק?</string>
@@ -104,7 +105,7 @@
     <string name="contact_last_name_error">שם משפחה הוא שדה חובה</string>
     <string name="contact_first_name_error">שם פרטי הוא שדה חובה</string>
     <string name="your_location">המיקום שלך</string>
-    <string name="suggest_help">הצעה עזרה</string>
+    <string name="suggest_help">הצע עזרה</string>
     <string name="jesta_details">פרטי ג\'סטה</string>
     <string name="logout">התנתק</string>
     <string name="send_msg">שלח הודעה</string>
