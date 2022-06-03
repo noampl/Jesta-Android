@@ -62,7 +62,9 @@ public class SummaryFragment extends Fragment {
             if (_createJestaViewModel.getImage1().getValue() != null) {
                 _createJestaViewModel.initUploadImage(_createJestaViewModel.getImage1().getValue().second);
             }
-            _createJestaViewModel.createJesta();
+            if (!_createJestaViewModel.createJesta()) {
+                Snackbar.make(_binding.getRoot(), R.string.please_choose_category, Snackbar.LENGTH_SHORT).show();
+            }
         });
     }
 

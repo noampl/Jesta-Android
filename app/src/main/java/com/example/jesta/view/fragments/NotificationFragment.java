@@ -100,6 +100,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     public void onResume() {
         super.onResume();
         _notificationViewModel.fetchTransaction();
+        System.out.println("peleg - refresh");
     }
 
     @Override
@@ -117,6 +118,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     // region Private Methods
 
     private void init() {
+        System.out.println("peleg - init notification");//        _notificationViewModel.fetchTransaction();
         initAdapter();
         initSwiper();
     }
@@ -141,6 +143,14 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
                         return (int) result;
                     }
                 }).collect(Collectors.toList()));
+                // Checks whether to show the list or an "empty" message:
+                if (transactions.size() > 0) {
+                    _binding.llNotFound.setVisibility(View.GONE);
+                    _binding.notificationLst.setVisibility(View.VISIBLE);
+                } else {
+                    _binding.llNotFound.setVisibility(View.VISIBLE);
+                    _binding.notificationLst.setVisibility(View.GONE);
+                }
             }
         });
         _binding.notificationLst.setAdapter(adapter);
@@ -149,20 +159,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
 
     private void initSwiper() {
         _binding.swiper.setOnRefreshListener(() -> _notificationViewModel.fetchTransaction());
-        _notificationViewModel.get_isTransactionLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean b) {
-                // Checks whether to show the list or an "empty" message:
-                if (b) {
-                    _binding.llNotFound.setVisibility(View.GONE);
-                    _binding.notificationLst.setVisibility(View.VISIBLE);
-                } else {
-                    _binding.notificationLst.setVisibility(View.GONE);
-                    _binding.llNotFound.setVisibility(View.VISIBLE);
-                }
-                _binding.swiper.setRefreshing(false);
-            }
-        });
+        _notificationViewModel.get_isTransactionLoading().observe(getViewLifecycleOwner(), b -> _binding.swiper.setRefreshing(b));
     }
 
     @Override

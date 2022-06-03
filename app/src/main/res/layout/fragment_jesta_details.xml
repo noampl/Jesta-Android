@@ -45,6 +45,10 @@
             name="isLoading"
             type="boolean" />
 
+        <variable
+            name="numOfApprovedJestionar"
+            type="androidx.lifecycle.MutableLiveData&lt;Integer&gt;" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -251,10 +255,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/side_mini_margin"
-                    android:text="@{String.valueOf(jestaDetails.numOfPeopleNeeded)}"
+                    app:requestedAmount="@{jestaDetails.numOfPeopleNeeded}"
+                    app:approvedAmount="@{numOfApprovedJestionar}"
                     android:textColor="@color/black"
                     android:visibility="@{jestaDetails.numOfPeopleNeeded > 0 ? View.VISIBLE : View.GONE}"
-
                     app:layout_constraintBottom_toBottomOf="@id/people_amount_icon"
                     app:layout_constraintStart_toEndOf="@id/people_amount_icon"
                     app:layout_constraintTop_toTopOf="@id/people_amount_icon" />
@@ -369,7 +373,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:background="@color/black"
-                android:text="הצעה עזרה"
+                android:text="@string/suggest_help"
                 app:btnStatus="@{transactionStatus}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -422,7 +426,9 @@
                     app:layout_constraintBottom_toTopOf="@id/status_val"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:userId="@{userId}" />
+                    app:userId="@{userId}"
+                    app:transactionStatus="@{transaction}"
+                    />
 
                 <ImageView
                     android:id="@+id/handler_icon"

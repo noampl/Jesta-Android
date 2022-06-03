@@ -34,6 +34,7 @@ public class JestaDetailsViewModel extends ViewModel {
     private final MutableLiveData<String> _approveServerMsg;
     private final MutableLiveData<String> _suggestHelpServerMsg;
     private final MutableLiveData<String> _doneServerMsg;
+    private final MutableLiveData<Integer> _numberOfApprovedJestionar;
 
     // endregion
 
@@ -53,11 +54,20 @@ public class JestaDetailsViewModel extends ViewModel {
         this._rejectServerMsg = JestaRepository.getInstance().get_rejectServerMsg();
         this._suggestHelpServerMsg = JestaRepository.getInstance().get_suggestHelpServerMsg();
         this._doneServerMsg = JestaRepository.getInstance().get_doneServerMsg();
+        this._numberOfApprovedJestionar = JestaRepository.getInstance().get_numberOfApprovedJestionar();
     }
 
     // endregion
 
     // region Properties
+
+    public void set_numberOfApprovedJestionar(int num){
+        _numberOfApprovedJestionar.setValue(num);
+    }
+
+    public MutableLiveData<Integer> get_numberOfApprovedJestionar() {
+        return _numberOfApprovedJestionar;
+    }
 
     public void set_doneServerMsg(String msg) {
         _doneServerMsg.setValue(msg);

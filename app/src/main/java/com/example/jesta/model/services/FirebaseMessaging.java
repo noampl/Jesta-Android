@@ -22,6 +22,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage message) {
         System.out.println("peleg - onMessageReceived " + message.getData().toString());
         Log.d("peleg", message.getData().toString());
+        GraphqlRepository.getInstance().getAllFavorTransaction(); // refresh the list
     }
 
 

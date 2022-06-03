@@ -17,11 +17,11 @@ public class JestasListsViewModel extends ViewModel {
     // region Members
 
     private final MutableLiveData<List<Transaction>> _transactions;
-    private final MutableLiveData<Map<Jesta,List<Transaction>>> _jestasMap;
+    private final MutableLiveData<Map<Jesta, List<Transaction>>> _jestasMap;
 
     // endregion
 
-    public JestasListsViewModel(){
+    public JestasListsViewModel() {
         _transactions = JestasListsRepository.getInstance().get_transactions();
         _jestasMap = JestasListsRepository.getInstance().get_jestasMap();
     }
@@ -31,8 +31,8 @@ public class JestasListsViewModel extends ViewModel {
     public MutableLiveData<List<Transaction>> get_transactions() {
         return _transactions;
     }
-    
-    public void set_transactions(List<Transaction> transactions){
+
+    public void set_transactions(List<Transaction> transactions) {
         _transactions.setValue(transactions);
     }
 
@@ -55,10 +55,11 @@ public class JestasListsViewModel extends ViewModel {
      * Fetch all pending for approve jestas by owner
      */
     public void fetchWatingJestas() {
-        GraphqlRepository.getInstance().getExecuterFavorTransaction(FavorTransactionStatus.PENDING_FOR_OWNER);
+        GraphqlRepository.getInstance().getExecuterFavorTransaction(FavorTransactionStatus.PENDING_FOR_OWNER, FavorTransactionStatus.WAITING_FOR_MORE_APPROVAL);
     }
 
-    /**w
+    /**
+     * w
      * Fetch all to do jestas by excecuter
      */
     public void fetchTodoJestas() {

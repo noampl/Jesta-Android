@@ -61,7 +61,7 @@ public class NotificationViewModel extends ViewModel {
         return _isTransactionLoading;
     }
 
-    public void setIsTransactionLoading(boolean isTransactionLoading){
+    public void setIsTransactionLoading(boolean isTransactionLoading) {
         _isTransactionLoading.setValue(isTransactionLoading);
     }
 
@@ -86,6 +86,7 @@ public class NotificationViewModel extends ViewModel {
     }
 
     public void approveSuggestion(String id) {
+        System.out.println("peleg - approve jesta ");
         GraphqlRepository.getInstance().approveFavorSuggestion(id, null);
     }
 
@@ -95,17 +96,19 @@ public class NotificationViewModel extends ViewModel {
     }
 
     public void suggestHelp(String favorId) {
+        System.out.println("peleg - suggestHelp ");
         GraphqlRepository.getInstance().suggestHelp(favorId, null);
     }
 
     public void openRating(String id) {
-        if (_ratingDialogOpener != null){
+        if (_ratingDialogOpener != null) {
             String[] args = {id};
             _ratingDialogOpener.navigate(args);
         }
     }
 
-    public void cancelSuggetstion(String transactionId){
+    public void cancelSuggetstion(String transactionId) {
+        System.out.println("peleg - cancelSuggetstion ");
         GraphqlRepository.getInstance().cancelTransaction(transactionId);
     }
 
@@ -114,11 +117,12 @@ public class NotificationViewModel extends ViewModel {
     }
 
     public void openShowRateDialog(Transaction transaction) {
-        String[] args = {String.valueOf(transaction.getRating()), transaction.getComment() , transaction.get_id()}; // TODO replace with transaction comment
+        String[] args = {String.valueOf(transaction.getRating()), transaction.getComment(), transaction.get_id()}; // TODO replace with transaction comment
         _showRateDialog.navigate(args);
     }
 
     public void closeNotification(String transactionId) {
+        System.out.println("peleg - closeNotification ");
         GraphqlRepository.getInstance().closeNotification(transactionId);
     }
 

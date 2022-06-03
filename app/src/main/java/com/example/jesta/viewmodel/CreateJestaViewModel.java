@@ -56,7 +56,7 @@ public class CreateJestaViewModel extends ViewModel {
     private final MutableLiveData<Integer> _numOfPeople;
     private final MutableLiveData<Integer> _amount;
     private List<Upload> _images;
-    private final ConcurrentHashMap<Category,List<Category>> categories;
+    private final ConcurrentHashMap<Category, List<Category>> categories;
     private final MutableLiveData<String> _serverInteractionResult;
 
 
@@ -82,7 +82,7 @@ public class CreateJestaViewModel extends ViewModel {
         _amount = JestaRepository.getInstance().get_amount();
         _images = new ArrayList<>();
         categories = CategoriesRepository.getInstance().getMapCategoryToSubCategory();
-        _serverInteractionResult =GraphqlRepository.getInstance().get_serverInteractionResult();
+        _serverInteractionResult = GraphqlRepository.getInstance().get_serverInteractionResult();
     }
 
     // endregion
@@ -93,7 +93,7 @@ public class CreateJestaViewModel extends ViewModel {
         return _serverInteractionResult;
     }
 
-    public void set_serverInteractionResult(String result){
+    public void set_serverInteractionResult(String result) {
         _serverInteractionResult.setValue(result);
     }
 
@@ -105,7 +105,7 @@ public class CreateJestaViewModel extends ViewModel {
         _selectedSubCategory.setValue(category);
     }
 
-    public ConcurrentHashMap<Category,List<Category>> getCategories() {
+    public ConcurrentHashMap<Category, List<Category>> getCategories() {
         return categories;
     }
 
@@ -179,10 +179,9 @@ public class CreateJestaViewModel extends ViewModel {
     }
 
     public void set_endDate(Long _endDate) {
-        if (_endDate != null){
+        if (_endDate != null) {
             this._endDate.setValue(new Date(_endDate));
-        }
-        else{
+        } else {
             this._endDate.setValue(null);
         }
     }
@@ -321,7 +320,7 @@ public class CreateJestaViewModel extends ViewModel {
         return true;
     }
 
-    public Category getCategoryByName(String name){
+    public Category getCategoryByName(String name) {
         return CategoriesRepository.getInstance().getCategoryByName(name);
     }
     // endregion
@@ -336,7 +335,7 @@ public class CreateJestaViewModel extends ViewModel {
     private com.apollographql.apollo3.api.Optional<FavorInput> jestaConverter(List<String> categories) {
         return new Optional.Present<>(
                 new FavorInput(UsersRepository.getInstance().get_myUser().getValue().get_id(),
-                        categories, new Optional.Present<>(get_numOfPeople().getValue()+1),
+                        categories, new Optional.Present<>(get_numOfPeople().getValue() + 1),
                         addressConverter(get_source().getValue()),
                         new Optional.Present<>(addressConverter(get_destention().getValue())),
                         new Optional.Present<>(get_description().getValue()), new Optional.Present<Double>(Double.valueOf(get_amount().getValue())),
@@ -370,10 +369,13 @@ public class CreateJestaViewModel extends ViewModel {
         return date.getTime() + hour;
     }
 
-    private List<String> categoryConverter(){
+    private List<String> categoryConverter() {
         List<String> categories = new ArrayList<>();
+        if (get_selectedParentCategory().getValue() == null)
+            return null;
+
         if (getCategories().get(get_selectedParentCategory().getValue()) != null &&
-                getCategories().get(get_selectedParentCategory().getValue()).size() > 0){
+                getCategories().get(get_selectedParentCategory().getValue()).size() > 0) {
             categories.add(get_selectedSubCategory().getValue().get_id());
         }
         categories.add(get_selectedParentCategory().getValue().get_id());

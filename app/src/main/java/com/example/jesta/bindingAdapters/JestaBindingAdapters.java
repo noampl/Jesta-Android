@@ -152,6 +152,7 @@ public class JestaBindingAdapters {
 
         if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString().equals(status) ||
                 FavorTransactionStatus.EXECUTOR_FINISH_JESTA.toString().equals(status) ||
+                FavorTransactionStatus.WAITING_FOR_MORE_APPROVAL.toString().equals(status) ||
                 (FavorTransactionStatus.PENDING_FOR_OWNER.toString().equals(status) && currentUser.equals(ownerId))) {
             view.setVisibility(View.VISIBLE);
         } else {
@@ -177,6 +178,10 @@ public class JestaBindingAdapters {
         } else if (status.equals(FavorTransactionStatus.PENDING_FOR_OWNER.toString())) {
             btn.setBackgroundResource(R.color.light_orange);
             btn.setText(R.string.sent);
+            btn.setTextColor(Color.BLACK);
+        } else if (status.equals(FavorTransactionStatus.WAITING_FOR_MORE_APPROVAL.toString())) {
+            btn.setBackgroundResource(R.color.light_orange);
+            btn.setText(R.string.waiting_for_more_approval);
             btn.setTextColor(Color.BLACK);
         } else {
             btn.setBackgroundResource(R.color.black);
@@ -215,6 +220,8 @@ public class JestaBindingAdapters {
             textView.setText(R.string.executor_finish_jesta);
         } else if (FavorTransactionStatus.CANCELED.toString().equals(status)) {
             textView.setText(R.string.canceled);
+        } else if (FavorTransactionStatus.WAITING_FOR_MORE_APPROVAL.toString().equals(status)) {
+            textView.setText(R.string.waiting_for_more_approval);
         }
     }
 
@@ -243,6 +250,11 @@ public class JestaBindingAdapters {
             case WAITING_FOR_JESTA_EXECUTION_TIME:
                 textView.setText(R.string.pendig_for_execution_time);
 
+                break;
+            case WAITING_FOR_MORE_APPROVAL:
+                textView.setText(R.string.waiting_for_more_approval);
+
+                break;
             default:
                 Log.d("innerStatus", "status unrecognized " + transaction.getStatus());
                 break;
@@ -323,11 +335,14 @@ public class JestaBindingAdapters {
         }
     }
 
-    @BindingAdapter({"OwnerId", "userId"})
-    public static void setStatusTitle(TextView textView, String ownerId, String userID) {
+    @BindingAdapter({"OwnerId", "userId", "transactionStatus"})
+    public static void setStatusTitle(TextView textView, String ownerId, String userID, Transaction transaction) {
+        System.out.println("peleg - status title " + ownerId + " " + userID);
         if (ownerId == null)
             return;
-        if (ownerId.equals(userID)) {
+        if (transaction == null)
+            return;
+        if (ownerId.equals(userID) && transaction.getStatus() == FavorTransactionStatus.PENDING_FOR_OWNER) {
             textView.setText(R.string.got_offer_from);
         } else {
             textView.setText(R.string.status);
@@ -565,6 +580,16 @@ public class JestaBindingAdapters {
         Date registered = new Date(timestamp);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         textView.setText(dateFormat.format(registered));
+    }
+
+    @BindingAdapter({"requestedAmount", "approvedAmount"})
+    public static void setNumOfJestinar(TextView textView, int requestedAmount, int approvedAmount) {
+        if (requestedAmount == 1) {
+            textView.setText(String.valueOf(requestedAmount));
+        } else {
+            String title = approvedAmount + "/" + requestedAmount;
+            textView.setText(title);
+        }
     }
 
     // region Private methods

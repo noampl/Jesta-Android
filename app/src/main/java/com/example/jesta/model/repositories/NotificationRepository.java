@@ -50,10 +50,12 @@ public class NotificationRepository {
     }
 
     public void set_notificationTransaction(List<Transaction> transactions) {
+        System.out.println("peleg - post notifications");
         _notificationTransaction.postValue(transactions);
     }
 
     public void add_notificationTransaction(List<Transaction> transactions) {
+        System.out.println("peleg - add notifications");
         synchronized (_notificationTransaction) {
             List<Transaction> transactions1 = new ArrayList<>(Objects.requireNonNull(_notificationTransaction.getValue()));
             transactions.forEach(t-> {

@@ -31,6 +31,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import okio.Okio;
@@ -65,9 +67,11 @@ public class WhatFragment extends Fragment {
     }
 
     private void initSpinners() {
-        parentCategoryAdapter = new ArrayAdapter(requireContext(),
-                android.R.layout.simple_spinner_dropdown_item,
-                _createJestaViewModel.getCategories().keySet().stream().map(Category::getName).collect(Collectors.toList()));
+        List<String> categoryNames = new ArrayList<>();
+        categoryNames.add(0, getString(R.string.categoty));
+        categoryNames.addAll(_createJestaViewModel.getCategories().keySet().stream().map(Category::getName).collect(Collectors.toList()));
+        parentCategoryAdapter = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item,
+                categoryNames);
 
         _binding.categorySpinner.setAdapter(parentCategoryAdapter);
         if (_createJestaViewModel.get_selectedParentCategory().getValue() != null) {
@@ -106,6 +110,8 @@ public class WhatFragment extends Fragment {
                     } else {
                         _binding.subcategorySpinnerCard.setVisibility(View.GONE);
                     }
+                } else {
+                    _binding.subcategorySpinnerCard.setVisibility(View.GONE);
                 }
             }
 
@@ -189,12 +195,12 @@ public class WhatFragment extends Fragment {
             if (imageView == _binding.firstImage) {
                 _createJestaViewModel.setImage1(new Pair<Uri, Source>(uri, source));
             }
-            } else {
-                Log.e("WhatFragment", "get activity result for unknown imageview ");
-            }
+        } else {
+            Log.e("WhatFragment", "get activity result for unknown imageview ");
         }
     }
+}
 
-    // endregion
+// endregion
 
 
