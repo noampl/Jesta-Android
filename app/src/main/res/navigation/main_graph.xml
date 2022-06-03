@@ -204,7 +204,7 @@
         tools:layout="@layout/fragment_user_profile">
         <argument
             android:name="userId"
-            android:defaultValue="1"
+            android:defaultValue="None"
             app:argType="string" />
         <action
             android:id="@+id/action_nav_user_profile_to_commentsFragment"

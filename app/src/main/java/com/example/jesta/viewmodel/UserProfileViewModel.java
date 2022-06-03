@@ -14,6 +14,7 @@ public class UserProfileViewModel extends ViewModel {
     // region Members
 
     private final MutableLiveData<User> _userDetails;
+    private String _localUserId;
 
     // endregion
 
@@ -21,6 +22,7 @@ public class UserProfileViewModel extends ViewModel {
 
     public UserProfileViewModel() {
         this._userDetails = UsersRepository.getInstance().get_myUser();
+        this._localUserId = ShardPreferencesHelper.readId();
     }
 
     // endregion
@@ -35,6 +37,10 @@ public class UserProfileViewModel extends ViewModel {
         this._userDetails.postValue(user);
     }
 
+    public String get_localUserId() {
+        return _localUserId;
+    }
+
     // endregion
 
     //region Public Methods
@@ -45,12 +51,7 @@ public class UserProfileViewModel extends ViewModel {
      * @param id The Id
      */
     public void getUser(String id) {
-        if (id.equals("1") || id.length() < 5){
-            GraphqlRepository.getInstance().getUserDetails(ShardPreferencesHelper.readId());
-        }
-        else{
-            GraphqlRepository.getInstance().getUserDetails(id);
-        }
+        GraphqlRepository.getInstance().getUserDetails(id);
     }
 
     //endregion

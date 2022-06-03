@@ -23,6 +23,7 @@ import com.example.jesta.model.repositories.NotificationRepository;
 import com.example.jesta.model.repositories.UsersRepository;
 import com.example.jesta.type.UserUpdateInput;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -144,11 +145,25 @@ public class UsersViewModel extends ViewModel {
     }
 
     public void updateUserImage(Source source) {
+        System.out.println("peleg - _myUser id is " + _myUser.getValue().get_id());
         DefaultUpload upload = new DefaultUpload.Builder()
                 .content(Okio.buffer(source))
                 .fileName("_" + _myUser.getValue().get_id() + Consts.JPG)
                 .build();
         new Optional.Present<Upload>(upload);
+        GraphqlRepository.getInstance().uploadPhoto(new Optional.Present<Upload>(upload), _myUser.getValue().get_id());
+    }
+
+    public void updateUserImage(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        DefaultUpload upload = new DefaultUpload.Builder()
+                .content(byteArray)
+                .fileName("_" + _myUser.getValue().get_id() + Consts.JPG)
+                .build();
+        new Optional.Present<Upload>(upload);
+        bitmap.recycle();
         GraphqlRepository.getInstance().uploadPhoto(new Optional.Present<Upload>(upload), _myUser.getValue().get_id());
     }
 

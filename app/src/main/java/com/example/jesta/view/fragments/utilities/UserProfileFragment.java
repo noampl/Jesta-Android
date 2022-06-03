@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.jesta.R;
+import com.example.jesta.common.Consts;
 import com.example.jesta.databinding.FragmentUserProfileBinding;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.view.fragments.jestas.JestaDetailsFragmentArgs;
@@ -41,11 +42,15 @@ public class UserProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_profile, container, false);
-        initVm();
+        init();
 
         _userId = UserProfileFragmentArgs.fromBundle(getArguments()).getUserId();
-        _userProfileViewModel.getUser(_userId);
-        init();
+        if (_userId != null && !_userId.equals(Consts.INVALID_STRING)){
+            _userProfileViewModel.getUser(_userId);
+        }
+        else{
+            _userProfileViewModel.getUser(_userProfileViewModel.get_localUserId());
+        }
         return _binding.getRoot();
     }
 
@@ -59,6 +64,7 @@ public class UserProfileFragment extends Fragment {
     //region Private Methods
 
     private void init() {
+        initVm();
         initObservers();
         initListeners();
         _binding.setLifecycleOwner(getViewLifecycleOwner());
