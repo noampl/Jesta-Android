@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.apollographql.apollo3.api.DefaultUpload;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Upload;
+import com.example.jesta.R;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.interfaces.IDialogConsumerHelper;
@@ -52,7 +53,7 @@ public class UsersViewModel extends ViewModel {
 
     // region Properties
 
-    public void set_serverInteractionResult(String result){
+    public void set_serverInteractionResult(String result) {
         _serverInteractionResult.setValue(result);
     }
 
@@ -104,7 +105,10 @@ public class UsersViewModel extends ViewModel {
     }
 
     public void deleteAccount() {
-        // TODO implement
+        if (get_myUser().getValue() != null) {
+            GraphqlRepository.getInstance().deleteUser(get_myUser().getValue().get_id(), get_myUser().getValue().get_email());
+            logout();
+        }
     }
 
     /**
@@ -136,7 +140,7 @@ public class UsersViewModel extends ViewModel {
         JestaRepository.cleanInstance();
         JestasListsRepository.cleanInstance();
         NotificationRepository.cleanInstance();
-        // TODO clear firebase token
+        GraphqlRepository.getInstance().addUserToken(Consts.INVALID_STRING);
     }
 
     public void updateUserImage(Source source) {

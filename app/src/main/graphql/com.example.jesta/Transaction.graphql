@@ -309,3 +309,10 @@ query GetAllUserHandledFavorTransactionByStatus($status: FavorTransactionStatus,
         rating
     }
 }
+
+query GetAllFavorTransactionByFavorId($favorId: String) {
+    getAllFavorTransactionByFavorId(favorId: $favorId) {
+        _id
+        status
+    }
+}

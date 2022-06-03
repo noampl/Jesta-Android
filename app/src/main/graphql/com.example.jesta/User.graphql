@@ -9,6 +9,10 @@ mutation SignUp($userParams: UserCreateInput!, $file: Upload) {
     }
 }
 
+mutation DeleteUser($id: String, $email: String) {
+    deleteUser(_id: $id, email: $email)
+}
+
 query GetUser($email: String) {
     getUser(email: $email) {
         _id

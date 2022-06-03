@@ -97,6 +97,7 @@ type Query {
     getAllOwnerFavorTransactionByStatus(status: FavorTransactionStatus, fromDate: DateTime): [PopulatedFavorTransaction]
     getAllExecutorFavorTransactionByStatus(status: FavorTransactionStatus, fromDate: DateTime): [PopulatedFavorTransaction]
     getNumberOfOnProgressJesta: Int
+    getAllFavorTransactionByFavorId(favorId: String): [FavorTransaction]
     getNumberOfExecutedJesta: Int
     getTransactionById(id: String): PopulatedFavorTransaction
     getAllUserHandledFavorTransactionByStatus(status: FavorTransactionStatus, handledByUserId: String): [PopulatedFavorTransaction]
@@ -228,6 +229,7 @@ enum FavorTransactionStatus {
     PENDING_FOR_OWNER
     WAITING_FOR_JESTA_EXECUTION_TIME
     EXECUTOR_FINISH_JESTA
+    WAITING_FOR_MORE_APPROVAL
     JESTA_DONE
     CANCELED
     CLOSED

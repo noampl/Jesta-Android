@@ -95,6 +95,7 @@ public class RegisterFragment extends Fragment {
                 } else {
                     Snackbar.make(_binding.getRoot(), R.string.error_occurred, Snackbar.LENGTH_SHORT).show();
                 }
+                zeroErrorsMsgs(null);
             }
         });
 
@@ -162,10 +163,16 @@ public class RegisterFragment extends Fragment {
         if (!_loginRegisterViewModel.doesPhoneValid(phone)) {
             _binding.phone.setError(getString(R.string.phone_validation_error));
             zeroErrorsMsgs(_binding.phone);
+            return;
         }
 
         String name = _binding.fullNameEditTxt.getText().toString();
         String[] names = name.split(" ");
+        if (names.length < 2){
+            _binding.fullName.setError(getString(R.string.name_validation_error));
+            zeroErrorsMsgs(_binding.fullName);
+            return;
+        }
         String lastName = "";
         for (int i = 1; i < names.length; i++) {
             lastName += lastName + " " + names[i];
@@ -220,6 +227,12 @@ public class RegisterFragment extends Fragment {
             _binding.passwordLayout.setError(null);
             _binding.email.setError(null);
             _binding.fullName.setError(null);
+        } else{
+            _binding.confirmPasswordLayout.setError(null);
+            _binding.passwordLayout.setError(null);
+            _binding.email.setError(null);
+            _binding.fullName.setError(null);
+            _binding.phone.setError(null);
         }
     }
 

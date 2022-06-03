@@ -426,7 +426,9 @@
                     app:layout_constraintBottom_toTopOf="@id/status_val"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:userId="@{userId}" />
+                    app:userId="@{userId}"
+                    app:transactionStatus="@{transaction}"
+                    />
 
                 <ImageView
                     android:id="@+id/handler_icon"

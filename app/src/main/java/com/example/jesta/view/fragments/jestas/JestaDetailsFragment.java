@@ -26,6 +26,7 @@ import com.example.jesta.databinding.FragmentJestaDetailsBinding;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.viewmodel.JestaDetailsViewModel;
 import com.example.jesta.viewmodel.NotificationViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 
 public class JestaDetailsFragment extends Fragment {
@@ -180,6 +181,10 @@ public class JestaDetailsFragment extends Fragment {
 
     private void validateDoneBtn(String status) {
         if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null && status != null) {
+            if (status.equals(FavorTransactionStatus.WAITING_FOR_MORE_APPROVAL.toString())){
+                _binding.doneBtn.setVisibility(View.INVISIBLE);
+                _binding.doneBtn.setClickable(false);
+            }
             if (status.equals(FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.toString()) &&
                     !_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
                 _binding.doneBtn.setVisibility(View.VISIBLE);
