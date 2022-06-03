@@ -1,6 +1,5 @@
 # Jesta
-Jesta Android is an app for the College of management final project
-
+Jesta is a platform that connects people who need help in needs that arise in their daily lives, with people who are willing to do them favors (Jesta's - such as babysitting, delivering, lending, etc), either free or paid, and based on geographic location. The project was developed for Full Stack specialization studied in The College of Management, as part of undergraduate studies in computer science.
 
 # Connect to local server
 after sets all jesta-server instruction change the SERVER_URL in GraphqlRepository to your url
