@@ -237,6 +237,7 @@ public class GraphqlRepository {
                     ShardPreferencesHelper.writeToken(dataApolloResponse.data.signUpUser.token);
                     ShardPreferencesHelper.writeEmail(userCreateInput.email);
                     ShardPreferencesHelper.writePassword(userCreateInput.hashedPassword);
+                    ShardPreferencesHelper.writeId(dataApolloResponse.data.signUpUser.userId);
                     _apolloClient = _apolloClient.newBuilder().addHttpHeader(Consts.AUTHORIZATION, dataApolloResponse.data.signUpUser.token).build(); // Check if this is working
                     getMyUserInformation(userCreateInput.email);
                     getParentCategories();
@@ -909,6 +910,7 @@ public class GraphqlRepository {
                     user.setDescription(u.description);
                     user.setDateRegistered(u.created_date);
                     user.set_rating(u.rating);
+                    System.out.println("peleg - image path is " + u.imagePath + " id " + id);
                     UsersRepository.getInstance().set_myUser(user);
                 }
             }

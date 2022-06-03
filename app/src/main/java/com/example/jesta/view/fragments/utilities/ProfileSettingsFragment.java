@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -88,11 +89,9 @@ public class ProfileSettingsFragment extends Fragment {
         @Override
         public void onActivityResult(ActivityResult result) {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                try {
-                    uploadImage(result.getData().getData());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Bitmap bitmap = (Bitmap) result.getData().getExtras().get("data");
+                if (bitmap != null)
+                    _usersViewModel.updateUserImage(bitmap);
             }
         }
     });
@@ -168,8 +167,10 @@ public class ProfileSettingsFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             _usersViewModel.deleteAccount();
-                            Navigation.findNavController(requireActivity(), R.id.main_container).navigate(R.id.nav_map); // TODO figure if need to add server interaction msg
                             dialogInterface.dismiss();
+                            Intent intent = new Intent(requireActivity(), LoginRegisterActivity.class);
+                            startActivity(intent);
+                            requireActivity().finish();
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
