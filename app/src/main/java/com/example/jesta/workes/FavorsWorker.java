@@ -25,10 +25,10 @@ public class FavorsWorker extends Worker {
     @Override
     public Result doWork() {
         System.out.println("peleg - worker getting jestas");
-        List<Double> center  = new ArrayList<>();
+        List<Double> center = new ArrayList<>();
         center.add(MapRepository.getInstance().getMyLocation().getValue().latitude);
         center.add(MapRepository.getInstance().getMyLocation().getValue().longitude);
-        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(center), new Optional.Present<>(MapRepository.getInstance().getRadiusInKm().getValue()));
+        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(center), MapRepository.getInstance().getRadiusInKm().getValue());
         return Result.success();
     }
 }

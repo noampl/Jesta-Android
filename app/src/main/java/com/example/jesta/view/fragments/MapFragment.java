@@ -216,7 +216,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         if (_mapViewModel.getRadiusInKm() != null) {
             _mapViewModel.getRadiusInKm().observe(getViewLifecycleOwner(), r -> {
                 if (_mapViewModel.getGoogleMap() != null) {
-                    System.out.println("peleg - radius change " + r);
                     addMapRadius(_mapViewModel.getMyLocation().getValue(), r);
                 }
             });

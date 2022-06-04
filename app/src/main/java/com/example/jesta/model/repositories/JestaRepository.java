@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -57,8 +58,10 @@ public class JestaRepository {
     private final MutableLiveData<String> _approveServerMsg;
     private final MutableLiveData<String> _suggestHelpServerMsg;
     private final MutableLiveData<String> _doneServerMsg;
-
-
+    private Calendar _startTimeAndDate;
+    private Calendar _endTimeAndDate;
+    private final MutableLiveData<Boolean> _isStartTimeAndDateChanged;
+    private final MutableLiveData<Boolean> _isEndTimeAmdDateChanged;
     // endregion
 
 
@@ -100,6 +103,10 @@ public class JestaRepository {
         _suggestHelpServerMsg = new MutableLiveData<>(Consts.INVALID_STRING);
         _doneServerMsg = new MutableLiveData<>(Consts.INVALID_STRING);
         _numberOfApprovedJestionar = new MutableLiveData<>(0);
+        _startTimeAndDate = Calendar.getInstance();
+        _endTimeAndDate = Calendar.getInstance();
+        _isStartTimeAndDateChanged = new MutableLiveData<>(false);
+        _isEndTimeAmdDateChanged = new MutableLiveData<>(false);
     }
 
     public static void cleanInstance() {
@@ -109,6 +116,30 @@ public class JestaRepository {
     // endregion
 
     // region Properties
+
+    public MutableLiveData<Boolean> get_isStartTimeAndDateChanged() {
+        return _isStartTimeAndDateChanged;
+    }
+
+    public MutableLiveData<Boolean> get_isEndTimeAmdDateChanged() {
+        return _isEndTimeAmdDateChanged;
+    }
+
+    public Calendar get_startTimeAndDate() {
+        return _startTimeAndDate;
+    }
+
+    public void set_startTimeAndDate(Calendar _startTimeAndDate) {
+        this._startTimeAndDate = _startTimeAndDate;
+    }
+
+    public Calendar get_endTimeAndDate() {
+        return _endTimeAndDate;
+    }
+
+    public void set_endTimeAndDate(Calendar _endTimeAndDate) {
+        this._endTimeAndDate = _endTimeAndDate;
+    }
 
     public void set_numberOfApprovedJestionar(int num){
         _numberOfApprovedJestionar.postValue(num);

@@ -479,16 +479,20 @@ public class JestaBindingAdapters {
         String srcDateStr, srcHourStr = "", dstHourSr = "", dstDateStr = "";
         if (srcDate == null) {
             srcDate = new Date(MaterialDatePicker.todayInUtcMilliseconds());
+            System.out.println("peleg time - srcDate " + srcDate);
         }
         srcDateStr = dateConverter(textView, srcDate);
         if (srcHour != null) {
             srcHourStr = hourConverter(srcHour);
+            System.out.println("peleg time - srcHourStr " + srcHourStr);
         }
         if (dstDate != null) {
             dstDateStr = dateConverter(textView, dstDate);
+            System.out.println("peleg time - dstDateStr " + dstDateStr);
         }
         if (dstHour != null) {
             dstHourSr = hourConverter(dstHour);
+            System.out.println("peleg time - dstHourSr " + dstHourSr);
         }
         String res;
         if ((srcDateStr + " " + srcHourStr + " - " + dstDateStr + " " + dstHourSr).length() > Consts.MAX_LENGTH) {
@@ -496,6 +500,7 @@ public class JestaBindingAdapters {
         } else {
             res = srcDateStr + " " + srcHourStr + " - " + dstDateStr + " " + dstHourSr;
         }
+        System.out.println("peleg time - title is " + res);
         textView.setText(res);
     }
 
@@ -515,10 +520,10 @@ public class JestaBindingAdapters {
             e.printStackTrace();
         }
         if (srcDate != null) {
-            srcD = dateConverter(textView, srcDate);
+            srcD = dateTimeConverter(textView, srcDate);
         }
         if (dstDate != null) {
-            destD = dateConverter(textView, dstDate);
+            destD = dateTimeConverter(textView, dstDate);
         }
         textView.setText(srcD + " - " + destD);
 
@@ -554,7 +559,7 @@ public class JestaBindingAdapters {
         String title = "";
         if (distance >= 1) {
             distance = Math.floor(distance);
-            title = "" + (int) distance + " " + textView.getContext().getText(R.string.km);
+            title = "" + (int) (distance + 1) + " " + textView.getContext().getText(R.string.km);
         } else {
             distance = Math.floor(distance * 1000);
             title = "" + (int) distance + " " + textView.getContext().getText(R.string.meter);
@@ -595,6 +600,19 @@ public class JestaBindingAdapters {
     // region Private methods
 
     private static String dateConverter(View view, Date date) {
+        String res = "";
+        if (date.getTime() == MaterialDatePicker.todayInUtcMilliseconds()) {
+            res = view.getContext().getString(R.string.today);
+        } else if (date.getTime() == MaterialDatePicker.todayInUtcMilliseconds() + DAY_IN_MS) {
+            res = view.getContext().getString(R.string.tommorow);
+        } else {
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+            res = sdf.format(date);
+        }
+        return res;
+    }
+
+    private static String dateTimeConverter(View view, Date date) {
         String res = "";
         if (date.getTime() == MaterialDatePicker.todayInUtcMilliseconds()) {
             res = view.getContext().getString(R.string.today);

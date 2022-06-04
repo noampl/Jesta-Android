@@ -3,9 +3,10 @@ package com.example.jesta.viewmodel;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
-import android.util.Log;
+import android.os.Build;
 import android.widget.CompoundButton;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -30,6 +31,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,7 +60,10 @@ public class CreateJestaViewModel extends ViewModel {
     private List<Upload> _images;
     private final ConcurrentHashMap<Category, List<Category>> categories;
     private final MutableLiveData<String> _serverInteractionResult;
-
+    private Calendar _startTimeAndDate;
+    private Calendar _endTimeAndDate;
+    private final MutableLiveData<Boolean> _isStartTimeAndDateChanged;
+    private final MutableLiveData<Boolean> _isEndTimeAndDateChanged;
 
     // endregion
 
@@ -83,11 +88,49 @@ public class CreateJestaViewModel extends ViewModel {
         _images = new ArrayList<>();
         categories = CategoriesRepository.getInstance().getMapCategoryToSubCategory();
         _serverInteractionResult = GraphqlRepository.getInstance().get_serverInteractionResult();
+        _startTimeAndDate = JestaRepository.getInstance().get_startTimeAndDate();
+        _endTimeAndDate = JestaRepository.getInstance().get_endTimeAndDate();
+        _isEndTimeAndDateChanged = JestaRepository.getInstance().get_isEndTimeAmdDateChanged();
+        _isStartTimeAndDateChanged = JestaRepository.getInstance().get_isStartTimeAndDateChanged();
     }
 
     // endregion
 
     // region Properties
+
+    public MutableLiveData<Boolean> get_isStartTimeAndDateChanged() {
+        return _isStartTimeAndDateChanged;
+    }
+
+    public void set_isStartTimeAndDateChanged(Boolean _isStartTimeAndDateChanged) {
+        this._isStartTimeAndDateChanged.setValue(_isStartTimeAndDateChanged);
+    }
+
+    public MutableLiveData<Boolean> get_isEndTimeAndDateChanged() {
+        return _isEndTimeAndDateChanged;
+    }
+
+    public void set_isEndTimeAndDateChanged(Boolean _isEndTimeAndDateChanged) {
+        this._isEndTimeAndDateChanged.setValue(_isEndTimeAndDateChanged);
+    }
+
+    public Calendar get_startTimeAndDate() {
+        return _startTimeAndDate;
+    }
+
+    public void set_startTimeAndDate(Calendar _startTimeAndDate) {
+        this._startTimeAndDate = _startTimeAndDate;
+        set_isStartTimeAndDateChanged(true);
+    }
+
+    public Calendar get_endTimeAndDate() {
+        return _endTimeAndDate;
+    }
+
+    public void set_endTimeAndDate(Calendar _endTimeAndDate) {
+        this._endTimeAndDate = _endTimeAndDate;
+        set_isEndTimeAndDateChanged(true);
+    }
 
     public MutableLiveData<String> get_serverInteractionResult() {
         return _serverInteractionResult;
@@ -339,8 +382,8 @@ public class CreateJestaViewModel extends ViewModel {
                         addressConverter(get_source().getValue()),
                         new Optional.Present<>(addressConverter(get_destention().getValue())),
                         new Optional.Present<>(get_description().getValue()), new Optional.Present<Double>(Double.valueOf(get_amount().getValue())),
-                        get_paymentType().getValue(), new Optional.Present<>(null), new Optional.Present<>(concatDateAndTime(get_startDate().getValue(), get_startTime().getValue())),
-                        new Optional.Present<>(concatDateAndTime(get_endDate().getValue(), get_endTime().getValue())), new Optional.Present<>(null)));
+                        get_paymentType().getValue(), new Optional.Present<>(null), new Optional.Present<>(validCalender(get_startTimeAndDate(), get_isStartTimeAndDateChanged().getValue())),
+                        new Optional.Present<>(validCalender(get_endTimeAndDate(), get_isEndTimeAndDateChanged().getValue())), new Optional.Present<>(null)));
     }
 
     /**
@@ -361,12 +404,20 @@ public class CreateJestaViewModel extends ViewModel {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private Long concatDateAndTime(Date date, Long hour) {
         if (date == null)
             return null;
         if (hour == null)
             hour = 0L;
         return date.getTime() + hour;
+    }
+
+    private Long validCalender(Calendar calendar, boolean isValid) {
+        if (isValid) {
+            return calendar.getTimeInMillis();
+        }
+        return null;
     }
 
     private List<String> categoryConverter() {
@@ -393,6 +444,8 @@ public class CreateJestaViewModel extends ViewModel {
         }
         if (get_startDate().getValue() == null || get_startDate().getValue().getTime() == 0) {
             set_startDate(MaterialDatePicker.todayInUtcMilliseconds());
+            Calendar calendar = Calendar.getInstance();
+            set_startTimeAndDate(calendar);
         }
     }
 
@@ -420,8 +473,31 @@ public class CreateJestaViewModel extends ViewModel {
         _paymentType.setValue(PaymentType.FREE);
         _selectedParentCategory.setValue(null);
         _selectedSubCategory.setValue(null);
-        _numOfPeople.setValue(1);
+        _numOfPeople.setValue(0);
         _amount.setValue(0);
+        set_isStartTimeAndDateChanged(false);
+        set_isEndTimeAndDateChanged(false);
+        set_startTimeAndDate(Calendar.getInstance());
+        set_endTimeAndDate(Calendar.getInstance());
+    }
+
+    public boolean validDate() {
+        Long start = validCalender(_startTimeAndDate, get_isStartTimeAndDateChanged().getValue());
+        if (start != null) {
+            if (start < Calendar.getInstance().getTimeInMillis()) {
+                return false;
+            }
+        }
+        Long end = validCalender(_endTimeAndDate, get_isEndTimeAndDateChanged().getValue());
+        if (end != null) {
+            if (end < Calendar.getInstance().getTimeInMillis()){
+                return false;
+            }
+            if (end < start){
+                return false;
+            }
+        }
+        return true;
     }
 
     // endregion
