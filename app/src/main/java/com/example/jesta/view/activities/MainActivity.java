@@ -154,7 +154,6 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         viewModel.get_notificationTransaction().observe(this, new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
-                System.out.println("peleg - update bell");
                 if (transactions != null && transactions.size() != _binding.bellLayout.getIndex()) {
                     _binding.bellLayout.setIndex(transactions.size());
                     _binding.bellLayout.setVisibility(transactions.size() > 0);

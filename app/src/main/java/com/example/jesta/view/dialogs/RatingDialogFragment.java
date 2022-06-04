@@ -33,7 +33,7 @@ public class RatingDialogFragment extends DialogFragment {
     private final INavigationHelper navigationHelper = new INavigationHelper() {
         @Override
         public void navigate(String[] arg) {
-            Navigation.findNavController(requireActivity(),R.id.main_container).navigateUp();
+            Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
         }
     };
 
@@ -52,7 +52,7 @@ public class RatingDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_rating_dialog, container,false);
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_rating_dialog, container, false);
         _dialog.setView(_binding.getRoot());
         _transactionId = RatingDialogFragmentArgs.fromBundle(getArguments()).getTransactionId();
         _rating = RatingDialogFragmentArgs.fromBundle(getArguments()).getRating();
@@ -72,24 +72,24 @@ public class RatingDialogFragment extends DialogFragment {
 
     // region Private Methods
 
-    private void init(){
+    private void init() {
         _JestaDetailsViewModel.set_navigationHelper(navigationHelper);
         initListeners();
         _binding.ratingBar.setRating(_rating > 0 ? _rating : 0);
         _binding.submitBtn.setClickable(_rating <= 0);
     }
 
-    private void initListeners(){
-        _binding.submitBtn.setOnClickListener(v->{
+    private void initListeners() {
+        _binding.submitBtn.setOnClickListener(v -> {
             String comment = null;
             if (_binding.commentVal.getText() != null)
-                comment =_binding.commentVal.getText().toString();
-            _JestaDetailsViewModel.ownerFinishFavor(_transactionId,_binding.ratingBar.getRating(), comment);
+                comment = _binding.commentVal.getText().toString();
+            _JestaDetailsViewModel.ownerFinishFavor(_transactionId, _binding.ratingBar.getRating(), comment);
             Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
             _dialog.dismiss();
         });
 
-        _binding.cancelButton.setOnClickListener(v->{
+        _binding.cancelButton.setOnClickListener(v -> {
             _dialog.dismiss();
         });
     }

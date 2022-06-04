@@ -1,16 +1,24 @@
 package com.example.jesta.model.repositories;
 
+import android.annotation.SuppressLint;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.jesta.GetAllUserFavorsRequestedTransactionQuery;
 import com.example.jesta.GetJestaQuery;
 import com.example.jesta.GetUserByIdQuery;
+import com.example.jesta.common.Consts;
 import com.example.jesta.model.enteties.Transaction;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class NotificationRepository {
 
@@ -50,12 +58,26 @@ public class NotificationRepository {
     }
 
     public void set_notificationTransaction(List<Transaction> transactions) {
-        System.out.println("peleg - post notifications");
-        _notificationTransaction.postValue(transactions);
+        System.out.println("peleg - post notifications " + transactions.size());
+        // Sort the transaction by date
+        _notificationTransaction.postValue(transactions.stream().sorted(new Comparator<Transaction>() {
+            @Override
+            public int compare(Transaction o1, Transaction o2) {
+                long result = 0;
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(Consts.SERVER_DATE_FORMAT);
+                try {
+                    Date date1 = sdf.parse(o1.getDateLastModified());
+                    Date date2 = sdf.parse(o2.getDateLastModified());
+                    result = date2.getTime() - date1.getTime();
+                } catch (ParseException | NullPointerException e) {
+                    e.printStackTrace();
+                }
+                return (int) result;
+            }
+        }).collect(Collectors.toList()));
     }
 
     public void add_notificationTransaction(List<Transaction> transactions) {
-        System.out.println("peleg - add notifications");
         synchronized (_notificationTransaction) {
             List<Transaction> transactions1 = new ArrayList<>(Objects.requireNonNull(_notificationTransaction.getValue()));
             transactions.forEach(t-> {

@@ -87,6 +87,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_notification, container, false);
         _notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
         _binding.swiper.setRefreshing(true);
+        _notificationViewModel.setIsTransactionLoading(true);
         _notificationViewModel.set_iNavigationHelper(this);
         _notificationViewModel.set_ratingDialogOpener(_ratingDialogOpener);
         _notificationViewModel.set_deepLingHelper(_deepLinkHelper);
@@ -118,7 +119,7 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     // region Private Methods
 
     private void init() {
-        System.out.println("peleg - init notification");//        _notificationViewModel.fetchTransaction();
+        System.out.println("peleg - init notification");
         initAdapter();
         initSwiper();
     }
@@ -128,21 +129,8 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         _notificationViewModel.get_notificationTransaction().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
-                adapter.submitList(transactions.stream().sorted(new Comparator<Transaction>() {
-                    @Override
-                    public int compare(Transaction o1, Transaction o2) {
-                        long result = 0;
-                        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(Consts.SERVER_DATE_FORMAT);
-                        try {
-                            Date date1 = sdf.parse(o1.getDateLastModified());
-                            Date date2 = sdf.parse(o2.getDateLastModified());
-                            result = date2.getTime() - date1.getTime();
-                        } catch (ParseException | NullPointerException e) {
-                            e.printStackTrace();
-                        }
-                        return (int) result;
-                    }
-                }).collect(Collectors.toList()));
+                System.out.println("peleg - update UI notifications " + transactions.size());
+                adapter.submitList(transactions);
                 // Checks whether to show the list or an "empty" message:
                 if (transactions.size() > 0) {
                     _binding.llNotFound.setVisibility(View.GONE);
@@ -159,7 +147,10 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
 
     private void initSwiper() {
         _binding.swiper.setOnRefreshListener(() -> _notificationViewModel.fetchTransaction());
-        _notificationViewModel.get_isTransactionLoading().observe(getViewLifecycleOwner(), b -> _binding.swiper.setRefreshing(b));
+        _notificationViewModel.get_isTransactionLoading().observe(getViewLifecycleOwner(), b -> {
+            System.out.println("peleg - is refreshing? " + b);
+            _binding.swiper.setRefreshing(b);
+        });
     }
 
     @Override
