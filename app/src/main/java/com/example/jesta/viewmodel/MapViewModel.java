@@ -161,7 +161,7 @@ public class MapViewModel extends ViewModel {
         if (radiusInKm != null){
             radius = radiusInKm.getValue();
         }
-        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), new Optional.Present<Double>(radius));
+        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(coordinates), radius);
 
     }
 
@@ -176,7 +176,7 @@ public class MapViewModel extends ViewModel {
         List<Double> center = new ArrayList<>();
         center.add(MapRepository.getInstance().getMyLocation().getValue().latitude);
         center.add(MapRepository.getInstance().getMyLocation().getValue().longitude);
-        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(center), new Optional.Present<>(radius));
+        GraphqlRepository.getInstance().GetRemoteJestas(new Optional.Present<>(center), radius);
     }
 
     // endregion

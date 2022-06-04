@@ -51,6 +51,7 @@ import com.example.jesta.type.UserCreateInput;
 import com.example.jesta.common.Consts;
 import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.type.UserUpdateInput;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -736,11 +737,12 @@ public class GraphqlRepository {
      * @param center The Center of the circle where we start searching from
      * @param radius The radius in KM
      */
-    public void GetRemoteJestas(Optional<List<Double>> center, Optional<Double> radius) {
+    public void GetRemoteJestas(Optional<List<Double>> center, Double radius) {
         if (_apolloClient == null)
             return;
         ApolloCall<GetFavorsByRadiosTimeAndDateQuery.Data> getJestas = _apolloClient.query(
-                new GetFavorsByRadiosTimeAndDateQuery(new Optional.Present<>(true), center, radius, new Optional.Present<>(null), new Optional.Present<>(null)));
+                new GetFavorsByRadiosTimeAndDateQuery(new Optional.Present<>(true), center,
+                        new Optional.Present<>(radius - 1), new Optional.Present<>(MaterialDatePicker.todayInUtcMilliseconds()), new Optional.Present<>(null)));
         Single<ApolloResponse<GetFavorsByRadiosTimeAndDateQuery.Data>> responseSingle = Rx3Apollo.single(getJestas);
         responseSingle.subscribe(new SingleObserver<ApolloResponse<GetFavorsByRadiosTimeAndDateQuery.Data>>() {
             @Override

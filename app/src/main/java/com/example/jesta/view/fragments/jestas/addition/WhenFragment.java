@@ -25,8 +25,11 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 
 public class WhenFragment extends Fragment {
@@ -67,7 +70,11 @@ public class WhenFragment extends Fragment {
                     .build();
             datePicker.addOnPositiveButtonClickListener(selection -> {
                 _binding.startDay.setText(_createJestaViewModel.convertDateSelection(selection));
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date(selection));
                 _createJestaViewModel.set_startDate(selection);
+                _createJestaViewModel.get_startTimeAndDate().set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+                _createJestaViewModel.set_isStartTimeAndDateChanged(true);
                 _createJestaViewModel.set_endDate(null);
             });
             datePicker.show(getParentFragmentManager(), getString(R.string.starting_day));
@@ -91,6 +98,12 @@ public class WhenFragment extends Fragment {
             datePicker.addOnPositiveButtonClickListener(selection -> {
                 _binding.endDay.setText(_createJestaViewModel.convertDateSelection(selection));
                 _createJestaViewModel.set_endDate(selection);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date(selection));
+                _createJestaViewModel.set_endDate(selection);
+                _createJestaViewModel.get_endTimeAndDate().set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+                _createJestaViewModel.set_isEndTimeAndDateChanged(true);
+
             });
             datePicker.show(getParentFragmentManager(), getString(R.string.starting_day));
         });
@@ -106,9 +119,15 @@ public class WhenFragment extends Fragment {
                 _binding.startTime.setText(_createJestaViewModel.convertTimeToText(picker.getHour(), picker.getMinute()));
                 Calendar calendar = Calendar.getInstance();
                 calendar.clear();
-                calendar.set(Calendar.HOUR, picker.getHour());
+                calendar.set(Calendar.HOUR_OF_DAY, picker.getHour());
                 calendar.set(Calendar.MINUTE, picker.getMinute());
                 _createJestaViewModel.set_startTime(calendar.getTimeInMillis());
+                _createJestaViewModel.get_startTimeAndDate().set(Calendar.HOUR_OF_DAY, picker.getHour());
+                _createJestaViewModel.get_startTimeAndDate().set(Calendar.MINUTE, picker.getMinute());
+                _createJestaViewModel.get_startTimeAndDate().set(Calendar.SECOND, 0);
+                System.out.println("peleg time - " + _createJestaViewModel.get_startTimeAndDate().getTime());
+                _createJestaViewModel.set_isStartTimeAndDateChanged(true);
+
             });
             picker.show(getParentFragmentManager(), getString(R.string.start_time));
         });
@@ -123,10 +142,13 @@ public class WhenFragment extends Fragment {
                 _binding.endTime.setText(_createJestaViewModel.convertTimeToText(picker.getHour(), picker.getMinute()));
                 Calendar calendar = Calendar.getInstance();
                 calendar.clear();
-                calendar.set(Calendar.HOUR, picker.getHour());
+                calendar.set(Calendar.HOUR_OF_DAY, picker.getHour());
                 calendar.set(Calendar.MINUTE, picker.getMinute());
                 _createJestaViewModel.set_endTime(calendar.getTimeInMillis());
-
+                _createJestaViewModel.get_endTimeAndDate().set(Calendar.HOUR_OF_DAY, picker.getHour());
+                _createJestaViewModel.get_endTimeAndDate().set(Calendar.MINUTE, picker.getMinute());
+                _createJestaViewModel.get_endTimeAndDate().set(Calendar.SECOND, 0);
+                _createJestaViewModel.set_isEndTimeAndDateChanged(true);
             });
             picker.show(getParentFragmentManager(), getString(R.string.end_time));
         });

@@ -62,6 +62,10 @@ public class SummaryFragment extends Fragment {
             if (_createJestaViewModel.getImage1().getValue() != null) {
                 _createJestaViewModel.initUploadImage(_createJestaViewModel.getImage1().getValue().second);
             }
+            if (!_createJestaViewModel.validDate()){
+                Snackbar.make(_binding.getRoot(), R.string.valid_date, Snackbar.LENGTH_SHORT).show();
+                return;
+            }
             if (!_createJestaViewModel.createJesta()) {
                 Snackbar.make(_binding.getRoot(), R.string.please_choose_category, Snackbar.LENGTH_SHORT).show();
             }
@@ -79,12 +83,13 @@ public class SummaryFragment extends Fragment {
             if (msg.equals(Consts.INVALID_STRING))
                 return;
             if (msg.equals(Consts.SUCCESS)) {
-                Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
                 _createJestaViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
                 _createJestaViewModel.clearData();
                 Snackbar.make(_binding.getRoot(), R.string.jesta_created_successfully, Snackbar.LENGTH_SHORT).show();
+                Navigation.findNavController(requireActivity(), R.id.main_container).navigateUp();
             } else {
                 Snackbar.make(_binding.getRoot(), R.string.error_occurred, Snackbar.LENGTH_SHORT).show();
+                _createJestaViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
             }
         });
     }

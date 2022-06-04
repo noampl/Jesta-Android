@@ -24,8 +24,11 @@ import com.example.jesta.model.repositories.UsersRepository;
 import com.example.jesta.type.UserUpdateInput;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import okio.Okio;
 import okio.Source;
@@ -107,7 +110,10 @@ public class UsersViewModel extends ViewModel {
 
     public void deleteAccount() {
         if (get_myUser().getValue() != null) {
-            GraphqlRepository.getInstance().deleteUser(get_myUser().getValue().get_id(), get_myUser().getValue().get_email());
+            byte[] array = new byte[7]; // length is bounded by 7
+            new Random().nextBytes(array);
+            String generatedString = new String(array, StandardCharsets.UTF_8);
+            updateRemotePassword(generatedString);
             logout();
         }
     }
