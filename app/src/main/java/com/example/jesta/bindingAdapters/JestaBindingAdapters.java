@@ -266,6 +266,8 @@ public class JestaBindingAdapters {
         if (path != null && path.size() > 0 && path.get(0).length() > 5) {
             String fullPath = Consts.SERVER_PRE_FIX + path.get(0);
             Picasso.with(imageView.getContext()).load(fullPath).into(imageView);
+        } else {
+            Picasso.with(imageView.getContext()).load(R.drawable.jesta_hand_logo).into(imageView);
         }
     }
 
