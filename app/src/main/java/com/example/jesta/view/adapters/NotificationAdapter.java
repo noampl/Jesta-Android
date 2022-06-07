@@ -77,35 +77,33 @@ public class NotificationAdapter extends ListAdapter<Transaction, NotificationAd
             _binding = binding;
         }
 
-        public void bind(Transaction transaction ,NotificationViewModel viewModel){
+        public void bind(Transaction transaction, NotificationViewModel viewModel) {
             _binding.setTransaction(transaction);
             _binding.executePendingBindings();
 
-            _binding.positiveBtn.setOnClickListener(v->{
-                if (transaction.getStatus() == null){
-                 viewModel.suggestHelp(transaction.get_id());
-                 return;
+            _binding.positiveBtn.setOnClickListener(v -> {
+                if (transaction.getStatus() == null) {
+                    viewModel.suggestHelp(transaction.get_id());
+                    return;
                 }
                 if (FavorTransactionStatus.PENDING_FOR_OWNER.equals(transaction.getStatus())) {
                     viewModel.approveSuggestion(transaction.get_id());
                 } else if (FavorTransactionStatus.JESTA_DONE.equals(transaction.getStatus())) {
-                    System.out.println("peleg - rating is " + transaction.getRating());
                     viewModel.openShowRateDialog(transaction);
                 } else if (FavorTransactionStatus.EXECUTOR_FINISH_JESTA.equals(transaction.getStatus())) {
                     viewModel.openRating(transaction.get_id());
-                } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.equals(transaction.getStatus())){
+                } else if (FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME.equals(transaction.getStatus())) {
                     List<String> lst = new ArrayList<>();
                     lst.add(String.valueOf(transaction.getFavorId().getSourceAddress().getCoordinates().get(0)));
                     lst.add(String.valueOf(transaction.getFavorId().getSourceAddress().getCoordinates().get(1)));
                     viewModel.openNavigationApp(lst);
-                }
-                else{
-                    Log.d("NotificationViewHolder","unrecognized status " + transaction.getStatus());
+                } else {
+                    Log.d("NotificationViewHolder", "unrecognized status " + transaction.getStatus());
                 }
                 viewModel.fetchTransaction();
             });
 
-            _binding.detailsBtn.setOnClickListener(v->viewModel.openDetails(transaction.getFavorId().get_id(), transaction.get_id()));
+            _binding.detailsBtn.setOnClickListener(v -> viewModel.openDetails(transaction.getFavorId().get_id(), transaction.get_id()));
         }
     }
 }

@@ -32,31 +32,27 @@ public class GpsHelper implements LocationListener {
     @Override
     public void onLocationChanged(@NonNull Location location) {
         _myLocation.setValue(new LatLng(location.getLatitude(), location.getLongitude()));
-        MapRepository.getInstance().saveLocation(location.getLatitude(),location.getLongitude());
-        System.out.println("peleg - onLocationChanged " + Thread.currentThread().getName());
+        MapRepository.getInstance().saveLocation(location.getLatitude(), location.getLongitude());
     }
 
     @Override
     public void onLocationChanged(@NonNull List<Location> locations) {
-        System.out.println("peleg - onLocationsssChanged " + Thread.currentThread().getName());
         _myLocation.setValue(new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude()));
+        MapRepository.getInstance().saveLocation(locations.get(0).getLatitude(), locations.get(0).getLongitude());
     }
 
     @Override
     public void onFlushComplete(int requestCode) {
-        System.out.println("peleg - onFlushComplete " + requestCode +" " + Thread.currentThread().getName());
 
     }
 
     @Override
     public void onProviderEnabled(@NonNull String provider) {
-        System.out.println("peleg - onProviderEnabled " + provider + " " + Thread.currentThread().getName());
 
     }
 
     @Override
     public void onProviderDisabled(@NonNull String provider) {
-        System.out.println("peleg - onProviderDisabled " + provider +" " + Thread.currentThread().getName());
 
     }
 

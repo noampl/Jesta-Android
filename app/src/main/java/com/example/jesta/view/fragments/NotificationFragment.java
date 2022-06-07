@@ -101,7 +101,6 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     public void onResume() {
         super.onResume();
         _notificationViewModel.fetchTransaction();
-        System.out.println("peleg - refresh");
     }
 
     @Override
@@ -119,7 +118,6 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     // region Private Methods
 
     private void init() {
-        System.out.println("peleg - init notification");
         initAdapter();
         initSwiper();
     }
@@ -129,7 +127,6 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
         _notificationViewModel.get_notificationTransaction().observe(getViewLifecycleOwner(), new Observer<List<Transaction>>() {
             @Override
             public void onChanged(List<Transaction> transactions) {
-                System.out.println("peleg - update UI notifications " + transactions.size());
                 adapter.submitList(transactions);
                 // Checks whether to show the list or an "empty" message:
                 if (transactions.size() > 0) {
@@ -148,7 +145,6 @@ public class NotificationFragment extends Fragment implements INavigationHelper 
     private void initSwiper() {
         _binding.swiper.setOnRefreshListener(() -> _notificationViewModel.fetchTransaction());
         _notificationViewModel.get_isTransactionLoading().observe(getViewLifecycleOwner(), b -> {
-            System.out.println("peleg - is refreshing? " + b);
             _binding.swiper.setRefreshing(b);
         });
     }

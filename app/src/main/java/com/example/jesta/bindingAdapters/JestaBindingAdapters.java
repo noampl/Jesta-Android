@@ -339,7 +339,6 @@ public class JestaBindingAdapters {
 
     @BindingAdapter({"OwnerId", "userId", "transactionStatus"})
     public static void setStatusTitle(TextView textView, String ownerId, String userID, Transaction transaction) {
-        System.out.println("peleg - status title " + ownerId + " " + userID);
         if (ownerId == null)
             return;
         if (transaction == null)
@@ -481,20 +480,16 @@ public class JestaBindingAdapters {
         String srcDateStr, srcHourStr = "", dstHourSr = "", dstDateStr = "";
         if (srcDate == null) {
             srcDate = new Date(MaterialDatePicker.todayInUtcMilliseconds());
-            System.out.println("peleg time - srcDate " + srcDate);
         }
         srcDateStr = dateConverter(textView, srcDate);
         if (srcHour != null) {
             srcHourStr = hourConverter(srcHour);
-            System.out.println("peleg time - srcHourStr " + srcHourStr);
         }
         if (dstDate != null) {
             dstDateStr = dateConverter(textView, dstDate);
-            System.out.println("peleg time - dstDateStr " + dstDateStr);
         }
         if (dstHour != null) {
             dstHourSr = hourConverter(dstHour);
-            System.out.println("peleg time - dstHourSr " + dstHourSr);
         }
         String res;
         if ((srcDateStr + " " + srcHourStr + " - " + dstDateStr + " " + dstHourSr).length() > Consts.MAX_LENGTH) {
@@ -502,7 +497,6 @@ public class JestaBindingAdapters {
         } else {
             res = srcDateStr + " " + srcHourStr + " - " + dstDateStr + " " + dstHourSr;
         }
-        System.out.println("peleg time - title is " + res);
         textView.setText(res);
     }
 
@@ -583,6 +577,8 @@ public class JestaBindingAdapters {
 
     @BindingAdapter("registeredSince")
     public static void registeredSince(TextView textView, String date) {
+        if (date == null)
+            return;
         long timestamp = Long.parseLong(date);
         Date registered = new Date(timestamp);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");

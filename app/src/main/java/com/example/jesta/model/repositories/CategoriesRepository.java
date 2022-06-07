@@ -1,5 +1,7 @@
 package com.example.jesta.model.repositories;
 
+import android.util.Log;
+
 import com.example.jesta.model.enteties.Category;
 
 import java.util.HashMap;
@@ -46,7 +48,7 @@ public class CategoriesRepository {
             mapNameToCategory.put(k.getName(), k);
         });
 
-        System.out.println("peleg - finishAdd");
+        Log.d("category", "finish adding subcategory");
     }
 
     // endregion

@@ -58,7 +58,6 @@ public class NotificationRepository {
     }
 
     public void set_notificationTransaction(List<Transaction> transactions) {
-        System.out.println("peleg - post notifications " + transactions.size());
         // Sort the transaction by date
         _notificationTransaction.postValue(transactions.stream().sorted(new Comparator<Transaction>() {
             @Override

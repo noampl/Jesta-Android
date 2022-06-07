@@ -34,6 +34,7 @@ import com.example.jesta.view.adapters.JestaAdapter;
 import com.example.jesta.viewmodel.MapViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -66,6 +67,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     private MapViewModel _mapViewModel;
     private FragmentMapBinding _binding;
+    private SupportMapFragment _supportMapFragment;
     private GoogleMap.OnMarkerClickListener _markerClickListener;
     private Snackbar _snackbarLocationRequest;
 
@@ -108,33 +110,60 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false);
+        System.out.println("peleg - onCreateView");
         return _binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        System.out.println("peleg - onViewCreated");
 
-        // Request permissions:
-        this.initRequestPermission();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        System.out.println("peleg - onStart");
 
         this.initRequestPermission();
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("peleg - onResume");
+        if (_supportMapFragment != null) {
+            _supportMapFragment.onResume();
+            System.out.println("peleg - onResume support fragment");
+        }
+
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
+        System.out.println("peleg - pause");
 
         if (_mapViewModel != null) {
             _mapViewModel.set_radius(null);
-            if (_mapViewModel.getGoogleMap() != null)
+            System.out.println("peleg - clear radius");
+            if (_mapViewModel.getGoogleMap() != null) {
                 _mapViewModel.getGoogleMap().clear();
+                System.out.println("peleg - clear map");
+            }
         }
+        if (_supportMapFragment != null) {
+            _supportMapFragment.onPause();
+            System.out.println("peleg - onPause support fragment");
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        System.out.println("peleg - onDestroyView");
+        _supportMapFragment.onDestroyView();
     }
 
     // endregion
@@ -162,10 +191,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
         _markerClickListener = this;
         _mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(callback);
+        _supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+
+        if (_supportMapFragment != null) {
+            _supportMapFragment.getMapAsync(callback);
         }
 
         _mapViewModel.getRemoteJestas();
@@ -180,7 +209,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         JestaAdapter adapter = new JestaAdapter(getViewLifecycleOwner(), _mapViewModel);
         _mapViewModel.getMyLocation().observe(getViewLifecycleOwner(), (ltlg) -> {
             if (_mapViewModel.getGoogleMap() != null) {
-                System.out.println("peleg - location change");
                 addMapRadius(ltlg, _mapViewModel.getRadiusInKm().getValue());
             }
         });

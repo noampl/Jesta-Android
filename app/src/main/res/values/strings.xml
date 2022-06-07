@@ -182,5 +182,6 @@
     <string name="incorrect_email_or_password">דוא\"ל או סיסמה אינם נכונים</string>
     <string name="email_is_already_taken">הדוא\"ל כבר תפוס</string>
     <string name="categoty">קטגוריה</string>
+    <string name="mission_complete">הפעולה הושלמה בהצלחה</string>
 
 </resources>

@@ -3,21 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/nav_user_menu"
+        android:id="@+id/nav_user_profile"
         android:icon="@drawable/ic_baseline_account_circle_24"
         android:title="@string/user_menu"
-        app:showAsAction="ifRoom">
+        app:showAsAction="ifRoom" />
 
-        <!-- User Menu Submenu: -->
-        <menu>
-            <item
-                android:id="@+id/nav_user_profile"
-                android:title="@string/profile" />
-
-            <item
-                android:id="@+id/nav_user_settings"
-                android:title="@string/account_settings" />
-        </menu>
-    </item>
+    <item
+        android:id="@+id/nav_user_settings"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="@string/account_settings"
+        app:showAsAction="ifRoom" />
 
 </menu>
