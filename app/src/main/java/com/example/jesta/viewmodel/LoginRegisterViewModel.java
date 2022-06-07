@@ -3,6 +3,7 @@ package com.example.jesta.viewmodel;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -74,7 +75,7 @@ public class LoginRegisterViewModel extends ViewModel {
             ShardPreferencesHelper.init();
             GraphqlRepository.getInstance().login(ShardPreferencesHelper.readEmail(), ShardPreferencesHelper.readPassword());
         } catch (GeneralSecurityException | IOException e) {
-            System.out.println("peleg - faild login");
+            Log.d("login", "failed login with user information");
             e.printStackTrace();
             isLoggedIn.setValue(false);
         }

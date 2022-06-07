@@ -86,7 +86,7 @@ public class ShardPreferencesHelper {
     public static double readLat(){
         String d = readItem(Consts.LAT);
         if (d.equals(Consts.INVALID_STRING)){
-            return 32.0860661;
+            return 31.9701428;
         }
         return Double.parseDouble(d);
     }
@@ -94,7 +94,7 @@ public class ShardPreferencesHelper {
     public static double readLng(){
         String d = readItem(Consts.LNG);
         if (d.equals(Consts.INVALID_STRING)){
-            return 34.7908255;
+            return 34.7729968;
         }
         return Double.parseDouble(d);
     }

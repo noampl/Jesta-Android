@@ -37,7 +37,7 @@ public class UserProfileFragment extends Fragment {
 
     //endregion
 
-    // region Lifecycle
+    // region Lifecycleפ
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

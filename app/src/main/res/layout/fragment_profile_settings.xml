@@ -5,7 +5,6 @@
     tools:context=".view.fragments.utilities.ProfileSettingsFragment">
 
     <data>
-
         <variable
             name="user"
             type="com.example.jesta.model.enteties.User" />

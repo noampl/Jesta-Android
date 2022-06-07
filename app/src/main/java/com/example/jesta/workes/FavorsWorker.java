@@ -1,6 +1,7 @@
 package com.example.jesta.workes;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
@@ -24,7 +25,7 @@ public class FavorsWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        System.out.println("peleg - worker getting jestas");
+        Log.d("favors worker", "get remote favors");
         List<Double> center = new ArrayList<>();
         center.add(MapRepository.getInstance().getMyLocation().getValue().latitude);
         center.add(MapRepository.getInstance().getMyLocation().getValue().longitude);

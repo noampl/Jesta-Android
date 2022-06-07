@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 
 import com.example.jesta.R;
 import com.example.jesta.common.AlertDialogRtlHelper;
+import com.example.jesta.common.Consts;
 import com.example.jesta.common.IntentUtils;
 import com.example.jesta.common.enums.FiledType;
 import com.example.jesta.databinding.FragmentProfileSettingsBinding;
@@ -54,29 +55,29 @@ public class ProfileSettingsFragment extends Fragment {
             for (int index = 1; index < names.length; index++) {
                 lastName += lastName + " " + names[index];
             }
-            _usersViewModel.get_myUser().getValue().set_firstName(names[0]);
-            _usersViewModel.get_myUser().getValue().set_lastName(lastName);
+            _usersViewModel.get_localUser().getValue().set_firstName(names[0]);
+            _usersViewModel.get_localUser().getValue().set_lastName(lastName);
             _usersViewModel.updateUser();
         }
     };
     private final IDialogConsumerHelper emailConsumer = new IDialogConsumerHelper() {
         @Override
         public void consume(String val) {
-            _usersViewModel.get_myUser().getValue().set_email(val);
+            _usersViewModel.get_localUser().getValue().set_email(val);
             _usersViewModel.updateUser();
         }
     };
     private final IDialogConsumerHelper phoneConsumer = new IDialogConsumerHelper() {
         @Override
         public void consume(String val) {
-            _usersViewModel.get_myUser().getValue().set_phone(val);
+            _usersViewModel.get_localUser().getValue().set_phone(val);
             _usersViewModel.updateUser();
         }
     };
     private final IDialogConsumerHelper descriptionConsumer = new IDialogConsumerHelper() {
         @Override
         public void consume(String val) {
-            _usersViewModel.get_myUser().getValue().setDescription(val);
+            _usersViewModel.get_localUser().getValue().setDescription(val);
             _usersViewModel.updateUser();
         }
     };
@@ -122,6 +123,13 @@ public class ProfileSettingsFragment extends Fragment {
         return _binding.getRoot();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (_usersViewModel != null)
+            _usersViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
+    }
+
     // endregion
 
     // region Private Methods
@@ -133,7 +141,7 @@ public class ProfileSettingsFragment extends Fragment {
     }
 
     private void initBinding() {
-        _binding.setUser(_usersViewModel.get_myUser().getValue());
+        _binding.setUser(_usersViewModel.get_localUser().getValue());
         _binding.setLifecycleOwner(getViewLifecycleOwner());
     }
 
@@ -208,13 +216,24 @@ public class ProfileSettingsFragment extends Fragment {
     }
 
     private void initObservers() {
-        _usersViewModel.get_myUser().observe(getViewLifecycleOwner(), u -> {
+        _usersViewModel.get_localUser().observe(getViewLifecycleOwner(), u -> {
             _binding.setUser(u);
         });
         // Check is user is update my our changes
         _usersViewModel.get_isUserUpdated().observe(getViewLifecycleOwner(), isUpdated -> {
             if (isUpdated)
-                _binding.setUser(_usersViewModel.get_myUser().getValue());
+                _binding.setUser(_usersViewModel.get_localUser().getValue());
+        });
+
+        _usersViewModel.get_serverInteractionResult().observe(getViewLifecycleOwner(), msg -> {
+            if (!msg.equals(Consts.INVALID_STRING)) {
+                if (msg.equals(Consts.SUCCESS)) {
+                    Snackbar.make(_binding.getRoot(), R.string.mission_complete, Snackbar.LENGTH_SHORT).show();
+                    _usersViewModel.set_serverInteractionResult(Consts.INVALID_STRING);
+                } else {
+                    Snackbar.make(_binding.getRoot(), R.string.error_occurred, Snackbar.LENGTH_SHORT).show();
+                }
+            }
         });
     }
 
@@ -240,7 +259,7 @@ public class ProfileSettingsFragment extends Fragment {
     private void openImageOptionsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         String[] imageOptions;
-        if (_usersViewModel.get_myUser().getValue().get_imagePath() != null) {
+        if (_usersViewModel.get_localUser().getValue().get_imagePath() != null) {
             builder.setTitle(R.string.image_change);
             imageOptions = new String[]{getString(R.string.camera), getString(R.string.gallery), getString(R.string.delete_image)};
         } else {

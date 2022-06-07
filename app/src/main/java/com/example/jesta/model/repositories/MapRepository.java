@@ -109,17 +109,6 @@ public class MapRepository {
 
     // region Public Method
 
-    public void getAddressByName(String address) {
-        _executorService.execute(() -> {
-            try {
-                List<Address> addressList = _geoCoder.getFromLocationName(address, 10);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            // TODO publish addresses
-        });
-    }
-
     public Address setAddressByCurrentLocation() {
         return getAddressByLocation(_myLocation.getValue());
     }

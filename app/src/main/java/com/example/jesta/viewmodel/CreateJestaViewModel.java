@@ -377,7 +377,7 @@ public class CreateJestaViewModel extends ViewModel {
      */
     private com.apollographql.apollo3.api.Optional<FavorInput> jestaConverter(List<String> categories) {
         return new Optional.Present<>(
-                new FavorInput(UsersRepository.getInstance().get_myUser().getValue().get_id(),
+                new FavorInput(UsersRepository.getInstance().get_localUser().getValue().get_id(),
                         categories, new Optional.Present<>(get_numOfPeople().getValue() + 1),
                         addressConverter(get_source().getValue()),
                         new Optional.Present<>(addressConverter(get_destention().getValue())),

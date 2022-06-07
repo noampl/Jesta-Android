@@ -86,7 +86,7 @@ public class NotificationViewModel extends ViewModel {
     }
 
     public void approveSuggestion(String id) {
-        System.out.println("peleg - approve jesta ");
+        setIsTransactionLoading(true);
         GraphqlRepository.getInstance().approveFavorSuggestion(id, null);
     }
 
@@ -96,7 +96,7 @@ public class NotificationViewModel extends ViewModel {
     }
 
     public void suggestHelp(String favorId) {
-        System.out.println("peleg - suggestHelp ");
+        setIsTransactionLoading(true);
         GraphqlRepository.getInstance().suggestHelp(favorId, null);
     }
 
@@ -108,7 +108,6 @@ public class NotificationViewModel extends ViewModel {
     }
 
     public void cancelSuggetstion(String transactionId) {
-        System.out.println("peleg - cancelSuggetstion ");
         GraphqlRepository.getInstance().cancelTransaction(transactionId);
     }
 
@@ -122,7 +121,6 @@ public class NotificationViewModel extends ViewModel {
     }
 
     public void closeNotification(String transactionId) {
-        System.out.println("peleg - closeNotification ");
         GraphqlRepository.getInstance().closeNotification(transactionId);
     }
 

@@ -74,11 +74,8 @@ public class LoginFragment extends Fragment {
         });
         _loginRegisterViewModel.getServerErrorMsg().observe(getViewLifecycleOwner(), (msg) -> {
             if (!msg.equals(Consts.INVALID_STRING)) {
-                if (msg.contains(Consts.INVALID)) {
-                    Snackbar.make(_binding.getRoot(), R.string.incorrect_email_or_password, Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(_binding.getRoot(), R.string.error_occurred, Snackbar.LENGTH_SHORT).show();
-                }
+                Snackbar.make(_binding.getRoot(), R.string.incorrect_email_or_password, Snackbar.LENGTH_SHORT).show();
+                _loginRegisterViewModel.setServerErrorMsg(Consts.INVALID_STRING);
             }
         });
 

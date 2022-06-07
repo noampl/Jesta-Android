@@ -1,6 +1,7 @@
 package com.example.jesta.workes;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
@@ -20,7 +21,7 @@ public class NotificationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        System.out.println("peleg - worker getting notification");
+        Log.d("notification worker","get notifications");
         GraphqlRepository.getInstance().getAllFavorTransaction();
         return Result.success();
     }

@@ -42,7 +42,7 @@ public class CommentsViewModel extends ViewModel {
     }
 
     public String getCurrentUserId() {
-        return UsersRepository.getInstance().get_myUser().getValue().get_id();
+        return UsersRepository.getInstance().get_detailsUser().getValue().get_id();
     }
 
     // endregion

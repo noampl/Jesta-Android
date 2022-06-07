@@ -24,7 +24,6 @@ import com.example.jesta.GetAllExecutorFavorTransactionByStatusQuery;
 import com.example.jesta.GetAllFavorTransactionByFavorIdQuery;
 import com.example.jesta.GetAllFavorTransactionByFavorIdWhenOwnerQuery;
 import com.example.jesta.GetAllFavorTransactionQuery;
-import com.example.jesta.GetAllOwnerFavorTransactionByStatusQuery;
 import com.example.jesta.GetAllSubCategoriesByParentIdQuery;
 import com.example.jesta.GetAllTransactionNotificationsQuery;
 import com.example.jesta.GetAllUserFavorTransactionByFavorIdQuery;
@@ -58,7 +57,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -277,17 +275,14 @@ public class GraphqlRepository {
             @Override
             public void onSuccess(@NonNull ApolloResponse<CreateFavorWithImageMutation.Data> dataApolloResponse) {
                 if (!dataApolloResponse.hasErrors() && dataApolloResponse.data != null) {
-                    System.out.println("peleg - createJesta");
                     _serverInteractionResult.postValue(Consts.SUCCESS);
                 } else {
-                    Log.d("peleg - server return CreateJesta", dataApolloResponse.errors.get(0).getMessage());
                     _serverInteractionResult.postValue(dataApolloResponse.errors.get(0).getMessage());
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
-                Log.e("peleg - CreateJesta", e.getMessage());
                 _serverInteractionResult.postValue(e.getMessage());
             }
         });
@@ -301,7 +296,7 @@ public class GraphqlRepository {
     public void UpdateUser(Optional<UserUpdateInput> updatedUser) {
         ApolloCall<UpdateUserMutation.Data> updateUser = _apolloClient.mutation(
                 new UpdateUserMutation(new Optional.Present<>(UsersRepository.getInstance()
-                        .get_myUser().getValue().get_id()), updatedUser));
+                        .get_localUser().getValue().get_id()), updatedUser));
         Single<ApolloResponse<UpdateUserMutation.Data>> responseSingle = Rx3Apollo.single(updateUser);
         responseSingle.subscribe(new SingleObserver<ApolloResponse<UpdateUserMutation.Data>>() {
             @Override
@@ -350,16 +345,20 @@ public class GraphqlRepository {
             public void onSuccess(@NonNull ApolloResponse<UpdateUserPhotoMutation.Data> dataApolloResponse) {
                 if (!dataApolloResponse.hasErrors()) {
                     Log.d("uploadPhoto", "upload photo seccess");
+                    _serverInteractionResult.postValue(Consts.SUCCESS);
                 } else {
 
-                    for (Error e : dataApolloResponse.errors)
+                    for (Error e : dataApolloResponse.errors){
                         Log.e("uploadPhotoOnSuccess", e.getMessage());
+                        _serverInteractionResult.postValue(e.getMessage());
+                    }
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.e("uploadPhotoError", e.getMessage());
+                _serverInteractionResult.postValue(e.getMessage());
             }
         });
     }
@@ -393,12 +392,14 @@ public class GraphqlRepository {
                     Log.e("suggestHelp", dataApolloResponse.errors.get(0).getMessage());
                     JestaRepository.getInstance().set_isSuggestHelp(false);
                 }
+                JestaRepository.getInstance().set_jestaDetailsLoading(false);
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.e("suggestHelp", e.getMessage());
                 JestaRepository.getInstance().set_isSuggestHelp(false);
+                JestaRepository.getInstance().set_jestaDetailsLoading(false);
             }
         });
     }
@@ -720,7 +721,7 @@ public class GraphqlRepository {
                             dataApolloResponse.data.getUser.address);
                     user.setDateRegistered(dataApolloResponse.data.getUser.created_date.toString());
                     user.setDescription(dataApolloResponse.data.getUser.description);
-                    UsersRepository.getInstance().set_myUser(user);
+                    UsersRepository.getInstance().set_localUser(user);
                 } else {
                     Log.e("getUser", dataApolloResponse.errors.get(0).getMessage());
                 }
@@ -729,6 +730,7 @@ public class GraphqlRepository {
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.e("getuser", e.getMessage());
+                _serverError.postValue(e.getMessage());
             }
         });
     }
@@ -759,14 +761,12 @@ public class GraphqlRepository {
                 } else {
                     for (Error e : dataApolloResponse.errors)
                         Log.e("GetRemoteJestas", e.getMessage());
-                    System.out.println("peleg - GetRemoteJestas failed");
                 }
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
                 Log.e("GetRemoteJestas", e.getMessage());
-                System.out.println("peleg - GetRemoteJestas failed");
             }
         });
     }
@@ -930,8 +930,7 @@ public class GraphqlRepository {
                     user.setDescription(u.description);
                     user.setDateRegistered(u.created_date);
                     user.set_rating(u.rating);
-                    System.out.println("peleg - image path is " + u.imagePath + " id " + id);
-                    UsersRepository.getInstance().set_myUser(user);
+                    UsersRepository.getInstance().set_detailsUser(user);
                 }
             }
 
@@ -956,6 +955,7 @@ public class GraphqlRepository {
                 if (dataApolloResponse.hasErrors()) {
                     for (Error e : dataApolloResponse.errors) {
                         Log.e("getCategories", e.getMessage());
+                        _serverError.postValue(e.getMessage());
                     }
                 } else {
                     HashMap<Category, List<Category>> categories = new HashMap<>();
@@ -972,6 +972,7 @@ public class GraphqlRepository {
             public void onError(@NonNull Throwable e) {
                 Log.e("getCategories", e.getMessage());
                 _isLoggedIn.postValue(true);
+                _serverError.postValue(e.getMessage());
             }
         });
     }

@@ -3,7 +3,6 @@ package com.example.jesta.viewmodel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.jesta.GetJestaQuery;
 import com.example.jesta.common.ShardPreferencesHelper;
 import com.example.jesta.model.enteties.User;
 import com.example.jesta.model.repositories.GraphqlRepository;
@@ -21,7 +20,7 @@ public class UserProfileViewModel extends ViewModel {
     // region C'Tor
 
     public UserProfileViewModel() {
-        this._userDetails = UsersRepository.getInstance().get_myUser();
+        this._userDetails = UsersRepository.getInstance().get_detailsUser();
         this._localUserId = ShardPreferencesHelper.readId();
     }
 

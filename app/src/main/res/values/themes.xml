@@ -30,6 +30,9 @@
         <item name="android:background">@color/white</item>
         <item name="backgroundColor">@color/white</item>
         <item name="colorSurface">@color/white</item>
+        <item name="android:minWidth">0dip</item>
+        <item name="android:paddingLeft">0dip</item>
+        <item name="android:paddingRight">0dip</item>
     </style>
 
     <style name="Theme.Jesta.TabLayout">
@@ -46,5 +49,6 @@
         <item name="colorSurface">@color/white</item>
         <item name="colorOnSurface">@color/white</item>
     </style>
+
 
 </resources>
