@@ -166,7 +166,6 @@ public class MapViewModel extends ViewModel {
     }
 
     public void markerClicked(String jestaId, String transactionId) {
-        System.out.println("peleg - transaction Id is " + transactionId);
         String[] args = {jestaId, transactionId};
         _navigationHelper.navigate(args);
     }

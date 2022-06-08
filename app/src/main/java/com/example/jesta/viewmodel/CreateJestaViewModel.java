@@ -430,7 +430,6 @@ public class CreateJestaViewModel extends ViewModel {
             categories.add(get_selectedSubCategory().getValue().get_id());
         }
         categories.add(get_selectedParentCategory().getValue().get_id());
-        System.out.println("peleg - category size " + categories.size());
         return categories;
     }
 

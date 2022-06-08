@@ -77,33 +77,6 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        System.out.println("peleg - main on onPostResume");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        System.out.println("peleg - main on onStart");
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        System.out.println("peleg - main on onStop");
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        System.out.println("peleg - main on onPause");
-
-    }
-
-    @Override
     public void onBackPressed() {
         // If current fragment is the main screen (the map) then confirms exit:
         if (_navController.getCurrentDestination().getId() == R.id.nav_map) {
@@ -126,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
     protected void onDestroy() {
         super.onDestroy();
         WorkManager.getInstance(this).cancelAllWork();
-        System.out.println("peleg - main on onDestroy");
 
     }
 

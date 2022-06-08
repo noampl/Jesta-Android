@@ -50,7 +50,7 @@ public class Consts {
 
     // region Server Path
     /**
-     * Peleg local Server Address, need to change the ip for each user
+     * The server ip address
      */
     public static final String SERVER_PRE_FIX = "http://193.106.55.114:4111/";
     // Remote server ip is 193.106.55.114

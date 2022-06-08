@@ -100,7 +100,6 @@ public class WaitingJestasFragment extends Fragment {
                             new Address(t.getFavorId().getSourceAddress().getFullAddress(), t.getFavorId().getSourceAddress().getCoordinates()),
                             t.getFavorId().getNumOfPeople(), t.getFavorId().getDateToExecute(), t.getFavorId().getDateToFinishExecute(), t.getFavorId().getCategories()));
                     transactionId.add(t.get_id());
-                    System.out.println("peleg - added catagory " + t.getFavorId().getCategories().size());
                 });
 
                 adapter.submitList(jestas);
@@ -122,7 +121,6 @@ public class WaitingJestasFragment extends Fragment {
     }
 
     private void initListeners() {
-        // TODO Implement this
         _binding.genericList.swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,14 +66,12 @@ public class WhereFragment extends Fragment {
         autoCompleteSrcAddr.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onError(@NonNull Status status) {
-                System.out.println("peleg - error " + status.getStatusMessage());
+                Log.e("PlaceSelectionListener", status.getStatusMessage());
             }
 
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                System.out.println("peleg - places selected " + place.getId());
                 _createJestaViewModel.set_source(place);
-                // TODO use the places
             }
         });
         // dst auto complete
@@ -86,13 +85,12 @@ public class WhereFragment extends Fragment {
         autoCompleteDstAddr.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onError(@NonNull Status status) {
-                System.out.println("peleg - error " + status.getStatusMessage());
+                Log.e("PlaceSelectionListener", status.getStatusMessage());
             }
 
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 _createJestaViewModel.set_destention(place);
-                // TODO use the places
 
             }
         });
