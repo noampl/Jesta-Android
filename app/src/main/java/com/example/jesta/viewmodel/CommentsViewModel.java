@@ -37,7 +37,6 @@ public class CommentsViewModel extends ViewModel {
     }
 
     public void fetchComments(String userId) {
-        System.out.println("peleg - fetch userId " + userId);
         GraphqlRepository.getInstance().getCommentsOnUserId(userId);
     }
 

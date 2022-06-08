@@ -882,27 +882,6 @@ public class GraphqlRepository {
         });
     }
 
-    public void getMyFavorTransaction() {
-        ApolloCall<GetAllFavorTransactionQuery.Data> query = _apolloClient.query(new GetAllFavorTransactionQuery());
-        Single<ApolloResponse<GetAllFavorTransactionQuery.Data>> responseSingle = Rx3Apollo.single(query);
-        responseSingle.subscribe(new SingleObserver<ApolloResponse<GetAllFavorTransactionQuery.Data>>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-
-            }
-
-            @Override
-            public void onSuccess(@NonNull ApolloResponse<GetAllFavorTransactionQuery.Data> dataApolloResponse) {
-                // TODO dix thiss!!
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-
-            }
-        });
-    }
-
     public void getUserDetails(String id) {
         ApolloCall<GetUserByIdQuery.Data> query = _apolloClient.query(new GetUserByIdQuery(new Optional.Present<>(id)));
         Single<ApolloResponse<GetUserByIdQuery.Data>> responseSingle = Rx3Apollo.single(query);
@@ -925,7 +904,7 @@ public class GraphqlRepository {
                             u.email, u.phone, u.role, u.imagePath,
                             u.address != null ? new GetUserQuery.Address(u.address.fullAddress) : null
                     );
-                    user.set_numOfJestasDone(u.numberOfExecutedJesta); // TODO This is no good
+                    user.set_numOfJestasDone(u.numberOfExecutedJesta);
                     user.set_isTopJestioner(u.mostVolunteered);
                     user.setDescription(u.description);
                     user.setDateRegistered(u.created_date);

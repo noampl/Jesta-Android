@@ -259,13 +259,8 @@ public class ProfileSettingsFragment extends Fragment {
     private void openImageOptionsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         String[] imageOptions;
-        if (_usersViewModel.get_localUser().getValue().get_imagePath() != null) {
-            builder.setTitle(R.string.image_change);
-            imageOptions = new String[]{getString(R.string.camera), getString(R.string.gallery), getString(R.string.delete_image)};
-        } else {
-            builder.setTitle(R.string.image_upload);
-            imageOptions = new String[]{getString(R.string.camera), getString(R.string.gallery)};
-        }
+        builder.setTitle(R.string.image_upload);
+        imageOptions = new String[]{getString(R.string.camera), getString(R.string.gallery)};
         builder.setItems(imageOptions, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int index) {
@@ -287,10 +282,6 @@ public class ProfileSettingsFragment extends Fragment {
                         } else {
                             Snackbar.make(requireView(), R.string.gallery_intent_not_found, Snackbar.LENGTH_SHORT).show();
                         }
-                        break;
-                    // Delete Image:
-                    case 2:
-                        // TODO: remove image
                         break;
                     default:
                         throw new IndexOutOfBoundsException("The option index is not implemented in the image options dialog.");

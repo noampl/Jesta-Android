@@ -80,8 +80,6 @@ public class RatingResultDialog extends DialogFragment {
 
     private void initListeners(){
         _binding.close.setOnClickListener(v->{
-            // TODo change the state of the notification
-
             _dialog.dismiss();
         });
     }

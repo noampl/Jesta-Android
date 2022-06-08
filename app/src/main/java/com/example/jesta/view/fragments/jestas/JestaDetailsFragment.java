@@ -54,7 +54,6 @@ public class JestaDetailsFragment extends Fragment {
         _transactionId = JestaDetailsFragmentArgs.fromBundle(getArguments()).getTransactionId();
         if (_transactionId != null && _transactionId.length() > 3) {
             _jestaDetailsViewModel.getTransaction(_transactionId);
-            System.out.println("peleg - get transactionID");
         }
         init();
 
@@ -105,10 +104,9 @@ public class JestaDetailsFragment extends Fragment {
                     }
                     _binding.setCategoryTitle(title);
                 }
-                if (favor.ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
+                if (favor.ownerId != null && favor.ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
                     _binding.suggestHelp.setVisibility(View.GONE);
                     _binding.sendMsg.setVisibility(View.GONE);
-                    System.out.println("peleg - favor update, sets btn gone");
                 }
             }
 
@@ -119,7 +117,6 @@ public class JestaDetailsFragment extends Fragment {
 
         _jestaDetailsViewModel.get_favorTransactionStatus().observe(getViewLifecycleOwner(), status -> {
             _binding.setTransactionStatus(status);
-            System.out.println("peleg - set TransactionStatus " + status);
             validateButtons(status);
             _binding.executePendingBindings();
         });
@@ -128,7 +125,6 @@ public class JestaDetailsFragment extends Fragment {
             if (transaction != null) {
                 _binding.setTransaction(transaction);
                 _jestaDetailsViewModel.set_favorTransactionStatus(transaction.getStatus().toString());
-                System.out.println("peleg - set status " + transaction.getStatus().toString());
             }
         });
 
@@ -149,39 +145,31 @@ public class JestaDetailsFragment extends Fragment {
 
     private void validateStatusBtn(String status) {
         synchronized (_binding.suggestHelp) {
-            System.out.println("peleg - validate btn status is " + status);
             if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null) {
-                System.out.println("peleg - validate btn status is after" + status);
                 if (_jestaDetailsViewModel.get_jestaDetails().getValue().ownerId._id.equals(_jestaDetailsViewModel.get_userId())) {
                     _binding.suggestHelp.setVisibility(View.GONE);
                     _binding.sendMsg.setVisibility(View.GONE);
-                    System.out.println("peleg - this is the owner sets btn visibility gone");
-                }
-                else if (status != null) {
+                } else if (status != null) {
                     if (status.equals(FavorTransactionStatus.CLOSED.toString())) {
                         _binding.suggestHelp.setVisibility(View.GONE);
                         _binding.sendMsg.setVisibility(View.GONE);
-                        System.out.println("peleg - status close sets btn visibility gone");
                     } else {
                         _binding.suggestHelp.setVisibility(View.VISIBLE);
                         _binding.sendMsg.setVisibility(View.VISIBLE);
                         _binding.sendMsg.setClickable(true);
                         _binding.suggestHelp.setClickable(true);
-                        System.out.println("peleg - sets btn vidible");
                     }
                 }
             } else {
-                System.out.println("peleg - details null");
                 _binding.suggestHelp.setVisibility(View.VISIBLE);
                 _binding.sendMsg.setVisibility(View.VISIBLE);
-                System.out.println("peleg - details null sets btn visibility VISIBLE");
             }
         }
     }
 
     private void validateDoneBtn(String status) {
         if (_jestaDetailsViewModel.get_jestaDetails().getValue() != null && status != null) {
-            if (status.equals(FavorTransactionStatus.WAITING_FOR_MORE_APPROVAL.toString())){
+            if (status.equals(FavorTransactionStatus.WAITING_FOR_MORE_APPROVAL.toString())) {
                 _binding.doneBtn.setVisibility(View.INVISIBLE);
                 _binding.doneBtn.setClickable(false);
             }

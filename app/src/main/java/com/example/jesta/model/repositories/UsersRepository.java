@@ -27,7 +27,6 @@ public class UsersRepository {
         _dialogConsumerHelper = new IDialogConsumerHelper() {
             @Override
             public void consume(String val) {
-                System.out.println("peleg - default consumer " + val);
             }
         };
     }

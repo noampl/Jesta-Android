@@ -125,7 +125,6 @@ public class WhenFragment extends Fragment {
                 _createJestaViewModel.get_startTimeAndDate().set(Calendar.HOUR_OF_DAY, picker.getHour());
                 _createJestaViewModel.get_startTimeAndDate().set(Calendar.MINUTE, picker.getMinute());
                 _createJestaViewModel.get_startTimeAndDate().set(Calendar.SECOND, 0);
-                System.out.println("peleg time - " + _createJestaViewModel.get_startTimeAndDate().getTime());
                 _createJestaViewModel.set_isStartTimeAndDateChanged(true);
 
             });

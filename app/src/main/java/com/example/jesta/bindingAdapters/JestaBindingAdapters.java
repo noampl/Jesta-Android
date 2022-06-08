@@ -302,31 +302,6 @@ public class JestaBindingAdapters {
             }
         }
     }
-//
-//    @BindingAdapter({"doneUserId", "doneOwnerId", "doneTransaction"})
-//    public static void doneVisibilityAndClickability(AppCompatButton button, String userId, String ownerId, Transaction transaction){
-//        if (userId.equals(ownerId)){
-//            button.setVisibility(View.INVISIBLE);
-//            button.setClickable(false);
-//        }
-//        else {
-//            if (transaction == null){
-//                System.out.println("peleg - doneVisibilityAndClickability transaction is null");
-//                button.setVisibility(View.INVISIBLE);
-//                button.setClickable(false);
-//                return;
-//            }
-//            if (transaction.getStatus()==FavorTransactionStatus.WAITING_FOR_JESTA_EXECUTION_TIME){
-//                button.setVisibility(View.VISIBLE);
-//                button.setClickable(true);
-//            }
-//            else {
-//                button.setVisibility(View.INVISIBLE);
-//                button.setClickable(false);
-//            }
-//        }
-//    }
-
 
     @BindingAdapter({"setText", "defaultText"})
     public static void setText(TextView view, String text, int resId) {
@@ -373,7 +348,7 @@ public class JestaBindingAdapters {
             if (birthday.contains("T")) {
                 String[] preBirthday = birthday.split("T");
                 String[] unOrderDate = preBirthday[0].split("-");
-                textView.setText(unOrderDate[1] + "/" + unOrderDate[2] + "/" + unOrderDate[0].substring(2, 4)); // TODO make sure this is correct
+                textView.setText(unOrderDate[1] + "/" + unOrderDate[2] + "/" + unOrderDate[0].substring(2, 4));
             } else {
                 textView.setText(birthday);
             }

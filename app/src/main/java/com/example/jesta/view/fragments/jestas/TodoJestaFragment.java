@@ -117,7 +117,6 @@ public class TodoJestaFragment extends Fragment {
     }
 
     private void initListeners() {
-        // TODO Implement this
         _binding.genericList.swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
