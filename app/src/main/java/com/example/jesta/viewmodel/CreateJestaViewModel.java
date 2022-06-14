@@ -489,10 +489,10 @@ public class CreateJestaViewModel extends ViewModel {
         }
         Long end = validCalender(_endTimeAndDate, get_isEndTimeAndDateChanged().getValue());
         if (end != null) {
-            if (end < Calendar.getInstance().getTimeInMillis()){
+            if (end < Calendar.getInstance().getTimeInMillis()) {
                 return false;
             }
-            if (end < start){
+            if (end < start) {
                 return false;
             }
         }

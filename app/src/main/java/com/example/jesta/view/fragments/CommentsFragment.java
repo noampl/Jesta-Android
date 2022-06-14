@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.jesta.R;
+import com.example.jesta.common.Consts;
 import com.example.jesta.databinding.FragmentCommentsBinding;
 import com.example.jesta.view.adapters.CommentsAdapter;
 import com.example.jesta.viewmodel.CommentsViewModel;
@@ -37,7 +38,7 @@ public class CommentsFragment extends Fragment {
         _commentsViewModel = new ViewModelProvider(this).get(CommentsViewModel.class);
         _userId = CommentsFragmentArgs.fromBundle(getArguments()).getUserId();
         _binding.swiper.setRefreshing(true);
-        if (_userId == null || _userId.equals("1")) {
+        if (_userId == null || _userId.equals(Consts.INVALID_STRING)) {
             _userId = _commentsViewModel.getCurrentUserId();
         }
 
