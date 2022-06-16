@@ -7,3 +7,14 @@ after sets all jesta-server instruction change the SERVER_URL in GraphqlReposito
 # Maps
 Add this to your local.properties
 MAPS_API_KEY="APIKEY" // (replace with the api key)
+
+# Developed by:
+
+Jesta developed by [Ohad Shai](https://www.linkedin.com/in/ohad-shai/), [Michael Garbuzov](https://www.linkedin.com/in/michaelgarbuzov/),[Daniel Baranes](https://www.linkedin.com/in/daniel-baranes-a4190b10a/), [Noam peleg](https://www.linkedin.com/in/noam-peleg-196b261b1/) and [Itay Frishman](https://www.linkedin.com/in/itay-frishman/).
+
+# Technologies:
+On the client side: we developed an Android application written in Java using Android Studio.
+On the Server side: we developed the server using Node.js .
+
+# ScreenShoots: 
+
