@@ -17,4 +17,20 @@ On the client side: we developed an Android application written in Java using An
 On the Server side: we developed the server using Node.js .
 
 # ScreenShoots: 
+### Home Page:
+
+<a href="https://ibb.co/HNX4W73"><img src="https://i.ibb.co/GsFpK7N/main.jpg" alt="main" border="0"/>
+
+### Add "jesta":
+<a href="https://ibb.co/cTmGgZW"><img src="https://i.ibb.co/s3B0mNT/AddJesta.jpg" alt="AddJesta" border="0"/>
+
+### Jesta info : 
+<a href="https://ibb.co/Sx2crd4"><img src="https://i.ibb.co/QcZkdC3/jesta-Info.jpg" alt="jesta-Info" border="0"/>
+
+### Account profile :
+<a href="https://ibb.co/JFVdjyM"><img src="https://i.ibb.co/PzKYG9f/profile.jpg" alt="profile" border="0"/>
+
+### Jesta Finished : 
+<a href="https://ibb.co/2YKbfBc"><img src="https://i.ibb.co/Kzy13HV/finish-jesta.jpg" alt="finish-jesta" border="0"/>
+
 
